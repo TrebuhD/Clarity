@@ -13,4 +13,5 @@
     <string name="photo_grid_fragment_desc">Photo grid fragment</string>
     <string name="open_drawer">open drawer</string>
     <string name="close_drawer">close drawer</string>
+    <string name="sort_by_popular">Sort by popular</string>
 </resources>

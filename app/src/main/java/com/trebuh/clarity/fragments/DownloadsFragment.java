@@ -13,12 +13,11 @@ import com.trebuh.clarity.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link OnFragmentInteractionListener} interface
+ * {@link DownloadsFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link DownloadsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-
 public class DownloadsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -91,6 +90,11 @@ public class DownloadsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
     }
 
 }
