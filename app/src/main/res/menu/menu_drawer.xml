@@ -22,14 +22,16 @@
         android:id="@+id/drawer_bookmark_subheader"
         android:title="@string/drawer_bookmark_subheader">
         <menu>
-            <item
-                android:id="@+id/drawer_bookmark_top_artists"
-                android:checked="false"
-                android:title="@string/drawer_bookmark_top_artists"/>
-            <item
-                android:id="@+id/drawer_bookmark_top_photos"
-                android:checked="false"
-                android:title="@string/drawer_bookmark_top_photos"/>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/drawer_bookmark_top_artists"
+                    android:checked="false"
+                    android:title="@string/drawer_bookmark_top_artists"/>
+                <item
+                    android:id="@+id/drawer_bookmark_top_photos"
+                    android:checked="false"
+                    android:title="@string/drawer_bookmark_top_photos"/>
+            </group>
         </menu>
     </item>
 

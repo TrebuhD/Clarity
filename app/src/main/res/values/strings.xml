@@ -11,4 +11,6 @@
     <string name="drawer_item_home">Home</string>
     <string name="downloads_fragment">Downloads Fragment</string>
     <string name="photo_grid_fragment_desc">Photo grid fragment</string>
+    <string name="open_drawer">open drawer</string>
+    <string name="close_drawer">close drawer</string>
 </resources>
