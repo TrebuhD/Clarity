@@ -8,4 +8,7 @@
     <string name="drawer_bookmark_top_photos">Top photos</string>
     <string name="drawer_bookmark_top_artists">Top artists</string>
     <string name="drawer_header_background_desc">drawer header background</string>
+    <string name="drawer_item_home">Home</string>
+    <string name="downloads_fragment">Downloads Fragment</string>
+    <string name="photo_grid_fragment_desc">Photo grid fragment</string>
 </resources>
