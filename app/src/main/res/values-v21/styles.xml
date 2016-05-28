@@ -17,4 +17,9 @@
         <item name="color">@android:color/white</item>
     </style>
 
+    <style name="DarkToolbarPopupStyle" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:colorBackground">@color/mtrl_white_100</item>
+        <item name="android:textColor">@color/mtrl_light_blue_900</item>
+    </style>
+
 </resources>

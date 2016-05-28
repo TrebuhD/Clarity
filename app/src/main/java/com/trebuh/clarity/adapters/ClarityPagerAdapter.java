@@ -34,4 +34,5 @@ public class ClarityPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         return fragmentTitles.get(position);
     }
+
 }
