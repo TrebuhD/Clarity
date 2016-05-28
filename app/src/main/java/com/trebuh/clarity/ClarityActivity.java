@@ -32,13 +32,11 @@ public class ClarityActivity extends AppCompatActivity
         // initialize toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         init_drawer();
 
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
-                R.string.open_drawer, R.string.close_drawer);
-        // Hamburger icon won't show up without this
-        drawerToggle.syncState();
     }
 
     private void init_drawer() {
@@ -56,21 +54,26 @@ public class ClarityActivity extends AppCompatActivity
                         // Transition to Photo grid fragment
                         getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.content_frame_layout, PhotoGridFragment.newInstance("lol", "lol2"))
+                                .replace(R.id.content_frame_layout,
+                                        PhotoGridFragment.newInstance("lol", "lol2"))
                                 .commit();
-                        Snackbar.make(coordinatorLayout, "Home button clicked", Snackbar.LENGTH_LONG)
+                        Snackbar.make(coordinatorLayout, "Home button clicked",
+                                Snackbar.LENGTH_LONG)
                                 .show();
                         break;
                     case R.id.navigation_item_downloads:
                         getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.content_frame_layout, DownloadsFragment.newInstance("lo", "hi"))
+                                .replace(R.id.content_frame_layout,
+                                        DownloadsFragment.newInstance("lo", "hi"))
                                 .commit();
-                        Snackbar.make(coordinatorLayout, "Downloads button clicked", Snackbar.LENGTH_LONG)
+                        Snackbar.make(coordinatorLayout, "Downloads button clicked",
+                                Snackbar.LENGTH_LONG)
                                 .show();
                         break;
                     case R.id.navigation_item_settings:
-                        Snackbar.make(coordinatorLayout, "Settings button clicked", Snackbar.LENGTH_LONG)
+                        Snackbar.make(coordinatorLayout, "Settings button clicked",
+                                Snackbar.LENGTH_LONG)
                                 .show();
                 }
                 return true;
@@ -78,6 +81,7 @@ public class ClarityActivity extends AppCompatActivity
         });
 
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
 
