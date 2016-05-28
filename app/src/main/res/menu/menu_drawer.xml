@@ -31,6 +31,22 @@
                     android:id="@+id/drawer_bookmark_top_photos"
                     android:checked="false"
                     android:title="@string/drawer_bookmark_top_photos"/>
+                <item
+                    android:id="@+id/drawer_bookmark_asd_artists"
+                    android:checked="false"
+                    android:title="@string/drawer_bookmark_top_artists"/>
+                <item
+                    android:id="@+id/drawer_bookmark_asd_photos"
+                    android:checked="false"
+                    android:title="@string/drawer_bookmark_top_photos"/>
+                <item
+                    android:id="@+id/drawer_bookmark_qwe_artists"
+                    android:checked="false"
+                    android:title="@string/drawer_bookmark_top_artists"/>
+                <item
+                    android:id="@+id/drawer_bookmark_qwe_photos"
+                    android:checked="false"
+                    android:title="@string/drawer_bookmark_top_photos"/>
             </group>
         </menu>
     </item>

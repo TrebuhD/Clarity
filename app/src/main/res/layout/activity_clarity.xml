@@ -14,17 +14,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar"/>
-
         <!--Supercharged Frame Layout-->
-        <android.support.design.widget.CoordinatorLayout
-            android:id="@+id/content_frame_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-        </android.support.design.widget.CoordinatorLayout>
+        <include layout="@layout/main_coordinator"/>
 
     </LinearLayout>
 
@@ -33,6 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:fitsSystemWindows="true"
         app:headerLayout="@layout/drawer_header"
         app:menu="@menu/menu_drawer" />
 </android.support.v4.widget.DrawerLayout>
