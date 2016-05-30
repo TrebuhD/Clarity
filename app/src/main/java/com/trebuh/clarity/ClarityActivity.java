@@ -1,20 +1,22 @@
 package com.trebuh.clarity;
 
+import android.app.SearchManager;
 import android.net.Uri;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.trebuh.clarity.adapters.ClarityPagerAdapter;
 import com.trebuh.clarity.fragments.DownloadsFragment;
@@ -34,6 +36,9 @@ public class ClarityActivity extends AppCompatActivity
     private DrawerLayout drawerLayout;
     private CoordinatorLayout coordinatorLayout;
     private FloatingActionButton fab;
+
+    private SearchView searchView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +150,11 @@ public class ClarityActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+
         return true;
     }
 
@@ -153,6 +163,9 @@ public class ClarityActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.menu_action_sortby_popular:
                 return true;
+            case R.id.action_search:
+                SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+//                searchManager.startSearch();
         }
         return super.onOptionsItemSelected(item);
     }
