@@ -1,14 +1,19 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/photoGridSwipeContainer"
     android:layout_height="match_parent"
-    tools:context="com.trebuh.clarity.fragments.PhotoGridFragment">
+    android:layout_width="match_parent"
+    >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recViewPhotos"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/photo_grid_fragment_desc"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         />
 
-</FrameLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
