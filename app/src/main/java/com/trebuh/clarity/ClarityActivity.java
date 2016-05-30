@@ -74,8 +74,8 @@ public class ClarityActivity extends AppCompatActivity
     private void init_viewpager() {
         adapter = new ClarityPagerAdapter(getSupportFragmentManager());
         // order important
-        adapter.addItem(new DownloadsFragment(), "Downloads");
-        adapter.addItem(new PhotoGridFragment(), "Top Authors");
+        adapter.addItem(DownloadsFragment.newInstance("", ""), "Downloads");
+        adapter.addItem(PhotoGridFragment.newInstance("", ""), "Top Authors");
 
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
