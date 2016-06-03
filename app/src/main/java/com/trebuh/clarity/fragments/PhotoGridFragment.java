@@ -3,47 +3,37 @@ package com.trebuh.clarity.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.trebuh.clarity.R;
 
+public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+    private static final String TAG = "PhotoGridFragment";
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PhotoGridFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PhotoGridFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class PhotoGridFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    private PhotoGridFragmentListener listener;
+
+    private SwipeRefreshLayout swipeContainer;
+    private ActionBar toolbar;
+    private AppBarLayout appBarLayout;
 
     public PhotoGridFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PhotoGridFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static PhotoGridFragment newInstance(String param1, String param2) {
         PhotoGridFragment fragment = new PhotoGridFragment();
         Bundle args = new Bundle();
@@ -65,32 +55,62 @@ public class PhotoGridFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_photo_grid, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.photoGridSwipeContainer);
+        if (swipeContainer == null) {
+            Log.e(TAG, "swipe container null");
+        }
+        swipeContainer.setOnRefreshListener(this);
+        swipeContainer.setColorSchemeColors(android.R.color.holo_green_dark,
+                android.R.color.holo_red_dark,
+                android.R.color.holo_blue_dark,
+                android.R.color.holo_orange_dark);
+        super.onViewCreated(view, savedInstanceState);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+        if (listener != null) {
+            listener.onPhotoGridItemPressed(uri);
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+
+        toolbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+
+//        TODO remove
+        if (toolbar == null) {
+            Log.e(TAG, "Toolbar null");
+        }
+
+        if (context instanceof PhotoGridFragmentListener) {
+            listener = (PhotoGridFragmentListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement PhotoGridFragmentListener");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
+    }
+
+    @Override
+    public void onRefresh() {
+//        new MyTask().execute();
+        if (listener != null) {
+            listener.onAppBarShow();
+        }
+        Log.d(TAG, "lol");
     }
 
     /**
@@ -103,8 +123,9 @@ public class PhotoGridFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface PhotoGridFragmentListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onPhotoGridItemPressed(Uri uri);
+        void onAppBarShow();
     }
 }

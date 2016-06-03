@@ -31,4 +31,14 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public int getItemCount() {
         return photoList == null ? 0 : photoList.size();
     }
+
+    private void clear() {
+        photoList.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addAll(List<Photo> list) {
+        photoList.addAll(list);
+        notifyDataSetChanged();
+    }
 }

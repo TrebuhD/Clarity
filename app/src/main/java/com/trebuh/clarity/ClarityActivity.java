@@ -2,6 +2,7 @@ package com.trebuh.clarity;
 
 import android.app.SearchManager;
 import android.net.Uri;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -22,10 +23,9 @@ import com.trebuh.clarity.adapters.ClarityPagerAdapter;
 import com.trebuh.clarity.fragments.DownloadsFragment;
 import com.trebuh.clarity.fragments.PhotoGridFragment;
 
-
 public class ClarityActivity extends AppCompatActivity
         implements DownloadsFragment.OnFragmentInteractionListener,
-        PhotoGridFragment.OnFragmentInteractionListener {
+        PhotoGridFragment.PhotoGridFragmentListener {
 
     private static final int FRAGMENT_DOWNLOADS = 0;
     private static final int FRAGMENT_PHOTOS = 1;
@@ -37,28 +37,31 @@ public class ClarityActivity extends AppCompatActivity
     private CoordinatorLayout coordinatorLayout;
     private FloatingActionButton fab;
 
-    private SearchView searchView;
+    private AppBarLayout appBar;
+    private Toolbar toolbar;
 
+
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clarity);
 
-        init_toolbar();
+        initToolbar();
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         if (viewPager != null) {
             init_viewpager();
         }
 
-        init_drawer();
-
-        init_fab();
+        initDrawer();
+        initFab();
     }
 
-    private void init_toolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    private void initToolbar() {
+        appBar = (AppBarLayout) findViewById(R.id.appbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this,
@@ -100,7 +103,7 @@ public class ClarityActivity extends AppCompatActivity
         transitionToFragment(FRAGMENT_PHOTOS);
     }
 
-    private void init_drawer() {
+    private void initDrawer() {
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator);
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_drawer);
         if (navigationView != null) {
@@ -128,7 +131,7 @@ public class ClarityActivity extends AppCompatActivity
         }
     }
 
-    private void init_fab() {
+    private void initFab() {
         fab = (FloatingActionButton) findViewById(R.id.add_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,8 +146,12 @@ public class ClarityActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onPhotoGridItemPressed(Uri uri) {
+    }
 
+    @Override
+    public void onAppBarShow() {
+        appBar.setExpanded(true);
     }
 
     @Override
@@ -153,8 +160,6 @@ public class ClarityActivity extends AppCompatActivity
         searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-
         return true;
     }
 
@@ -168,5 +173,10 @@ public class ClarityActivity extends AppCompatActivity
 //                searchManager.startSearch();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
