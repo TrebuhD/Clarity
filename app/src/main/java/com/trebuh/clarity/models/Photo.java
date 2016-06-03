@@ -67,4 +67,9 @@ public class Photo implements Parcelable {
         dest.writeInt(user_id);
         dest.writeInt(fav_count);
     }
+
+
+    public String getName() {
+        return name;
+    }
 }
