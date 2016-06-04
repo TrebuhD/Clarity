@@ -2,6 +2,7 @@ package com.trebuh.clarity.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,12 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridItemHolder> 
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         final View photoView = inflater.inflate(R.layout.photo_grid_item, parent, false);
-        return PhotoGridItemHolder.newInstance(photoView);
+        return PhotoGridItemHolder.newInstance(photoView, new PhotoGridItemHolder.PhotoGridItemOnClickListener() {
+            @Override
+            public void onPhotoGridItemClick(View caller) {
+                Log.d("PhotoGridAdapter", "Photo clicked");
+            }
+        });
     }
 
     @Override

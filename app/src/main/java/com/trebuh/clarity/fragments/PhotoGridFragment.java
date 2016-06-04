@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.trebuh.clarity.EndlessRecyclerViewScrollListener;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
 import com.trebuh.clarity.models.Photo;
@@ -99,19 +100,21 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private void initRecView(View view) {
         gridRecyclerView = (RecyclerView) view.findViewById(R.id.recViewPhotos);
         photos = Photo.createPhotoList(20);
-        PhotoGridAdapter adapter = new PhotoGridAdapter(photos);
+        final PhotoGridAdapter adapter = new PhotoGridAdapter(photos);
         gridRecyclerView.setAdapter(adapter);
-        gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), GRID_SPAN_COUNT));
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), GRID_SPAN_COUNT);
+        gridRecyclerView.setLayoutManager(layoutManager);
 
-        gridRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
+        // All items are the same width and height, provides smoother scrolling
+        gridRecyclerView.setHasFixedSize(true);
 
+        // Handle loading more items after scrolling to end of page
+        gridRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
+            public void onLoadMore(int page, int totalItemsCount) {
+                // TODO replace with API call - load next page
+                // loadNextPage(currentPage);
+                adapter.addItemRange(Photo.createPhotoList(20));
             }
         });
     }
@@ -125,16 +128,10 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                 android.R.color.holo_orange_dark);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (listener != null) {
-            listener.onPhotoGridItemPressed(uri);
-        }
-    }
-
     public interface PhotoGridFragmentListener {
         // TODO: Update argument type and name
         void onPhotoGridItemPressed(Uri uri);
+
         void onAppBarShow();
     }
 
