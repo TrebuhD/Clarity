@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
@@ -29,10 +28,11 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private static final String TAG = "PhotoGridFragment";
     private static final int GRID_SPAN_COUNT = 2;
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private String mParam1;
-    private String mParam2;
+    private static final String ARG_FEATURE = "feature";
+    private static final String ARG_SORT_BY = "sort_by";
+
+    private String paramFeature;
+    private String paramSortBy;
 
     private PhotoGridFragmentListener listener;
 
@@ -50,8 +50,8 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     public static PhotoGridFragment newInstance(String param1, String param2) {
         PhotoGridFragment fragment = new PhotoGridFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_FEATURE, param1);
+        args.putString(ARG_SORT_BY, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,8 +60,8 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            paramFeature = getArguments().getString(ARG_FEATURE);
+            paramSortBy = getArguments().getString(ARG_SORT_BY);
         }
     }
 

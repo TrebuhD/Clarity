@@ -29,7 +29,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridItemHolder> 
     @Override
     public void onBindViewHolder(PhotoGridItemHolder viewHolder, int position) {
         Photo photo = photoList.get(position);
-        
+
         String titleText = photo.getName();
         viewHolder.setPhotoTitle(titleText);
     }
@@ -37,6 +37,16 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridItemHolder> 
     @Override
     public int getItemCount() {
         return photoList == null ? 0 : photoList.size();
+    }
+
+    public void addItem(Photo photo, int position) {
+        photoList.add(position, photo);
+        notifyItemInserted(position);
+    }
+
+    public void removeItem(int position) {
+        photoList.remove(position);
+        notifyItemRemoved(position);
     }
 
     private void clear() {
