@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.trebuh.clarity.EndlessRecyclerViewScrollListener;
 import com.trebuh.clarity.R;
@@ -42,11 +43,11 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         // Required empty public constructor
     }
 
-    public static PhotoGridFragment newInstance(String param1, String param2) {
+    public static PhotoGridFragment newInstance(String paramFeature, String paramSortBy) {
         PhotoGridFragment fragment = new PhotoGridFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_FEATURE, param1);
-        args.putString(ARG_SORT_BY, param2);
+        args.putString(ARG_FEATURE, paramFeature);
+        args.putString(ARG_SORT_BY, paramSortBy);
         fragment.setArguments(args);
         return fragment;
     }
@@ -101,6 +102,12 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         gridRecyclerView = (RecyclerView) view.findViewById(R.id.recViewPhotos);
         photos = Photo.createPhotoList(20);
         final PhotoGridAdapter adapter = new PhotoGridAdapter(photos);
+        adapter.setItemOnClickListener(new PhotoGridAdapter.PhotoGridItemOnClickListener() {
+            @Override
+            public void onPhotoGridItemClick(View caller, CharSequence text) {
+                listener.onPhotoGridItemPressed((String) text);
+            }
+        });
         gridRecyclerView.setAdapter(adapter);
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), GRID_SPAN_COUNT);
         gridRecyclerView.setLayoutManager(layoutManager);
@@ -129,9 +136,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     public interface PhotoGridFragmentListener {
-        // TODO: Update argument type and name
-        void onPhotoGridItemPressed(Uri uri);
-
+        void onPhotoGridItemPressed(String url);
         void onAppBarShow();
     }
 

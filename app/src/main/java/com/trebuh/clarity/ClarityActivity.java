@@ -1,6 +1,7 @@
 package com.trebuh.clarity;
 
 import android.app.SearchManager;
+import android.content.Context;
 import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -18,14 +19,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.trebuh.clarity.adapters.ClarityPagerAdapter;
 import com.trebuh.clarity.fragments.DownloadsFragment;
 import com.trebuh.clarity.fragments.PhotoGridFragment;
 
 public class ClarityActivity extends AppCompatActivity
-        implements DownloadsFragment.OnFragmentInteractionListener,
-        PhotoGridFragment.PhotoGridFragmentListener {
+        implements DownloadsFragment.OnFragmentInteractionListener, PhotoGridFragment.PhotoGridFragmentListener {
+    private static final String TAG = "ClarityActivity";
 
     private static final int FRAGMENT_DOWNLOADS = 0;
     private static final int FRAGMENT_PHOTOS = 1;
@@ -147,7 +149,8 @@ public class ClarityActivity extends AppCompatActivity
     }
 
     @Override
-    public void onPhotoGridItemPressed(Uri uri) {
+    public void onPhotoGridItemPressed(String url) {
+        Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
     }
 
     @Override
