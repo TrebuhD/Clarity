@@ -1,5 +1,6 @@
 package com.trebuh.clarity.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,21 +11,27 @@ import com.trebuh.clarity.models.Photo;
 
 import java.util.List;
 
-public class PhotoGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridItemHolder> {
     private List<Photo> photoList;
 
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.photo_grid_item,
-                parent, false);
-        return PhotoGridItemHolder.newInstance(view);
+    public PhotoGridAdapter(List<Photo> photoList) {
+        this.photoList = photoList;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        PhotoGridItemHolder holder = (PhotoGridItemHolder) viewHolder;
-        String titleText = photoList.get(position).getName();
-        holder.setPhotoTitle(titleText);
+    public PhotoGridItemHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
+        final View photoView = inflater.inflate(R.layout.photo_grid_item, parent, false);
+        return PhotoGridItemHolder.newInstance(photoView);
+    }
+
+    @Override
+    public void onBindViewHolder(PhotoGridItemHolder viewHolder, int position) {
+        Photo photo = photoList.get(position);
+        
+        String titleText = photo.getName();
+        viewHolder.setPhotoTitle(titleText);
     }
 
     @Override

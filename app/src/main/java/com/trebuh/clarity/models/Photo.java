@@ -3,6 +3,8 @@ package com.trebuh.clarity.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 public class Photo implements Parcelable {
     /*{
         "id": 156193163,
@@ -15,18 +17,27 @@ public class Photo implements Parcelable {
         "comments_count": 0,
         "nsfw": false,
         "image_url": "https://drscdn.500px.org/photo/156193163/w%3D280_h%3D280/74c29247ef7cfc9712b5c45879cc9878?v=2"
-
     } */
 
 
-    private final int id;
-    private final int user_id;
-    private final String name;
-    private final String photo_url;
-    private final String description;
-    private final int width;
-    private final int height;
-    private final int fav_count;
+    private int id;
+    private String name;
+    private String photo_url;
+    private String description;
+    private int width;
+    private int height;
+
+    public Photo(int id, String name, String photo_url, String description, int width, int height, int fav_count) {
+        this.id = id;
+        this.name = name;
+        this.photo_url = photo_url;
+        this.description = description;
+        this.width = width;
+        this.height = height;
+        this.fav_count = fav_count;
+    }
+
+    private int fav_count;
 
     public Photo(Parcel in) {
         id = in.readInt();
@@ -35,7 +46,6 @@ public class Photo implements Parcelable {
         description = in.readString();
         width = in.readInt();
         height = in.readInt();
-        user_id = in.readInt();
         fav_count = in.readInt();
     }
 
@@ -64,12 +74,23 @@ public class Photo implements Parcelable {
         dest.writeString(description);
         dest.writeInt(width);
         dest.writeInt(height);
-        dest.writeInt(user_id);
         dest.writeInt(fav_count);
     }
 
-
     public String getName() {
         return name;
+    }
+
+    private Photo(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public static ArrayList<Photo> createPhotoList(int n) {
+        ArrayList<Photo> photos = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            photos.add(new Photo(i, "Photo number " + i));
+        }
+        return photos;
     }
 }

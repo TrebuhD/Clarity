@@ -16,4 +16,5 @@
     <string name="sort_by_popular">Sort by popular</string>
     <string name="action_refresh">refresh</string>
     <string name="action_search">search</string>
+    <string name="image">image</string>
 </resources>

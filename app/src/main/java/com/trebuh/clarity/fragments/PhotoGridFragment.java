@@ -2,6 +2,7 @@ package com.trebuh.clarity.fragments;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -9,15 +10,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.trebuh.clarity.R;
+import com.trebuh.clarity.adapters.PhotoGridAdapter;
+import com.trebuh.clarity.models.Photo;
+
+import java.net.URL;
+import java.util.ArrayList;
 
 public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "PhotoGridFragment";
+    private static final int GRID_SPAN_COUNT = 2;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -29,6 +39,9 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private SwipeRefreshLayout swipeContainer;
     private ActionBar toolbar;
     private AppBarLayout appBarLayout;
+    private RecyclerView gridRecyclerView;
+
+    private ArrayList<Photo> photos;
 
     public PhotoGridFragment() {
         // Required empty public constructor
@@ -60,16 +73,27 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        initSwipeContainer(view);
+        initRecView(view);
+
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    private void initRecView(View view) {
+        gridRecyclerView = (RecyclerView) view.findViewById(R.id.recViewPhotos);
+        photos = Photo.createPhotoList(20);
+        PhotoGridAdapter adapter = new PhotoGridAdapter(photos);
+        gridRecyclerView.setAdapter(adapter);
+        gridRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), GRID_SPAN_COUNT));
+    }
+
+    private void initSwipeContainer(View view) {
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.photoGridSwipeContainer);
-        if (swipeContainer == null) {
-            Log.e(TAG, "swipe container null");
-        }
         swipeContainer.setOnRefreshListener(this);
-        swipeContainer.setColorSchemeColors(android.R.color.holo_green_dark,
+        swipeContainer.setColorSchemeResources(android.R.color.holo_green_dark,
                 android.R.color.holo_red_dark,
                 android.R.color.holo_blue_dark,
                 android.R.color.holo_orange_dark);
-        super.onViewCreated(view, savedInstanceState);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -106,26 +130,32 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onRefresh() {
-//        new MyTask().execute();
-        if (listener != null) {
-            listener.onAppBarShow();
-        }
-        Log.d(TAG, "lol");
+        new RefreshItemsTask().execute();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface PhotoGridFragmentListener {
         // TODO: Update argument type and name
         void onPhotoGridItemPressed(Uri uri);
         void onAppBarShow();
+    }
+
+    private class RefreshItemsTask extends AsyncTask<URL, Void, Void> {
+
+        @Override
+        protected Void doInBackground(URL... params) {
+//            TODO remove
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            swipeContainer.setRefreshing(false);
+            super.onPostExecute(aVoid);
+        }
     }
 }
