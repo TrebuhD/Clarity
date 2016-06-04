@@ -14,14 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.trebuh.clarity.EndlessRecyclerViewScrollListener;
-import com.trebuh.clarity.ApiDataFetcher;
+import com.trebuh.clarity.PhotoFetcher;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
 import com.trebuh.clarity.models.Photo;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "PhotoGridFragment";
@@ -96,14 +96,13 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onRefresh() {
-        new FetchItemsTask().execute();
+        new FetchPhotosTask().execute();
     }
-
 
 
     private void initRecView(View view) {
         gridRecyclerView = (RecyclerView) view.findViewById(R.id.recViewPhotos);
-        photos = Photo.createPhotoList(20);
+        photos = loadNewPhotos();
         final PhotoGridAdapter adapter = new PhotoGridAdapter(photos);
         adapter.setItemOnClickListener(new PhotoGridAdapter.PhotoGridItemOnClickListener() {
             @Override
@@ -124,9 +123,19 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             public void onLoadMore(int page, int totalItemsCount) {
                 // TODO replace with API call - load next page
                 // loadNextPage(currentPage);
-                adapter.addItemRange(Photo.createPhotoList(20));
+                adapter.addItemRange(loadNewPhotos());
             }
         });
+    }
+
+    private ArrayList<Photo> loadNewPhotos() {
+        ArrayList<Photo> photos = new ArrayList<>();
+        try {
+            photos = new FetchPhotosTask().execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, "Failed to fetch new photos", e);
+        }
+        return photos;
     }
 
     private void initSwipeContainer(View view) {
@@ -143,18 +152,19 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         void onAppBarShow();
     }
 
-    private class FetchItemsTask extends AsyncTask<URL, Void, Void> {
+    private class FetchPhotosTask extends AsyncTask<Void, Void, ArrayList<Photo>> {
 
         @Override
-        protected Void doInBackground(URL... params) {
-            new ApiDataFetcher().fetchItems();
-            return null;
+        protected ArrayList<Photo> doInBackground(Void... params) {
+            String photosJsonResponse = PhotoFetcher.fetchPhotosJSON();
+            return PhotoFetcher.parsePhotoItems(photosJsonResponse);
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(ArrayList<Photo> photos) {
             swipeContainer.setRefreshing(false);
-            super.onPostExecute(aVoid);
+            super.onPostExecute(photos);
         }
+
     }
 }

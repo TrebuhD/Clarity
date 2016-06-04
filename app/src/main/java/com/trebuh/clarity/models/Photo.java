@@ -19,34 +19,108 @@ public class Photo implements Parcelable {
         "image_url": "https://drscdn.500px.org/photo/156193163/w%3D280_h%3D280/74c29247ef7cfc9712b5c45879cc9878?v=2"
     } */
 
-
+    // required parameters
     private int id;
-    private String name;
-    private String photo_url;
-    private String description;
+    private int userId;
+    private String url;
     private int width;
     private int height;
 
-    public Photo(int id, String name, String photo_url, String description, int width, int height, int fav_count) {
-        this.id = id;
-        this.name = name;
-        this.photo_url = photo_url;
-        this.description = description;
-        this.width = width;
-        this.height = height;
-        this.fav_count = fav_count;
+    // optional parameters
+    private String name;
+    private String username;
+    private String description;
+    private int favCount;
+    private int commentCount;
+    private int voteCount;
+    private Boolean isNsfw;
+    private int timesViewed;
+    private float rating;
+
+    private Photo(PhotoBuilder builder) {
+        this.id = builder.id;
+        this.userId = builder.userId;
+        this.url = builder.url;
+        this.width = builder.width;
+        this.height = builder.height;
+
+        // optional parameters
+        this.name = builder.name;
+        this.username = builder.username;
+        this.description = builder.description;
+        this.favCount = builder.favCount;
+        this.commentCount = builder.commentCount;
+        this.voteCount = builder.voteCount;
+        this.isNsfw = builder.isNsfw;
+        this.timesViewed = builder.timesViewed;
+        this.rating = builder.rating;
     }
 
-    private int fav_count;
+    // getters
+    public int getId() {
+        return id;
+    }
 
-    public Photo(Parcel in) {
+    public String getName() {
+        return name;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getFavCount() {
+        return favCount;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public int getVoteCount() {
+        return voteCount;
+    }
+
+    public Boolean getNsfw() {
+        return isNsfw;
+    }
+
+    public int getTimesViewed() {
+        return timesViewed;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    private Photo(Parcel in) {
         id = in.readInt();
         name = in.readString();
-        photo_url = in.readString();
+        url = in.readString();
         description = in.readString();
         width = in.readInt();
         height = in.readInt();
-        fav_count = in.readInt();
+        favCount = in.readInt();
     }
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {
@@ -70,27 +144,87 @@ public class Photo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(name);
-        dest.writeString(photo_url);
+        dest.writeString(url);
         dest.writeString(description);
         dest.writeInt(width);
         dest.writeInt(height);
-        dest.writeInt(fav_count);
+        dest.writeInt(favCount);
     }
 
-    public String getName() {
-        return name;
-    }
+    public static class PhotoBuilder {
+        // required parameters
+        private int id;
+        private int userId;
+        private String url;
+        private int width;
+        private int height;
 
-    private Photo(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+        // optional parameters - initialize with default values
+        private String name = "";
+        private String username = "";
+        private String description = "";
+        private int favCount = 0;
+        private int commentCount = 0;
+        private int voteCount = 0;
+        private Boolean isNsfw = false;
+        private int timesViewed = 0;
+        private float rating = 0.0f;
 
-    public static ArrayList<Photo> createPhotoList(int n) {
-        ArrayList<Photo> photos = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            photos.add(new Photo(i, "Photo number " + i));
+        public PhotoBuilder(int id, int userId, String url, int width, int height) {
+            this.id = id;
+            this.userId = userId;
+            this.url = url;
+            this.width = width;
+            this.height = height;
         }
-        return photos;
+
+        public PhotoBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public PhotoBuilder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public PhotoBuilder favCount(int favCount) {
+            this.favCount = favCount;
+            return this;
+        }
+
+        public PhotoBuilder commentCount(int commentCount) {
+            this.commentCount = commentCount;
+            return this;
+        }
+
+        public PhotoBuilder nsfw(Boolean isNsfw) {
+            this.isNsfw = isNsfw;
+            return this;
+        }
+
+        public PhotoBuilder timesViewed(int timesViewed) {
+            this.timesViewed = timesViewed;
+            return this;
+        }
+
+        public PhotoBuilder voteCount(int voteCount) {
+            this.voteCount = voteCount;
+            return this;
+        }
+
+        public PhotoBuilder rating(float rating) {
+            this.rating = rating;
+            return this;
+        }
+
+        public PhotoBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public Photo build() {
+            return new Photo(this);
+        }
     }
 }
