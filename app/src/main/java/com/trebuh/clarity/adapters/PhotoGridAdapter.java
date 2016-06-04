@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.models.Photo;
 
@@ -35,8 +36,10 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
 
         String titleText = photo.getName();
         String username = photo.getUsername();
+        String photoUrl = photo.getUrl();
 
         viewHolder.setPhotoTitle(username);
+        viewHolder.setPhotoImage(photoUrl);
         viewHolder.setListener(itemOnClickListener);
     }
 
@@ -90,6 +93,13 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
 
         void setPhotoTitle(CharSequence text) {
             titleTextView.setText(text);
+        }
+
+        void setPhotoImage(String url) {
+            Picasso
+                    .with(itemView.getContext())
+                    .load(url)
+                    .into(photoImageView);
         }
 
         @Override

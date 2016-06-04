@@ -19,7 +19,6 @@ import com.trebuh.clarity.R;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
 import com.trebuh.clarity.models.Photo;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -113,9 +112,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         gridRecyclerView.setAdapter(adapter);
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), GRID_SPAN_COUNT);
         gridRecyclerView.setLayoutManager(layoutManager);
-
-        // All items are the same width and height, provides smoother scrolling
-        gridRecyclerView.setHasFixedSize(true);
 
         // Handle loading more items after scrolling to end of page
         gridRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {

@@ -43,7 +43,7 @@ public class PhotoFetcher {
     public static final String EXTRA_PAGE = "page";
 
     // Default values:
-    private static final String DEFAULT_IMAGE_SIZE = "4";
+    private static final String DEFAULT_IMAGE_SIZE = "3";
     private static final String DEFAULT_FEATURE = "fresh_today";
     private static final String DEFAULT_SORT_METHOD = "created_at";
 
@@ -117,7 +117,6 @@ public class PhotoFetcher {
                     .appendQueryParameter(PARAM_IMAGE_SIZE, DEFAULT_IMAGE_SIZE)
                     .build().toString();
             jsonString = getUrl(url);
-            Log.i(TAG, "Received json: " + jsonString);
         } catch (IOException e) {
             Log.e(TAG, "Failed fetching json", e);
         }
@@ -150,7 +149,6 @@ public class PhotoFetcher {
                 int userId = jsonUserObject.optInt(KEY_USER_ID);
                 String username = jsonUserObject.optString(KEY_USER_USERNAME);
 
-                // TODO fill in userId
                 Photo photo = new Photo.PhotoBuilder(id, userId, photo_url, width, height)
                         .name(name)
                         .description(description)
