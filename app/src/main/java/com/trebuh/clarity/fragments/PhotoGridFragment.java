@@ -12,7 +12,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +36,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private PhotoGridFragmentListener listener;
 
     private SwipeRefreshLayout swipeContainer;
-    private ActionBar toolbar;
-    private AppBarLayout appBarLayout;
     private RecyclerView gridRecyclerView;
 
     private ArrayList<Photo> photos;
@@ -54,6 +51,18 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         args.putString(ARG_SORT_BY, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof PhotoGridFragmentListener) {
+            listener = (PhotoGridFragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement PhotoGridFragmentListener");
+        }
     }
 
     @Override
@@ -79,6 +88,17 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         super.onViewCreated(view, savedInstanceState);
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
+    @Override
+    public void onRefresh() {
+        new RefreshItemsTask().execute();
+    }
+
     private void initRecView(View view) {
         gridRecyclerView = (RecyclerView) view.findViewById(R.id.recViewPhotos);
         photos = Photo.createPhotoList(20);
@@ -101,36 +121,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         if (listener != null) {
             listener.onPhotoGridItemPressed(uri);
         }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        toolbar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-
-//        TODO remove
-        if (toolbar == null) {
-            Log.e(TAG, "Toolbar null");
-        }
-
-        if (context instanceof PhotoGridFragmentListener) {
-            listener = (PhotoGridFragmentListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement PhotoGridFragmentListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        listener = null;
-    }
-
-    @Override
-    public void onRefresh() {
-        new RefreshItemsTask().execute();
     }
 
     public interface PhotoGridFragmentListener {

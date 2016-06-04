@@ -84,7 +84,6 @@ public class ClarityActivity extends AppCompatActivity
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -93,6 +92,7 @@ public class ClarityActivity extends AppCompatActivity
                     getSupportActionBar().setTitle(
                             String.valueOf(adapter.getPageTitle(position)));
                 }
+                onAppBarShow();
             }
 
             @Override
@@ -142,6 +142,7 @@ public class ClarityActivity extends AppCompatActivity
     }
 
     private void transitionToFragment(int fragmentType) {
+        appBar.setExpanded(true);
         viewPager.setCurrentItem(fragmentType);
     }
 
