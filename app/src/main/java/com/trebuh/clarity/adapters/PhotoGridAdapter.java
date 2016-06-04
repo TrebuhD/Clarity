@@ -44,6 +44,12 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridItemHolder> 
         notifyItemInserted(position);
     }
 
+    public void addItemRange(List<Photo> photos) {
+        int currentSize = getItemCount();
+        photoList.addAll(photos);
+        notifyItemRangeInserted(currentSize, photos.size());
+    }
+
     public void removeItem(int position) {
         photoList.remove(position);
         notifyItemRemoved(position);
