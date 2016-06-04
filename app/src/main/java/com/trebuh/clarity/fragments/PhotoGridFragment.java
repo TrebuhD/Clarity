@@ -1,7 +1,6 @@
 package com.trebuh.clarity.fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,16 +8,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.trebuh.clarity.EndlessRecyclerViewScrollListener;
+import com.trebuh.clarity.ApiDataFetcher;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
 import com.trebuh.clarity.models.Photo;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -95,8 +96,10 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onRefresh() {
-        new RefreshItemsTask().execute();
+        new FetchItemsTask().execute();
     }
+
+
 
     private void initRecView(View view) {
         gridRecyclerView = (RecyclerView) view.findViewById(R.id.recViewPhotos);
@@ -140,16 +143,11 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         void onAppBarShow();
     }
 
-    private class RefreshItemsTask extends AsyncTask<URL, Void, Void> {
+    private class FetchItemsTask extends AsyncTask<URL, Void, Void> {
 
         @Override
         protected Void doInBackground(URL... params) {
-//            TODO remove
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            new ApiDataFetcher().fetchItems();
             return null;
         }
 
