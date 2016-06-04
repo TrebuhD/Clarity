@@ -34,7 +34,9 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         Photo photo = photoList.get(position);
 
         String titleText = photo.getName();
-        viewHolder.setPhotoTitle(titleText);
+        String username = photo.getUsername();
+
+        viewHolder.setPhotoTitle(username);
         viewHolder.setListener(itemOnClickListener);
     }
 

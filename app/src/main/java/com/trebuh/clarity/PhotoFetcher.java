@@ -68,9 +68,9 @@ public class PhotoFetcher {
     private static final String KEY_PHOTO_COMMENT_COUNT = "comments_count";
     private static final String KEY_PHOTO_IS_NSFW = "nsfw";
     private static final String KEY_PHOTO_URL = "image_url";
-    private static final String KEY_PHOTO_USER = "user";
+    private static final String KEY_USER = "user";
     // [photos.user]
-    public static final String KEY_USER_USERNAME = "username";
+    private static final String KEY_USER_USERNAME = "username";
     public static final String KEY_USER_FIRSTNAME = "firstname";
     public static final String KEY_USER_LASTNAME = "lastname";
     public static final String KEY_USER_CITY = "lastname";
@@ -144,10 +144,17 @@ public class PhotoFetcher {
                 String name = jsonPhotoObject.optString(KEY_PHOTO_NAME);
                 String description = jsonPhotoObject.optString(KEY_PHOTO_DESCRIPTION);
 
+                // user
+                JSONObject jsonUserObject = jsonPhotoObject.getJSONObject(KEY_USER);
+
+                int userId = jsonUserObject.optInt(KEY_USER_ID);
+                String username = jsonUserObject.optString(KEY_USER_USERNAME);
+
                 // TODO fill in userId
-                Photo photo = new Photo.PhotoBuilder(id, 0, photo_url, width, height)
+                Photo photo = new Photo.PhotoBuilder(id, userId, photo_url, width, height)
                         .name(name)
                         .description(description)
+                        .username(username)
                         .build();
 
                 photos.add(photo);
