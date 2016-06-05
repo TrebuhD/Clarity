@@ -42,7 +42,6 @@ public class ClarityActivity extends AppCompatActivity
     private AppBarLayout appBar;
     private Toolbar toolbar;
 
-
     private SearchView searchView;
 
     @Override
@@ -78,9 +77,13 @@ public class ClarityActivity extends AppCompatActivity
 
     private void init_viewpager() {
         adapter = new ClarityPagerAdapter(getSupportFragmentManager());
+
         // order important
         adapter.addItem(DownloadsFragment.newInstance("", ""), "Downloads");
-        adapter.addItem(PhotoGridFragment.newInstance("", ""), "Top Artists");
+        addPhotoGridFragment(
+                PhotoFetcher.FEATURE_POPULAR,
+                PhotoFetcher.SORT_METHOD_RATING,
+                "Popular Photos");
 
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -113,6 +116,10 @@ public class ClarityActivity extends AppCompatActivity
             }
         });
         transitionToFragment(FRAGMENT_PHOTOS);
+    }
+
+    private void addPhotoGridFragment (String feature, String sortMethod, String gridTitle) {
+        adapter.addItem(PhotoGridFragment.newInstance(feature, sortMethod), gridTitle);
     }
 
     private void initDrawer() {
@@ -183,6 +190,7 @@ public class ClarityActivity extends AppCompatActivity
             case R.id.menu_action_sortby_popular:
                 return true;
             case R.id.action_search:
+                // TODO add search functionality
                 SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
 //                searchManager.startSearch();
         }

@@ -32,6 +32,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private String paramFeature;
     private String paramSortBy;
 
+    private PhotoGridAdapter adapter;
     private PhotoGridFragmentListener listener;
 
     private SwipeRefreshLayout swipeContainer;
@@ -95,14 +96,16 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onRefresh() {
-        new FetchPhotosTask().execute();
+//        TODO handle onRefresh
+//        new FetchPhotosTask().execute();
+
     }
 
 
     private void initRecView(View view) {
         gridRecyclerView = (RecyclerView) view.findViewById(R.id.recViewPhotos);
-        photos = loadNewPhotos(0);
-        final PhotoGridAdapter adapter = new PhotoGridAdapter(photos);
+        photos = loadNewPhotos(0, paramFeature);
+        adapter = new PhotoGridAdapter(photos);
         adapter.setItemOnClickListener(new PhotoGridAdapter.PhotoGridItemOnClickListener() {
             @Override
             public void onPhotoGridItemClick(View caller, CharSequence text) {
@@ -119,15 +122,19 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             public void onLoadMore(int page, int totalItemsCount) {
                 // TODO replace with API call - load next page
 
-                adapter.addItemRange(loadNewPhotos(page));
+                adapter.addItemRange(loadNewPhotos(page, paramFeature));
             }
         });
     }
 
-    private ArrayList<Photo> loadNewPhotos(int page) {
+    private ArrayList<Photo> loadNewPhotos(int page, String paramFeature) {
         ArrayList<Photo> photos = new ArrayList<>();
         try {
-            photos = new FetchPhotosTask().execute(page).get();
+            FetchPhotosTaskParams params = new FetchPhotosTaskParams(
+                    page,
+                    paramFeature,
+                    "");
+            photos = new FetchPhotosTask().execute(params).get();
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Failed to fetch new photos", e);
         }
@@ -148,11 +155,13 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         void onAppBarShow();
     }
 
-    private class FetchPhotosTask extends AsyncTask<Integer, Void, ArrayList<Photo>> {
+    private class FetchPhotosTask extends AsyncTask<FetchPhotosTaskParams, Void, ArrayList<Photo>> {
 
         @Override
-        protected ArrayList<Photo> doInBackground(Integer... params) {
-            String photosJsonResponse = PhotoFetcher.fetchPhotosJSON(params[0]);
+        protected ArrayList<Photo> doInBackground(FetchPhotosTaskParams... params) {
+            String photosJsonResponse = PhotoFetcher.fetchPhotosJSON(
+                    params[0].page,
+                    params[0].feature);
             return PhotoFetcher.parsePhotoItems(photosJsonResponse);
         }
 
@@ -162,5 +171,17 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             super.onPostExecute(photos);
         }
 
+    }
+
+    private static class FetchPhotosTaskParams {
+        int page;
+        String feature;
+        String sortBy;
+
+        FetchPhotosTaskParams(int page, String feature, String sortBy) {
+            this.page = page;
+            this.feature = feature;
+            this.sortBy = sortBy;
+        }
     }
 }

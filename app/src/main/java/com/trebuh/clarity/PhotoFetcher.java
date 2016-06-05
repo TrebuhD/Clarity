@@ -27,19 +27,14 @@ public class PhotoFetcher {
     private static final String PARAM_IMAGE_SIZE = "image_size";
 
     private static final String PARAM_FEATURE = "feature";
-    // Accepted values:
-    // popular, upcoming, editors, fresh: (today, yesterday, week)
-    // requires user_id or username: user, user_friends, user_favorites
 
     private static final String PARAM_SORT_METHOD = "sort";
-    // Accepted values:
-    // created_at, rating, times_viewed, votes_count, favorites_count, comments_count
 
     // Params that are not required by the 500px API
-    public static final String EXTRA_USER_ID = "user_id";
-    public static final String EXTRA_USERNAME = "username";
-    public static final String EXTRA_TAGS = "tags";
-    public static final String EXTRA_ONLY_CATEGORY = "only";
+    private static final String EXTRA_USER_ID = "user_id";
+    private static final String EXTRA_USERNAME = "username";
+    private static final String EXTRA_TAGS = "tags";
+    private static final String EXTRA_ONLY_CATEGORY = "only";
     private static final String EXTRA_PAGE = "page";
     private static final String EXTRA_RESULTS_PER_PAGE = "rpp";
 
@@ -72,12 +67,33 @@ public class PhotoFetcher {
     private static final String KEY_USER = "user";
     // [photos.user]
     private static final String KEY_USER_USERNAME = "username";
-    public static final String KEY_USER_FIRSTNAME = "firstname";
-    public static final String KEY_USER_LASTNAME = "lastname";
-    public static final String KEY_USER_CITY = "lastname";
-    public static final String KEY_USER_COUNTRY = "lastname";
-    public static final String KEY_USER_PIC_URL = "userpic_https_url";
-    public static final String KEY_USER_FOLLOWER_COUNT = "followers_count";
+    private static final String KEY_USER_FIRSTNAME = "firstname";
+    private static final String KEY_USER_LASTNAME = "lastname";
+    private static final String KEY_USER_CITY = "lastname";
+    private static final String KEY_USER_COUNTRY = "lastname";
+    private static final String KEY_USER_PIC_URL = "userpic_https_url";
+    private static final String KEY_USER_FOLLOWER_COUNT = "followers_count";
+
+    static final String FEATURE_DEFAULT = "";
+    static final String FEATURE_POPULAR = "popular";
+    public static final String FEATURE_HIGHEST_RATED = "highest_rated";
+    public static final String FEATURE_UPCOMING = "upcoming";
+    public static final String FEATURE_EDITORS = "editors";
+    public static final String FEATURE_FRESH_TODAY = "fresh_today";
+    public static final String FEATURE_FRESH_YESTERDAY = "fresh_yesterday";
+    public static final String FEATURE_WEEK = "fresh_week";
+    // requires user_id or username:
+    public static final String FEATURE_USER = "user";
+    public static final String FEATURE_USER_FRIENDS = "user_friends";
+    public static final String FEATURE_USER_FAVORITES = "user_favorites";
+
+    static final String SORT_METHOD_DEFAULT = "";
+    static final String SORT_METHOD_CREATED_AT = "created_at";
+    static final String SORT_METHOD_RATING = "rating";
+    static final String SORT_METHOD_TIMES_VIEWED = "times_viewed";
+    static final String SORT_METHOD_VOTES_COUNT = "votes_count";
+    static final String SORT_METHOD_FAVORITES_COUNT = "favorites_count";
+    static final String SORT_METHOD_COMMENTS_COUNT = "comments_count";
 
     private static byte[] getUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);
@@ -107,8 +123,9 @@ public class PhotoFetcher {
         return new String(getUrlBytes(urlSpec));
     }
 
-    public static String fetchPhotosJSON(int page) {
+    public static String fetchPhotosJSON(int page, String feature) {
         String jsonString = "";
+
         try {
             String url = Uri.parse(ENDPOINT).buildUpon()
                     .appendPath(ENDPOINT_PHOTOS)
