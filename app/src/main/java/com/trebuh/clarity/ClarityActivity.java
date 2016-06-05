@@ -80,7 +80,7 @@ public class ClarityActivity extends AppCompatActivity
         adapter = new ClarityPagerAdapter(getSupportFragmentManager());
         // order important
         adapter.addItem(DownloadsFragment.newInstance("", ""), "Downloads");
-        adapter.addItem(PhotoGridFragment.newInstance("", ""), "Top Authors");
+        adapter.addItem(PhotoGridFragment.newInstance("", ""), "Top Artists");
 
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -90,11 +90,21 @@ public class ClarityActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
+                // show toolbar and change its title
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(
                             String.valueOf(adapter.getPageTitle(position)));
                 }
                 onAppBarShow();
+
+                // hide fab in gallery view
+                if (fab != null) {
+                    if (position == FRAGMENT_PHOTOS) {
+                        fab.hide();
+                    } else {
+                        fab.show();
+                    }
+                }
             }
 
             @Override
@@ -138,7 +148,7 @@ public class ClarityActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, "Snackbar lol", Snackbar.LENGTH_LONG).show();
+                // TODO fill in fab onClick
             }
         });
     }

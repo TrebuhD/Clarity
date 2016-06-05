@@ -8,7 +8,6 @@
         android:id="@+id/photo_grid_item_iv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/stock_photo"
         android:contentDescription="@string/image"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
