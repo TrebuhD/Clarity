@@ -81,7 +81,7 @@ public class ClarityActivity extends AppCompatActivity
         adapter.addItem(DownloadsFragment.newInstance("", ""), "Downloads");
         addPhotoGridFragment(
                 PhotoFetcher.FEATURE_POPULAR,
-                PhotoFetcher.SORT_METHOD_RATING,
+                PhotoFetcher.SORT_METHOD_COMMENTS_COUNT,
                 "Popular Photos");
 
         viewPager.setAdapter(adapter);

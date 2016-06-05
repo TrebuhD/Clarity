@@ -42,7 +42,7 @@ public class PhotoFetcher {
     private static final String DEFAULT_IMAGE_SIZE = "3";
     private static final String DEFAULT_FEATURE = "fresh_today";
     private static final String DEFAULT_SORT_METHOD = "created_at";
-    private static final int DEFAULT_RESULTS_PER_PAGE = 20;
+    private static final int DEFAULT_RESULTS_PER_PAGE = 10;
 
     // Response keys:
     private static final String KEY_TOTAL_PAGES = "total_pages";
@@ -123,20 +123,21 @@ public class PhotoFetcher {
         return new String(getUrlBytes(urlSpec));
     }
 
-    public static String fetchPhotosJSON(int page, String feature) {
+    public static String fetchPhotosJSON(int page, String feature, String sortMethod) {
         String jsonString = "";
 
         try {
             String url = Uri.parse(ENDPOINT).buildUpon()
                     .appendPath(ENDPOINT_PHOTOS)
                     .appendQueryParameter(PARAM_CONSUMER_KEY, CONSUMER_KEY)
-                    .appendQueryParameter(PARAM_FEATURE, DEFAULT_FEATURE)
-                    .appendQueryParameter(PARAM_SORT_METHOD, DEFAULT_SORT_METHOD)
+                    .appendQueryParameter(PARAM_FEATURE, feature)
+                    .appendQueryParameter(PARAM_SORT_METHOD, sortMethod)
                     .appendQueryParameter(PARAM_IMAGE_SIZE, DEFAULT_IMAGE_SIZE)
                     .appendQueryParameter(EXTRA_PAGE, String.valueOf(page))
                     .appendQueryParameter(EXTRA_RESULTS_PER_PAGE, String.valueOf(DEFAULT_RESULTS_PER_PAGE))
                     .build().toString();
             jsonString = getUrl(url);
+            Log.e(TAG, "request url: " + url);
         } catch (IOException e) {
             Log.e(TAG, "Failed to fetch photos from server", e);
         }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.trebuh.clarity.models.Photo;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Handler;
 
 public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "PhotoGridFragment";
@@ -112,16 +114,22 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             }
         });
         gridRecyclerView.setAdapter(adapter);
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), GRID_SPAN_COUNT);
+        final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), GRID_SPAN_COUNT);
         gridRecyclerView.setLayoutManager(layoutManager);
 
         // Handle loading more items after scrolling to end of page
         gridRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
+                Log.e(TAG, "onLoadMore");
                 adapter.addItemRange(loadNewPhotos(page, paramFeature, paramSortBy));
             }
         });
+
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setAddDuration(1000);
+        itemAnimator.setRemoveDuration(1000);
+        gridRecyclerView.setItemAnimator(itemAnimator);
     }
 
 
@@ -159,7 +167,8 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         protected ArrayList<Photo> doInBackground(FetchPhotosTaskParams... params) {
             String photosJsonResponse = PhotoFetcher.fetchPhotosJSON(
                     params[0].page,
-                    params[0].feature);
+                    params[0].feature,
+                    params[0].sortBy);
             return PhotoFetcher.parsePhotoItems(photosJsonResponse);
         }
 
