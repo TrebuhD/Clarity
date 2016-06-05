@@ -127,8 +127,8 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         });
 
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-        itemAnimator.setAddDuration(1000);
-        itemAnimator.setRemoveDuration(1000);
+        itemAnimator.setAddDuration(500);
+        itemAnimator.setRemoveDuration(500);
         gridRecyclerView.setItemAnimator(itemAnimator);
     }
 
