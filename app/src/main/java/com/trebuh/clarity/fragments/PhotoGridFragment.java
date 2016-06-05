@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 
 import com.trebuh.clarity.EndlessRecyclerViewScrollListener;
 import com.trebuh.clarity.PhotoFetcher;
@@ -22,7 +22,8 @@ import com.trebuh.clarity.models.Photo;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Handler;
+
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "PhotoGridFragment";
@@ -126,10 +127,9 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             }
         });
 
-        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
-        itemAnimator.setAddDuration(500);
-        itemAnimator.setRemoveDuration(500);
-        gridRecyclerView.setItemAnimator(itemAnimator);
+        gridRecyclerView.setItemAnimator(new SlideInUpAnimator((new OvershootInterpolator(1f))));
+        gridRecyclerView.getItemAnimator().setAddDuration(250);
+        gridRecyclerView.getItemAnimator().setRemoveDuration(250);
     }
 
 

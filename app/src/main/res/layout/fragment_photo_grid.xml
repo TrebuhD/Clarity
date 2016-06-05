@@ -14,7 +14,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:background="@color/accent_material_dark"
+        android:background="@color/mtrl_blue_100"
         />
 
 </android.support.v4.widget.SwipeRefreshLayout>

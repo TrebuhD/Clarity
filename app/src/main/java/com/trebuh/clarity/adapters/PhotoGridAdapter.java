@@ -70,16 +70,6 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         notifyItemRangeRemoved(0, photoListLen);
     }
 
-    private void clear() {
-        photoList.clear();
-        notifyDataSetChanged();
-    }
-
-    public void addAll(List<Photo> list) {
-        photoList.addAll(list);
-        notifyDataSetChanged();
-    }
-
     public void setItemOnClickListener(PhotoGridItemOnClickListener itemOnClickListener) {
         this.itemOnClickListener = itemOnClickListener;
     }
