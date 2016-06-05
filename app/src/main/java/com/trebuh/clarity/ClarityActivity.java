@@ -1,7 +1,6 @@
 package com.trebuh.clarity;
 
 import android.app.SearchManager;
-import android.content.Context;
 import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -178,7 +177,7 @@ public class ClarityActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.menu_action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         return true;
@@ -189,7 +188,12 @@ public class ClarityActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.menu_action_sortby_popular:
                 return true;
-            case R.id.action_search:
+            case R.id.menu_action_refresh:
+                // TODO add more possible photo grid items
+                if (viewPager.getCurrentItem() == FRAGMENT_PHOTOS) {
+                    ((PhotoGridFragment) adapter.getItem(viewPager.getCurrentItem())).onRefresh();
+                }
+            case R.id.menu_action_search:
                 // TODO add search functionality
                 SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
 //                searchManager.startSearch();

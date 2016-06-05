@@ -36,6 +36,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private PhotoGridFragmentListener listener;
 
     private SwipeRefreshLayout swipeContainer;
+
     private RecyclerView gridRecyclerView;
 
     private ArrayList<Photo> photos;
@@ -96,15 +97,13 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onRefresh() {
-//        TODO handle onRefresh
-//        new FetchPhotosTask().execute();
-
+        adapter.removeAllItems();
+        adapter.addItemRange(loadNewPhotos(0, paramFeature, paramSortBy));
     }
-
 
     private void initRecView(View view) {
         gridRecyclerView = (RecyclerView) view.findViewById(R.id.recViewPhotos);
-        photos = loadNewPhotos(0, paramFeature);
+        photos = loadNewPhotos(0, paramFeature, paramSortBy);
         adapter = new PhotoGridAdapter(photos);
         adapter.setItemOnClickListener(new PhotoGridAdapter.PhotoGridItemOnClickListener() {
             @Override
@@ -120,20 +119,19 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         gridRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                // TODO replace with API call - load next page
-
-                adapter.addItemRange(loadNewPhotos(page, paramFeature));
+                adapter.addItemRange(loadNewPhotos(page, paramFeature, paramSortBy));
             }
         });
     }
 
-    private ArrayList<Photo> loadNewPhotos(int page, String paramFeature) {
+
+    private ArrayList<Photo> loadNewPhotos(int page, String paramFeature, String paramSortBy) {
         ArrayList<Photo> photos = new ArrayList<>();
         try {
             FetchPhotosTaskParams params = new FetchPhotosTaskParams(
                     page,
                     paramFeature,
-                    "");
+                    paramSortBy);
             photos = new FetchPhotosTask().execute(params).get();
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Failed to fetch new photos", e);

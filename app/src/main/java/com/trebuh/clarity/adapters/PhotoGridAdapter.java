@@ -64,6 +64,12 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         notifyItemRemoved(position);
     }
 
+    public void removeAllItems() {
+        int photoListLen = photoList.size();
+        photoList.clear();
+        notifyItemRangeRemoved(0, photoListLen);
+    }
+
     private void clear() {
         photoList.clear();
         notifyDataSetChanged();
