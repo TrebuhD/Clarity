@@ -40,15 +40,16 @@ public class PhotoFetcher {
     public static final String EXTRA_USERNAME = "username";
     public static final String EXTRA_TAGS = "tags";
     public static final String EXTRA_ONLY_CATEGORY = "only";
-    public static final String EXTRA_PAGE = "page";
+    private static final String EXTRA_PAGE = "page";
+    private static final String EXTRA_RESULTS_PER_PAGE = "rpp";
 
     // Default values:
     private static final String DEFAULT_IMAGE_SIZE = "3";
     private static final String DEFAULT_FEATURE = "fresh_today";
     private static final String DEFAULT_SORT_METHOD = "created_at";
+    private static final int DEFAULT_RESULTS_PER_PAGE = 20;
 
     // Response keys:
-    private static final String KEY_CURR_PAGE = "current_page";
     private static final String KEY_TOTAL_PAGES = "total_pages";
     private static final String KEY_TOTAL_ITEMS = "total_items";
     private static final String KEY_PHOTOS = "photos";
@@ -106,7 +107,7 @@ public class PhotoFetcher {
         return new String(getUrlBytes(urlSpec));
     }
 
-    public static String fetchPhotosJSON() {
+    public static String fetchPhotosJSON(int page) {
         String jsonString = "";
         try {
             String url = Uri.parse(ENDPOINT).buildUpon()
@@ -115,10 +116,12 @@ public class PhotoFetcher {
                     .appendQueryParameter(PARAM_FEATURE, DEFAULT_FEATURE)
                     .appendQueryParameter(PARAM_SORT_METHOD, DEFAULT_SORT_METHOD)
                     .appendQueryParameter(PARAM_IMAGE_SIZE, DEFAULT_IMAGE_SIZE)
+                    .appendQueryParameter(EXTRA_PAGE, String.valueOf(page))
+                    .appendQueryParameter(EXTRA_RESULTS_PER_PAGE, String.valueOf(DEFAULT_RESULTS_PER_PAGE))
                     .build().toString();
             jsonString = getUrl(url);
         } catch (IOException e) {
-            Log.e(TAG, "Failed fetching json", e);
+            Log.e(TAG, "Failed to fetch photos from server", e);
         }
         return jsonString;
     }
@@ -142,6 +145,7 @@ public class PhotoFetcher {
                 // optional parameters
                 String name = jsonPhotoObject.optString(KEY_PHOTO_NAME);
                 String description = jsonPhotoObject.optString(KEY_PHOTO_DESCRIPTION);
+                Boolean isNsfw = jsonPhotoObject.optBoolean(KEY_PHOTO_IS_NSFW);
 
                 // user
                 JSONObject jsonUserObject = jsonPhotoObject.getJSONObject(KEY_USER);
@@ -153,6 +157,7 @@ public class PhotoFetcher {
                         .name(name)
                         .description(description)
                         .username(username)
+                        .nsfw(isNsfw)
                         .build();
 
                 photos.add(photo);

@@ -101,7 +101,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     private void initRecView(View view) {
         gridRecyclerView = (RecyclerView) view.findViewById(R.id.recViewPhotos);
-        photos = loadNewPhotos();
+        photos = loadNewPhotos(0);
         final PhotoGridAdapter adapter = new PhotoGridAdapter(photos);
         adapter.setItemOnClickListener(new PhotoGridAdapter.PhotoGridItemOnClickListener() {
             @Override
@@ -118,16 +118,16 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 // TODO replace with API call - load next page
-                // loadNextPage(currentPage);
-                adapter.addItemRange(loadNewPhotos());
+
+                adapter.addItemRange(loadNewPhotos(page));
             }
         });
     }
 
-    private ArrayList<Photo> loadNewPhotos() {
+    private ArrayList<Photo> loadNewPhotos(int page) {
         ArrayList<Photo> photos = new ArrayList<>();
         try {
-            photos = new FetchPhotosTask().execute().get();
+            photos = new FetchPhotosTask().execute(page).get();
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Failed to fetch new photos", e);
         }
@@ -148,11 +148,11 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         void onAppBarShow();
     }
 
-    private class FetchPhotosTask extends AsyncTask<Void, Void, ArrayList<Photo>> {
+    private class FetchPhotosTask extends AsyncTask<Integer, Void, ArrayList<Photo>> {
 
         @Override
-        protected ArrayList<Photo> doInBackground(Void... params) {
-            String photosJsonResponse = PhotoFetcher.fetchPhotosJSON();
+        protected ArrayList<Photo> doInBackground(Integer... params) {
+            String photosJsonResponse = PhotoFetcher.fetchPhotosJSON(params[0]);
             return PhotoFetcher.parsePhotoItems(photosJsonResponse);
         }
 
