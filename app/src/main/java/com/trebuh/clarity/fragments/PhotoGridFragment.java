@@ -42,7 +42,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private SwipeRefreshLayout swipeContainer;
 
     private RecyclerView gridRecyclerView;
-    private ContentLoadingProgressBar progressBar;
 
     private ArrayList<Photo> photos;
 
@@ -90,8 +89,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initSwipeContainer(view);
         initRecView(view);
-
-        progressBar = (ContentLoadingProgressBar) view.findViewById(R.id.photo_grid_loading_progress_bar);
 
         super.onViewCreated(view, savedInstanceState);
     }
@@ -171,9 +168,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
         @Override
         protected void onPreExecute() {
-            if (progressBar != null) {
-                progressBar.show();
-            }
             super.onPreExecute();
         }
 
@@ -189,9 +183,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         @Override
         protected void onPostExecute(ArrayList<Photo> photos) {
             swipeContainer.setRefreshing(false);
-            if (progressBar != null) {
-                progressBar.hide();
-            }
             super.onPostExecute(photos);
         }
 

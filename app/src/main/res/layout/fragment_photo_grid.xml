@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     >
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,15 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/mtrl_blue_100"
-            />
-
-        <android.support.v4.widget.ContentLoadingProgressBar
-            android:id="@+id/photo_grid_loading_progress_bar"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="visible"
             />
 
     </FrameLayout>

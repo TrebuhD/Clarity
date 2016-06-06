@@ -111,7 +111,6 @@ public class ClarityActivity extends AppCompatActivity
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
         transitionToFragment(FRAGMENT_PHOTOS);
@@ -157,6 +156,7 @@ public class ClarityActivity extends AppCompatActivity
                 // TODO fill in fab onClick
             }
         });
+        fab.hide();
     }
 
     private void transitionToFragment(int fragmentType) {

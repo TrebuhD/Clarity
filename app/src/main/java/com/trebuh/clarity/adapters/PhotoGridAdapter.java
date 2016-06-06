@@ -1,6 +1,7 @@
 package com.trebuh.clarity.adapters;
 
 import android.content.Context;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.models.Photo;
@@ -77,10 +79,15 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
     static class PhotoGridItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView titleTextView;
         private final ImageView photoImageView;
+        private final ContentLoadingProgressBar progressBar;
+
         private PhotoGridItemOnClickListener listener;
 
         PhotoGridItemHolder(View itemView) {
             super(itemView);
+
+            progressBar = (ContentLoadingProgressBar) itemView.findViewById(R.id.photo_item_progress_bar);
+            progressBar.setVisibility(View.VISIBLE);
 
             this.titleTextView = (TextView) itemView.findViewById(R.id.photo_grid_item_tv);
             this.photoImageView = (ImageView) itemView.findViewById(R.id.photo_grid_item_iv);
@@ -95,7 +102,15 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
             Picasso
                     .with(itemView.getContext())
                     .load(url)
-                    .into(photoImageView);
+                    .into(photoImageView, new ImageLoadedCallback(progressBar) {
+                        @Override
+                        public void onSuccess() {
+                            if (this.progressBar != null) {
+                                this.progressBar.setVisibility(View.GONE);
+                            }
+                            super.onSuccess();
+                        }
+                    });
         }
 
         @Override
@@ -114,4 +129,21 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         void onPhotoGridItemClick(View caller, CharSequence text);
     }
 
+    private static class ImageLoadedCallback implements Callback {
+        ContentLoadingProgressBar progressBar;
+
+        ImageLoadedCallback(ContentLoadingProgressBar progressBar) {
+            this.progressBar = progressBar;
+        }
+
+        @Override
+        public void onSuccess() {
+
+        }
+
+        @Override
+        public void onError() {
+
+        }
+    }
 }
