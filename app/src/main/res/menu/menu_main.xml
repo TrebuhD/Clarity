@@ -21,12 +21,6 @@
     <group android:checkableBehavior="none">
 
         <item
-            android:id="@+id/menu_action_sortby_popular"
-            android:title="@string/sort_by_popular"
-            app:showAsAction="never"
-            />
-
-        <item
             android:id="@+id/menu_action_sortby_rating"
             android:title="@string/sort_by_rating"
             app:showAsAction="never"

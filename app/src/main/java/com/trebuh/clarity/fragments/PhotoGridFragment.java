@@ -21,6 +21,7 @@ import com.trebuh.clarity.R;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
 import com.trebuh.clarity.models.Photo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -159,6 +160,11 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                 android.R.color.holo_orange_dark);
     }
 
+    public void sortAndReplaceItems(String sortBy) {
+        this.paramSortBy = sortBy;
+        onRefresh();
+    }
+
     public interface PhotoGridFragmentListener {
         void onPhotoGridItemPressed(String url);
         void onAppBarShow();
@@ -173,11 +179,18 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
         @Override
         protected ArrayList<Photo> doInBackground(FetchPhotosTaskParams... params) {
-            String photosJsonResponse = PhotoFetcher.fetchPhotosJSON(
-                    params[0].page,
-                    params[0].feature,
-                    params[0].sortBy);
-            return PhotoFetcher.parsePhotoItems(photosJsonResponse);
+            String photosJsonResponse;
+            try {
+                photosJsonResponse = PhotoFetcher.fetchPhotosJSON(
+                        params[0].page,
+                        params[0].feature,
+                        params[0].sortBy);
+                return PhotoFetcher.parsePhotoItems(photosJsonResponse);
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to fetch photos from server", e);
+
+            }
+            return null;
         }
 
         @Override
@@ -185,7 +198,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             swipeContainer.setRefreshing(false);
             super.onPostExecute(photos);
         }
-
     }
 
     private static class FetchPhotosTaskParams {

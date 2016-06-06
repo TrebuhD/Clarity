@@ -7,6 +7,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -15,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,7 +54,7 @@ public class ClarityActivity extends AppCompatActivity
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         if (viewPager != null) {
-            init_viewpager();
+            initViewpager();
         }
 
         initDrawer();
@@ -74,7 +76,7 @@ public class ClarityActivity extends AppCompatActivity
         drawerToggle.syncState();
     }
 
-    private void init_viewpager() {
+    private void initViewpager() {
         adapter = new ClarityPagerAdapter(getSupportFragmentManager());
 
         // order important
@@ -185,20 +187,47 @@ public class ClarityActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        PhotoGridFragment gridFragment;
         switch (item.getItemId()) {
-            case R.id.menu_action_sortby_popular:
-                return true;
             case R.id.menu_action_refresh:
-                // TODO add more possible photo grid items
+                Log.d(TAG, "Current fragment number: " + viewPager.getCurrentItem());
                 if (viewPager.getCurrentItem() == FRAGMENT_PHOTOS) {
-                    ((PhotoGridFragment) adapter.getItem(viewPager.getCurrentItem())).onRefresh();
+                    gridFragment = (PhotoGridFragment)getCurrentFragment();
+                    gridFragment.onRefresh();
                 }
+                break;
             case R.id.menu_action_search:
                 // TODO add search functionality
                 SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
 //                searchManager.startSearch();
+                break;
+            case R.id.menu_action_sortby_comments:
+                gridFragment = (PhotoGridFragment)getCurrentFragment();
+                gridFragment.sortAndReplaceItems(PhotoFetcher.SORT_METHOD_COMMENTS_COUNT);
+                break;
+            case R.id.menu_action_sortby_rating:
+                gridFragment = (PhotoGridFragment)getCurrentFragment();
+                gridFragment.sortAndReplaceItems(PhotoFetcher.SORT_METHOD_RATING);
+                break;
+            case R.id.menu_action_sortby_times_viewed:
+                gridFragment = (PhotoGridFragment)getCurrentFragment();
+                gridFragment.sortAndReplaceItems(PhotoFetcher.SORT_METHOD_TIMES_VIEWED);
+                break;
+            case R.id.menu_action_sortby_votes:
+                gridFragment = (PhotoGridFragment)getCurrentFragment();
+                gridFragment.sortAndReplaceItems(PhotoFetcher.SORT_METHOD_VOTES_COUNT);
+                break;
+
         }
-        return super.onOptionsItemSelected(item);
+        return true;
+    }
+
+    private Fragment getCurrentFragment() {
+        if (adapter != null) {
+            int currItem = viewPager.getCurrentItem();
+            return adapter.getItem(currItem);
+        }
+        return null;
     }
 
     @Override

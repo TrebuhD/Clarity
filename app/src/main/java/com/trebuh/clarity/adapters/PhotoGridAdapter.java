@@ -102,6 +102,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
             Picasso
                     .with(itemView.getContext())
                     .load(url)
+                    .placeholder(R.drawable.image_placeholder)
                     .into(photoImageView, new ImageLoadedCallback(progressBar) {
                         @Override
                         public void onSuccess() {
