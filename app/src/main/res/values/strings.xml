@@ -13,8 +13,13 @@
     <string name="photo_grid_fragment_desc">Photo grid fragment</string>
     <string name="open_drawer">open drawer</string>
     <string name="close_drawer">close drawer</string>
-    <string name="sort_by_popular">Sort by popular</string>
+    <string name="sort_by_popular">Popular</string>
     <string name="action_refresh">refresh</string>
     <string name="action_search">search</string>
     <string name="image">image</string>
+    <string name="sort_by_created_at">Date created</string>
+    <string name="sort_by_rating">Rating</string>
+    <string name="sort_by_views">Views</string>
+    <string name="sort_by_votes">Votes</string>
+    <string name="sort_by_comments">Comments</string>
 </resources>

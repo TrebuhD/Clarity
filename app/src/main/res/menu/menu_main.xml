@@ -18,11 +18,41 @@
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="android.support.v7.widget.SearchView" />
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="none">
 
         <item
             android:id="@+id/menu_action_sortby_popular"
             android:title="@string/sort_by_popular"
+            app:showAsAction="never"
+            />
+
+        <item
+            android:id="@+id/menu_action_sortby_rating"
+            android:title="@string/sort_by_rating"
+            app:showAsAction="never"
+            />
+
+        <item
+            android:id="@+id/menu_action_sortby_votes"
+            android:title="@string/sort_by_votes"
+            app:showAsAction="never"
+            />
+
+        <item
+            android:id="@+id/menu_action_sortby_comments"
+            android:title="@string/sort_by_comments"
+            app:showAsAction="never"
+            />
+
+        <item
+            android:id="@+id/menu_action_sortby_times_viewed"
+            android:title="@string/sort_by_views"
+            app:showAsAction="never"
+            />
+
+        <item
+            android:id="@+id/menu_action_sortby_created_at"
+            android:title="@string/sort_by_created_at"
             app:showAsAction="never"
             />
 
