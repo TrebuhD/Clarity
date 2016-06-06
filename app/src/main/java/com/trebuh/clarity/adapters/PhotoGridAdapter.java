@@ -113,4 +113,5 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
     public interface PhotoGridItemOnClickListener {
         void onPhotoGridItemClick(View caller, CharSequence text);
     }
+
 }

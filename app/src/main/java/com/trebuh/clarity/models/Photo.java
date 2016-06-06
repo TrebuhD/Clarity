@@ -3,8 +3,6 @@ package com.trebuh.clarity.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-
 public class Photo implements Parcelable {
     /*{
         "id": 156193163,

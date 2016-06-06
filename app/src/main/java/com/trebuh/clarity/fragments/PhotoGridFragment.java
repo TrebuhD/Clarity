@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,6 +42,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private SwipeRefreshLayout swipeContainer;
 
     private RecyclerView gridRecyclerView;
+    private ContentLoadingProgressBar progressBar;
 
     private ArrayList<Photo> photos;
 
@@ -89,6 +91,8 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         initSwipeContainer(view);
         initRecView(view);
 
+        progressBar = (ContentLoadingProgressBar) view.findViewById(R.id.photo_grid_loading_progress_bar);
+
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -100,12 +104,14 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onRefresh() {
-        adapter.removeAllItems();
-        adapter.addItemRange(loadNewPhotos(0, paramFeature, paramSortBy));
+        if (adapter != null) {
+            adapter.removeAllItems();
+            adapter.addItemRange(loadNewPhotos(0, paramFeature, paramSortBy));
+        }
     }
 
     private void initRecView(View view) {
-        gridRecyclerView = (RecyclerView) view.findViewById(R.id.recViewPhotos);
+        gridRecyclerView = (RecyclerView) view.findViewById(R.id.rec_view_photos);
         photos = loadNewPhotos(0, paramFeature, paramSortBy);
         adapter = new PhotoGridAdapter(photos);
         adapter.setItemOnClickListener(new PhotoGridAdapter.PhotoGridItemOnClickListener() {
@@ -164,6 +170,14 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private class FetchPhotosTask extends AsyncTask<FetchPhotosTaskParams, Void, ArrayList<Photo>> {
 
         @Override
+        protected void onPreExecute() {
+            if (progressBar != null) {
+                progressBar.show();
+            }
+            super.onPreExecute();
+        }
+
+        @Override
         protected ArrayList<Photo> doInBackground(FetchPhotosTaskParams... params) {
             String photosJsonResponse = PhotoFetcher.fetchPhotosJSON(
                     params[0].page,
@@ -175,6 +189,9 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         @Override
         protected void onPostExecute(ArrayList<Photo> photos) {
             swipeContainer.setRefreshing(false);
+            if (progressBar != null) {
+                progressBar.hide();
+            }
             super.onPostExecute(photos);
         }
 
