@@ -69,7 +69,7 @@ public class ClarityActivity extends AppCompatActivity
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this,
                 drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
         drawerLayout.addDrawerListener(drawerToggle);
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
@@ -94,6 +94,9 @@ public class ClarityActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
+                // call onCreateOptionsMenu()
+                invalidateOptionsMenu();
+
                 // show toolbar and change its title
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(
@@ -109,6 +112,7 @@ public class ClarityActivity extends AppCompatActivity
                         fab.show();
                     }
                 }
+
             }
 
             @Override
@@ -118,7 +122,7 @@ public class ClarityActivity extends AppCompatActivity
         transitionToFragment(FRAGMENT_PHOTOS);
     }
 
-    private void addPhotoGridFragment (String feature, String sortMethod, String gridTitle) {
+    private void addPhotoGridFragment(String feature, String sortMethod, String gridTitle) {
         adapter.addItem(PhotoGridFragment.newInstance(feature, sortMethod), gridTitle);
     }
 
@@ -132,7 +136,7 @@ public class ClarityActivity extends AppCompatActivity
                     drawerLayout.closeDrawers();
                     item.setChecked(true);
                     switch (item.getItemId()) {
-    //                    TODO Replace with proper actions
+                        //                    TODO Replace with proper actions
                         case R.id.navigation_item_home:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             break;
@@ -179,6 +183,19 @@ public class ClarityActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        if (viewPager != null) {
+            if (viewPager.getCurrentItem() == FRAGMENT_DOWNLOADS) {
+                menu.findItem(R.id.menu_action_refresh).setVisible(false);
+                menu.findItem(R.id.menu_action_search).setVisible(false);
+                menu.findItem(R.id.menu_action_sortby_comments).setVisible(false);
+                menu.findItem(R.id.menu_action_sortby_new).setVisible(false);
+                menu.findItem(R.id.menu_action_sortby_times_viewed).setVisible(false);
+                menu.findItem(R.id.menu_action_sortby_votes).setVisible(false);
+                menu.findItem(R.id.menu_action_sortby_rating).setVisible(false);
+            }
+        }
+
         searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.menu_action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -204,18 +221,18 @@ public class ClarityActivity extends AppCompatActivity
                         PhotoFetcher.SORT_METHOD_COMMENTS_COUNT);
                 break;
             case R.id.menu_action_sortby_rating:
-                ((PhotoGridFragment)  getCurrentFragment()).sortAndReplaceItems(
+                ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
                         PhotoFetcher.SORT_METHOD_RATING);
                 break;
             case R.id.menu_action_sortby_times_viewed:
-                ((PhotoGridFragment)  getCurrentFragment()).sortAndReplaceItems(
+                ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
                         PhotoFetcher.SORT_METHOD_TIMES_VIEWED);
                 break;
             case R.id.menu_action_sortby_votes:
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
                         PhotoFetcher.SORT_METHOD_VOTES_COUNT);
                 break;
-            case R.id.menu_action_sortby_date:
+            case R.id.menu_action_sortby_new:
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
                         PhotoFetcher.SORT_METHOD_CREATED_AT);
         }
