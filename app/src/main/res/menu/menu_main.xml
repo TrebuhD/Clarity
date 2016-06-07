@@ -45,6 +45,12 @@
             />
 
         <item
+            android:id="@+id/menu_action_sortby_favorites"
+            android:title="@string/sort_by_favorites"
+            app:showAsAction="never"
+            />
+
+        <item
             android:id="@+id/menu_action_sortby_times_viewed"
             android:title="@string/sort_by_views"
             app:showAsAction="never"

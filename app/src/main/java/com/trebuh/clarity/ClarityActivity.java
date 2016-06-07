@@ -237,6 +237,9 @@ public class ClarityActivity extends AppCompatActivity
             case R.id.menu_action_sortby_new:
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
                         PhotoFetcher.SORT_METHOD_CREATED_AT);
+            case R.id.menu_action_sortby_favorites:
+                ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
+                        PhotoFetcher.SORT_METHOD_FAVORITES_COUNT);
         }
         return true;
     }

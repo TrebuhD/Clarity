@@ -22,4 +22,5 @@
     <string name="sort_by_views">Most viewed</string>
     <string name="sort_by_votes">Most votes</string>
     <string name="sort_by_comments">Most comments</string>
+    <string name="sort_by_favorites">Most favorites</string>
 </resources>
