@@ -180,17 +180,11 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         @Override
         protected ArrayList<Photo> doInBackground(FetchPhotosTaskParams... params) {
             String photosJsonResponse;
-            try {
                 photosJsonResponse = PhotoFetcher.fetchPhotosJSON(
                         params[0].page,
                         params[0].feature,
                         params[0].sortBy);
                 return PhotoFetcher.parsePhotoItems(photosJsonResponse);
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to fetch photos from server", e);
-
-            }
-            return null;
         }
 
         @Override
