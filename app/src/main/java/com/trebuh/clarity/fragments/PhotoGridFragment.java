@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +20,6 @@ import com.trebuh.clarity.R;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
 import com.trebuh.clarity.models.Photo;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -169,6 +167,12 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         onRefresh();
     }
 
+    public void transitionToNewFeature(String feature) {
+        this.paramFeature = feature;
+        this.paramSortBy = PhotoFetcher.SORT_METHOD_DEFAULT;
+        onRefresh();
+    }
+
     public interface PhotoGridFragmentListener {
         void onPhotoGridItemPressed(String url);
         void onAppBarShow();
@@ -178,6 +182,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
         @Override
         protected void onPreExecute() {
+            swipeContainer.setRefreshing(true);
             super.onPreExecute();
         }
 

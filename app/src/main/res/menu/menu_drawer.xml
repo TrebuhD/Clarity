@@ -24,32 +24,31 @@
         <menu>
             <group android:checkableBehavior="single">
                 <item
-                    android:id="@+id/drawer_bookmark_top_artists"
+                    android:id="@+id/drawer_bookmark_fresh_today"
                     android:checked="false"
-                    android:title="@string/drawer_bookmark_top_artists"/>
+                    android:title="@string/drawer_bookmark_fresh_today"/>
                 <item
-                    android:id="@+id/drawer_bookmark_top_photos"
+                    android:id="@+id/drawer_bookmark_fresh_yesterday"
                     android:checked="false"
-                    android:title="@string/drawer_bookmark_top_photos"/>
+                    android:title="@string/drawer_bookmark_fresh_yesterday"/>
                 <item
-                    android:id="@+id/drawer_bookmark_asd_artists"
+                    android:id="@+id/drawer_bookmark_fresh_week"
                     android:checked="false"
-                    android:title="@string/drawer_bookmark_top_artists"/>
+                    android:title="@string/drawer_bookmark_fresh_week"/>
                 <item
-                    android:id="@+id/drawer_bookmark_asd_photos"
+                    android:id="@+id/drawer_bookmark_editors"
                     android:checked="false"
-                    android:title="@string/drawer_bookmark_top_photos"/>
+                    android:title="@string/drawer_bookmark_editors"/>
                 <item
-                    android:id="@+id/drawer_bookmark_qwe_artists"
+                    android:id="@+id/drawer_bookmark_highest_rated"
                     android:checked="false"
-                    android:title="@string/drawer_bookmark_top_artists"/>
+                    android:title="@string/drawer_bookmark_highest_rated"/>
                 <item
-                    android:id="@+id/drawer_bookmark_qwe_photos"
+                    android:id="@+id/drawer_bookmark_upcoming"
                     android:checked="false"
-                    android:title="@string/drawer_bookmark_top_photos"/>
+                    android:title="@string/drawer_bookmark_upcoming"/>
             </group>
         </menu>
     </item>
-
 
 </menu>

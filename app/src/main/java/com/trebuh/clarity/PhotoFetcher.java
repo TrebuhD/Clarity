@@ -76,18 +76,18 @@ public class PhotoFetcher {
 
     static final String FEATURE_DEFAULT = "";
     static final String FEATURE_POPULAR = "popular";
-    public static final String FEATURE_HIGHEST_RATED = "highest_rated";
-    public static final String FEATURE_UPCOMING = "upcoming";
-    public static final String FEATURE_EDITORS = "editors";
-    public static final String FEATURE_FRESH_TODAY = "fresh_today";
-    public static final String FEATURE_FRESH_YESTERDAY = "fresh_yesterday";
-    public static final String FEATURE_WEEK = "fresh_week";
+    static final String FEATURE_HIGHEST_RATED = "highest_rated";
+    static final String FEATURE_UPCOMING = "upcoming";
+    static final String FEATURE_EDITORS = "editors";
+    static final String FEATURE_FRESH_TODAY = "fresh_today";
+    static final String FEATURE_FRESH_YESTERDAY = "fresh_yesterday";
+    static final String FEATURE_FRESH_WEEK = "fresh_week";
     // requires user_id or username:
     public static final String FEATURE_USER = "user";
     public static final String FEATURE_USER_FRIENDS = "user_friends";
     public static final String FEATURE_USER_FAVORITES = "user_favorites";
 
-    static final String SORT_METHOD_DEFAULT = "";
+    public static final String SORT_METHOD_DEFAULT = "";
     static final String SORT_METHOD_CREATED_AT = "created_at";
     static final String SORT_METHOD_RATING = "rating";
     static final String SORT_METHOD_TIMES_VIEWED = "times_viewed";

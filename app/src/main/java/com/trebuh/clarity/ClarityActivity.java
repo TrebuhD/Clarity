@@ -148,6 +148,43 @@ public class ClarityActivity extends AppCompatActivity
                             Snackbar.make(coordinatorLayout, "Settings button clicked",
                                     Snackbar.LENGTH_LONG)
                                     .show();
+                            break;
+                        case R.id.drawer_bookmark_editors:
+                            transitionToFragment(FRAGMENT_PHOTOS);
+                            getSupportActionBar().setTitle(R.string.drawer_bookmark_editors);
+                            ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
+                                    PhotoFetcher.FEATURE_EDITORS);
+                            break;
+                        case R.id.drawer_bookmark_upcoming:
+                            transitionToFragment(FRAGMENT_PHOTOS);
+                            getSupportActionBar().setTitle(R.string.drawer_bookmark_upcoming);
+                            ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
+                                    PhotoFetcher.FEATURE_UPCOMING);
+                            break;
+                        case R.id.drawer_bookmark_highest_rated:
+                            transitionToFragment(FRAGMENT_PHOTOS);
+                            getSupportActionBar().setTitle(R.string.drawer_bookmark_highest_rated);
+                            ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
+                                    PhotoFetcher.FEATURE_HIGHEST_RATED);
+                            break;
+                        case R.id.drawer_bookmark_fresh_today:
+                            transitionToFragment(FRAGMENT_PHOTOS);
+                            getSupportActionBar().setTitle(R.string.drawer_bookmark_fresh_today);
+                            ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
+                                    PhotoFetcher.FEATURE_FRESH_TODAY);
+                            break;
+                        case R.id.drawer_bookmark_fresh_week:
+                            transitionToFragment(FRAGMENT_PHOTOS);
+                            getSupportActionBar().setTitle(R.string.drawer_bookmark_fresh_week);
+                            ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
+                                    PhotoFetcher.FEATURE_FRESH_WEEK);
+                            break;
+                        case R.id.drawer_bookmark_fresh_yesterday:
+                            transitionToFragment(FRAGMENT_PHOTOS);
+                            getSupportActionBar().setTitle(R.string.drawer_bookmark_fresh_yesterday);
+                            ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
+                                    PhotoFetcher.FEATURE_FRESH_YESTERDAY);
+                            break;
                     }
                     return true;
                 }
@@ -194,6 +231,14 @@ public class ClarityActivity extends AppCompatActivity
                 menu.findItem(R.id.menu_action_sortby_times_viewed).setVisible(false);
                 menu.findItem(R.id.menu_action_sortby_votes).setVisible(false);
                 menu.findItem(R.id.menu_action_sortby_rating).setVisible(false);
+            } else {
+                menu.findItem(R.id.menu_action_refresh).setVisible(true);
+                menu.findItem(R.id.menu_action_search).setVisible(true);
+                menu.findItem(R.id.menu_action_sortby_comments).setVisible(true);
+                menu.findItem(R.id.menu_action_sortby_new).setVisible(true);
+                menu.findItem(R.id.menu_action_sortby_times_viewed).setVisible(true);
+                menu.findItem(R.id.menu_action_sortby_votes).setVisible(true);
+                menu.findItem(R.id.menu_action_sortby_rating).setVisible(true);
             }
         }
 
@@ -252,7 +297,6 @@ public class ClarityActivity extends AppCompatActivity
         } else {
             return currFragment;
         }
-
     }
 
     @Override

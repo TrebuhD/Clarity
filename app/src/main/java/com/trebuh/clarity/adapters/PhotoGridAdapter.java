@@ -36,11 +36,11 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
     public void onBindViewHolder(PhotoGridItemHolder viewHolder, int position) {
         Photo photo = photoList.get(position);
 
-        String titleText = photo.getName();
-        String username = photo.getUsername();
+        String authorName = photo.getUsername();
         String photoUrl = photo.getUrl();
+        String photoTitleText = photo.getName();
 
-        viewHolder.setPhotoTitle(username);
+        viewHolder.setUsernameText(authorName);
         viewHolder.setPhotoImage(photoUrl);
         viewHolder.setListener(itemOnClickListener);
     }
@@ -94,7 +94,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
             itemView.setOnClickListener(this);
         }
 
-        void setPhotoTitle(CharSequence text) {
+        void setUsernameText(CharSequence text) {
             titleTextView.setText(text);
         }
 
