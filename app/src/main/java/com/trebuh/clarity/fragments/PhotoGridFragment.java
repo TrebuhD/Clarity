@@ -30,6 +30,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "PhotoGridFragment";
     private static final int GRID_SPAN_COUNT = 2;
+    private static final int MINIMUM_ITEM_COUNT = 2;
 
     private static final String ARG_FEATURE = "feature";
     private static final String ARG_SORT_BY = "sort_by";
@@ -126,8 +127,11 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         gridRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                Log.e(TAG, "onLoadMore");
-                adapter.addItemRange(loadNewPhotos(page, paramFeature, paramSortBy));
+                if (totalItemsCount > MINIMUM_ITEM_COUNT) {
+                    Log.d(TAG, "loading more items");
+                    // (page + 1) - don't download the first page twice
+                    adapter.addItemRange(loadNewPhotos(page + 1, paramFeature, paramSortBy));
+                }
             }
         });
 

@@ -32,6 +32,7 @@ public class ClarityActivity extends AppCompatActivity
 
     private static final int FRAGMENT_DOWNLOADS = 0;
     private static final int FRAGMENT_PHOTOS = 1;
+    private static final int FRAGMENT_PHOTO_DETAILS = 1;
 
     // Container for fragments
     private ClarityPagerAdapter adapter;
@@ -208,6 +209,7 @@ public class ClarityActivity extends AppCompatActivity
             case R.id.menu_action_refresh:
                 Log.d(TAG, "Current fragment number: " + viewPager.getCurrentItem());
                 if (viewPager.getCurrentItem() == FRAGMENT_PHOTOS) {
+                    Log.d(TAG, "in fragment PHOTOS");
                     ((PhotoGridFragment) getCurrentFragment()).onRefresh();
                 }
                 break;
