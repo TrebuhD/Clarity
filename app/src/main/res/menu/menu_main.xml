@@ -45,7 +45,7 @@
             />
 
         <item
-            android:id="@+id/menu_action_sortby_created_at"
+            android:id="@+id/menu_action_sortby_date"
             android:title="@string/sort_by_created_at"
             app:showAsAction="never"
             />

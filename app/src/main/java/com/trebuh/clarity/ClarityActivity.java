@@ -187,13 +187,11 @@ public class ClarityActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        PhotoGridFragment gridFragment;
         switch (item.getItemId()) {
             case R.id.menu_action_refresh:
                 Log.d(TAG, "Current fragment number: " + viewPager.getCurrentItem());
                 if (viewPager.getCurrentItem() == FRAGMENT_PHOTOS) {
-                    gridFragment = (PhotoGridFragment)getCurrentFragment();
-                    gridFragment.onRefresh();
+                    ((PhotoGridFragment) getCurrentFragment()).onRefresh();
                 }
                 break;
             case R.id.menu_action_search:
@@ -202,32 +200,37 @@ public class ClarityActivity extends AppCompatActivity
 //                searchManager.startSearch();
                 break;
             case R.id.menu_action_sortby_comments:
-                gridFragment = (PhotoGridFragment)getCurrentFragment();
-                gridFragment.sortAndReplaceItems(PhotoFetcher.SORT_METHOD_COMMENTS_COUNT);
+                ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
+                        PhotoFetcher.SORT_METHOD_COMMENTS_COUNT);
                 break;
             case R.id.menu_action_sortby_rating:
-                gridFragment = (PhotoGridFragment)getCurrentFragment();
-                gridFragment.sortAndReplaceItems(PhotoFetcher.SORT_METHOD_RATING);
+                ((PhotoGridFragment)  getCurrentFragment()).sortAndReplaceItems(
+                        PhotoFetcher.SORT_METHOD_RATING);
                 break;
             case R.id.menu_action_sortby_times_viewed:
-                gridFragment = (PhotoGridFragment)getCurrentFragment();
-                gridFragment.sortAndReplaceItems(PhotoFetcher.SORT_METHOD_TIMES_VIEWED);
+                ((PhotoGridFragment)  getCurrentFragment()).sortAndReplaceItems(
+                        PhotoFetcher.SORT_METHOD_TIMES_VIEWED);
                 break;
             case R.id.menu_action_sortby_votes:
-                gridFragment = (PhotoGridFragment)getCurrentFragment();
-                gridFragment.sortAndReplaceItems(PhotoFetcher.SORT_METHOD_VOTES_COUNT);
+                ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
+                        PhotoFetcher.SORT_METHOD_VOTES_COUNT);
                 break;
-
+            case R.id.menu_action_sortby_date:
+                ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
+                        PhotoFetcher.SORT_METHOD_CREATED_AT);
         }
         return true;
     }
 
     private Fragment getCurrentFragment() {
-        if (adapter != null) {
-            int currItem = viewPager.getCurrentItem();
-            return adapter.getItem(currItem);
+        int currItem = viewPager.getCurrentItem();
+        Fragment currFragment = adapter.getItem(currItem);
+        if (currFragment instanceof PhotoGridFragment) {
+            return currFragment;
+        } else {
+            return currFragment;
         }
-        return null;
+
     }
 
     @Override
