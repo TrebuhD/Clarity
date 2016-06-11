@@ -15,6 +15,15 @@
         android:layout_alignParentTop="true"
         >
 
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/network_error_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:layout_gravity="center"
+            android:text="@string/error_button"
+            />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rec_view_photos"
             android:layout_width="match_parent"
