@@ -45,6 +45,7 @@ public class ClarityActivity extends AppCompatActivity
     private Toolbar toolbar;
 
     private SearchView searchView;
+    private MenuItem searchMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,7 +198,11 @@ public class ClarityActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO fill in fab onClick
+                searchView.setQuery("test", false);
+                searchView.setIconified(false);
+                searchView.requestFocus();
+                MenuItemCompat.expandActionView(searchMenuItem);
+                searchMenuItem.expandActionView();
             }
         });
         fab.hide();
@@ -222,6 +227,7 @@ public class ClarityActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
+        // handle hiding menu items on viewPager fragment change
         if (viewPager != null) {
             if (viewPager.getCurrentItem() == FRAGMENT_DOWNLOADS) {
                 menu.findItem(R.id.menu_action_refresh).setVisible(false);
@@ -242,10 +248,25 @@ public class ClarityActivity extends AppCompatActivity
             }
         }
 
-        searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.menu_action_search));
-        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        return true;
+        searchMenuItem = menu.findItem(R.id.menu_action_search);
+        searchView = (SearchView) searchMenuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Toast.makeText(getApplicationContext(), "Query: " + query, Toast.LENGTH_SHORT).show();
+                if (!searchView.isIconified()) {
+                    searchView.setIconified(true);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

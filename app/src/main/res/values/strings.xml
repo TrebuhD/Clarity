@@ -27,4 +27,5 @@
     <string name="drawer_bookmark_fresh_today">Fresh today</string>
     <string name="drawer_bookmark_fresh_yesterday">Fresh yesterday</string>
     <string name="drawer_bookmark_fresh_week">Fresh this week</string>
+    <string name="search_hind">Find photos</string>
 </resources>
