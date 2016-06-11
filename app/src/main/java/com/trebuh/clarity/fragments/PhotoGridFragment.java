@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +21,7 @@ import com.trebuh.clarity.R;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
 import com.trebuh.clarity.models.Photo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -44,6 +46,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private RecyclerView gridRecyclerView;
 
     private ArrayList<Photo> photos;
+    private AppCompatButton refreshButton;
 
     public PhotoGridFragment() {
         // Required empty public constructor
@@ -89,6 +92,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initSwipeContainer(view);
         initRecView(view);
+        initRefreshButton(view);
 
         super.onViewCreated(view, savedInstanceState);
     }
@@ -105,6 +109,15 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             adapter.removeAllItems();
             adapter.addItemRange(loadNewPhotos(0, paramFeature, paramSortBy));
         }
+    }
+
+    private void initSwipeContainer(View view) {
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.photoGridSwipeContainer);
+        swipeContainer.setOnRefreshListener(this);
+        swipeContainer.setColorSchemeResources(android.R.color.holo_green_dark,
+                android.R.color.holo_red_dark,
+                android.R.color.holo_blue_dark,
+                android.R.color.holo_orange_dark);
     }
 
     private void initRecView(View view) {
@@ -139,6 +152,16 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
 
+    private void initRefreshButton(View view) {
+        refreshButton = (AppCompatButton) view.findViewById(R.id.network_error_button);
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                photos = loadNewPhotos(0, paramFeature, paramSortBy);
+            }
+        });
+    }
+
     private ArrayList<Photo> loadNewPhotos(int page, String paramFeature, String paramSortBy) {
         ArrayList<Photo> photos = new ArrayList<>();
         try {
@@ -151,15 +174,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             Log.e(TAG, "Failed to fetch new photos", e);
         }
         return photos;
-    }
-
-    private void initSwipeContainer(View view) {
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.photoGridSwipeContainer);
-        swipeContainer.setOnRefreshListener(this);
-        swipeContainer.setColorSchemeResources(android.R.color.holo_green_dark,
-                android.R.color.holo_red_dark,
-                android.R.color.holo_blue_dark,
-                android.R.color.holo_orange_dark);
     }
 
     public void sortAndReplaceItems(String sortBy) {
@@ -188,16 +202,25 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
         @Override
         protected ArrayList<Photo> doInBackground(FetchPhotosTaskParams... params) {
-            String photosJsonResponse;
+            String photosJsonResponse = null;
+            try {
                 photosJsonResponse = PhotoFetcher.fetchPhotosJSON(
                         params[0].page,
                         params[0].feature,
                         params[0].sortBy);
-                return PhotoFetcher.parsePhotoItems(photosJsonResponse);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return PhotoFetcher.parsePhotoItems(photosJsonResponse);
         }
 
         @Override
         protected void onPostExecute(ArrayList<Photo> photos) {
+            if (photos == null) {
+                refreshButton.setVisibility(View.VISIBLE);
+            } else {
+                refreshButton.setVisibility(View.INVISIBLE);
+            }
             swipeContainer.setRefreshing(false);
             super.onPostExecute(photos);
         }

@@ -123,24 +123,20 @@ public class PhotoFetcher {
         return new String(getUrlBytes(urlSpec));
     }
 
-    public static String fetchPhotosJSON(int page, String feature, String sortMethod) {
+    public static String fetchPhotosJSON(int page, String feature, String sortMethod) throws IOException {
         String jsonString = "";
 
-        try {
-            String url = Uri.parse(ENDPOINT).buildUpon()
-                    .appendPath(ENDPOINT_PHOTOS)
-                    .appendQueryParameter(PARAM_CONSUMER_KEY, CONSUMER_KEY)
-                    .appendQueryParameter(PARAM_FEATURE, feature)
-                    .appendQueryParameter(PARAM_SORT_METHOD, sortMethod)
-                    .appendQueryParameter(PARAM_IMAGE_SIZE, DEFAULT_IMAGE_SIZE)
-                    .appendQueryParameter(EXTRA_PAGE, String.valueOf(page))
-                    .appendQueryParameter(EXTRA_RESULTS_PER_PAGE, String.valueOf(DEFAULT_RESULTS_PER_PAGE))
-                    .build().toString();
-            jsonString = getUrl(url);
-            Log.e(TAG, "request url: " + url);
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to fetch photos from server", e);
-        }
+        String url = Uri.parse(ENDPOINT).buildUpon()
+                .appendPath(ENDPOINT_PHOTOS)
+                .appendQueryParameter(PARAM_CONSUMER_KEY, CONSUMER_KEY)
+                .appendQueryParameter(PARAM_FEATURE, feature)
+                .appendQueryParameter(PARAM_SORT_METHOD, sortMethod)
+                .appendQueryParameter(PARAM_IMAGE_SIZE, DEFAULT_IMAGE_SIZE)
+                .appendQueryParameter(EXTRA_PAGE, String.valueOf(page))
+                .appendQueryParameter(EXTRA_RESULTS_PER_PAGE, String.valueOf(DEFAULT_RESULTS_PER_PAGE))
+                .build().toString();
+        jsonString = getUrl(url);
+        Log.e(TAG, "request url: " + url);
         return jsonString;
     }
 
