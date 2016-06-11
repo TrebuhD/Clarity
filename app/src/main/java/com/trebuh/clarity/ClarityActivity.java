@@ -128,6 +128,10 @@ public class ClarityActivity extends AppCompatActivity
         adapter.addItem(PhotoGridFragment.newInstance(feature, sortMethod), gridTitle);
     }
 
+    private void addDetailsFragment(String photoId) {
+
+    }
+
     private void initDrawer() {
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator);
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_drawer);
