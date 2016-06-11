@@ -23,11 +23,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.trebuh.clarity.adapters.ClarityPagerAdapter;
+import com.trebuh.clarity.fragments.DetailsFragment;
 import com.trebuh.clarity.fragments.DownloadsFragment;
 import com.trebuh.clarity.fragments.PhotoGridFragment;
 
 public class ClarityActivity extends AppCompatActivity
-        implements DownloadsFragment.OnFragmentInteractionListener, PhotoGridFragment.PhotoGridFragmentListener {
+        implements DownloadsFragment.OnFragmentInteractionListener,
+        PhotoGridFragment.PhotoGridFragmentListener, DetailsFragment.OnFragmentInteractionListener {
     private static final String TAG = "ClarityActivity";
 
     private static final int FRAGMENT_DOWNLOADS = 0;
@@ -128,8 +130,9 @@ public class ClarityActivity extends AppCompatActivity
         adapter.addItem(PhotoGridFragment.newInstance(feature, sortMethod), gridTitle);
     }
 
-    private void addDetailsFragment(String photoId) {
-
+    private void addDetailsFragment(String photoId, String photoUrl, String title) {
+        adapter.addItem(DetailsFragment.newInstance(photoId, photoUrl), title);
+        adapter.notifyDataSetChanged();
     }
 
     private void initDrawer() {
@@ -218,8 +221,9 @@ public class ClarityActivity extends AppCompatActivity
     }
 
     @Override
-    public void onPhotoGridItemPressed(String url) {
-        Toast.makeText(this, url, Toast.LENGTH_SHORT).show();
+    public void onPhotoGridItemClick(String url) {
+        addDetailsFragment("1", url, "Photo details");
+        transitionToFragment(FRAGMENT_PHOTO_DETAILS);
     }
 
     @Override

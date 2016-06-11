@@ -1,8 +1,10 @@
 package com.trebuh.clarity.fragments;
 
+import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -14,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
+import android.widget.Toast;
 
 import com.trebuh.clarity.EndlessRecyclerViewScrollListener;
 import com.trebuh.clarity.PhotoFetcher;
@@ -127,7 +130,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         adapter.setItemOnClickListener(new PhotoGridAdapter.PhotoGridItemOnClickListener() {
             @Override
             public void onPhotoGridItemClick(View caller, CharSequence text) {
-                listener.onPhotoGridItemPressed((String) text);
+                listener.onPhotoGridItemClick((String) text);
             }
         });
         gridRecyclerView.setAdapter(adapter);
@@ -188,7 +191,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     public interface PhotoGridFragmentListener {
-        void onPhotoGridItemPressed(String url);
+        void onPhotoGridItemClick(String url);
         void onAppBarShow();
     }
 
@@ -208,7 +211,9 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                         params[0].page,
                         params[0].feature,
                         params[0].sortBy);
-            } catch (IOException e) {
+            } catch (IOException | NetworkErrorException e) {
+                Looper.prepare();
+                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
             return PhotoFetcher.parsePhotoItems(photosJsonResponse);

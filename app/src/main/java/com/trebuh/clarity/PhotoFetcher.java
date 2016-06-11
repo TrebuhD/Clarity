@@ -1,5 +1,6 @@
 package com.trebuh.clarity;
 
+import android.accounts.NetworkErrorException;
 import android.net.Uri;
 import android.util.Log;
 
@@ -95,7 +96,7 @@ public class PhotoFetcher {
     static final String SORT_METHOD_FAVORITES_COUNT = "favorites_count";
     static final String SORT_METHOD_COMMENTS_COUNT = "comments_count";
 
-    private static byte[] getUrlBytes(String urlSpec) throws IOException {
+    private static byte[] getUrlBytes(String urlSpec) throws IOException, NetworkErrorException {
         URL url = new URL(urlSpec);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -104,7 +105,7 @@ public class PhotoFetcher {
             InputStream in = connection.getInputStream();
 
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                return null;
+                throw new NetworkErrorException("Network error");
             }
 
             int bytesRead;
@@ -119,11 +120,11 @@ public class PhotoFetcher {
         }
     }
 
-    private static String getUrl(String urlSpec) throws IOException {
+    private static String getUrl(String urlSpec) throws IOException, NetworkErrorException {
         return new String(getUrlBytes(urlSpec));
     }
 
-    public static String fetchPhotosJSON(int page, String feature, String sortMethod) throws IOException {
+    public static String fetchPhotosJSON(int page, String feature, String sortMethod) throws IOException, NetworkErrorException {
         String jsonString = "";
 
         String url = Uri.parse(ENDPOINT).buildUpon()
@@ -177,7 +178,7 @@ public class PhotoFetcher {
                 photos.add(photo);
             }
 
-        } catch (JSONException e) {
+        } catch (JSONException | NullPointerException e) {
             e.printStackTrace();
         }
         return photos;
