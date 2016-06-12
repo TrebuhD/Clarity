@@ -5,4 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorDrawer">#ECEFF1</color>
     <color name="colorPrimaryDarker">#1d265f</color>
+    <color name="profile_pic_tint">#2f505050</color>
+    <color name="header_photo_tint">#4f808080</color>
 </resources>

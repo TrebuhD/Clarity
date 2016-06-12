@@ -1,18 +1,30 @@
 package com.trebuh.clarity.fragments;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 import com.trebuh.clarity.R;
-import com.trebuh.clarity.adapters.PhotoGridAdapter;
+import com.trebuh.clarity.adapters.TransitionListenerAdapter;
+import com.trebuh.clarity.models.Photo;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,35 +35,48 @@ import com.trebuh.clarity.adapters.PhotoGridAdapter;
  * create an instance of this fragment.
  */
 public class DetailsFragment extends Fragment {
+    public static final String TAG = DetailsFragment.class.getSimpleName();
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String PHOTO_ID = "param1";
-    private static final String PHOTO_URL = "param2";
+    private static final String ARG_IMAGE_POSITION = "arg_photo_image_position";
+    private static final String ARG_STARTING_IMAGE_POSITION = "arg_starting_photo_image_position";
+    private static final String ARG_PHOTOS_ARRAY_LIST = "arg_photos_array_list";
 
-    // TODO: Rename and change types of parameters
+    private final Callback photoCallback = new Callback() {
+        @Override
+        public void onSuccess() {
+            startPostponedEnterTransition();
+        }
+
+        @Override
+        public void onError() {
+            startPostponedEnterTransition();
+        }
+    };
+
+    private ArrayList<Photo> photos;
+
     private String photoId;
     private String photoUrl;
+    private ImageView mainPicture;
 
-    private ImageView photoImageView;
+    private int startingPosition;
 
+    private int photoPosition;
+    private boolean isTransitioning;
+    private long backgroundImageFadeMillis;
     private OnFragmentInteractionListener mListener;
 
     public DetailsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param photoId Parameter 1.
-     * @return A new instance of fragment DetailsFragment.
-     */
-    public static DetailsFragment newInstance(String photoId, String photoUrl) {
-        DetailsFragment fragment = new DetailsFragment();
+    public static DetailsFragment newInstance(int position, int startingPosition) {
         Bundle args = new Bundle();
-        args.putString(PHOTO_ID, photoId);
-        args.putString(PHOTO_URL, photoUrl);
+        args.putInt(ARG_IMAGE_POSITION, position);
+        args.putInt(ARG_STARTING_IMAGE_POSITION, startingPosition);
+        DetailsFragment fragment = new DetailsFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,32 +85,85 @@ public class DetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            photoId = getArguments().getString(PHOTO_ID);
-            photoUrl = getArguments().getString(PHOTO_URL);
+            photos = getArguments().getParcelableArrayList(ARG_PHOTOS_ARRAY_LIST);
+            startingPosition = getArguments().getInt(ARG_STARTING_IMAGE_POSITION);
+            photoPosition = getArguments().getInt(ARG_IMAGE_POSITION);
+
+            isTransitioning = (savedInstanceState == null && startingPosition == photoPosition);
+            backgroundImageFadeMillis = 1000;
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_details, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_details, container, false);
+
+        mainPicture = (ImageView) rootView.findViewById(R.id.details_photo_iv);
+        final ImageView profilePicture = (ImageView) rootView.findViewById(R.id.details_profile_pic_iv);
+
+        View textContainer = rootView.findViewById(R.id.details_body_container);
+        TextView photoTitleText = (TextView) textContainer.findViewById(R.id.details_photo_title_tv);
+        TextView photoDescriptionText = (TextView) textContainer.findViewById(R.id.details_photo_description_tv);
+
+        String photoUrl = photos.get(photoPosition).getUrl();
+        String profilePicUrl = photos.get(photoPosition).getAvatarUrl();
+        String photoName = photos.get(photoPosition).getName();
+        String photoDescription = photos.get(photoPosition).getDescription();
+
+        photoTitleText.setText(photoName);
+        photoDescriptionText.setText(photoDescription);
+        mainPicture.setTransitionName(photoName);
+
+        RequestCreator photoRequest = Picasso.with(getActivity()).load(photoUrl).fit().centerCrop();
+        RequestCreator profilePicRequest = Picasso.with(getActivity()).load(profilePicUrl);
+
+        if (isTransitioning) {
+            photoRequest.noFade();
+            profilePicRequest.noFade();
+            mainPicture.setAlpha(0f);
+            getActivity().getWindow().getSharedElementEnterTransition().addListener(new TransitionListenerAdapter() {
+                @Override
+                public void onTransitionEnd(Transition transition) {
+                    mainPicture.animate().setDuration(backgroundImageFadeMillis).alpha(1f);
+                }
+            });
+        }
+
+        photoRequest.into(mainPicture, photoCallback);
+        profilePicRequest.into(profilePicture);
+
+        return rootView;
+    }
+
+    private void startPostponedEnterTransition() {
+        if (photoPosition == startingPosition) {
+            mainPicture.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+                @Override
+                public boolean onPreDraw() {
+                    mainPicture.getViewTreeObserver().removeOnPreDrawListener(this);
+                    getActivity().startPostponedEnterTransition();
+                    return true;
+                }
+            });
+        }
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        photoImageView = (ImageView) view.findViewById(R.id.details_image_view);
+        mainPicture = (ImageView) view.findViewById(R.id.details_photo_iv);
 
         Picasso
                 .with(view.getContext())
                 .load(photoUrl)
                 .placeholder(R.drawable.image_placeholder)
-                .into(photoImageView);
+                .into(mainPicture);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -109,16 +187,22 @@ public class DetailsFragment extends Fragment {
         mListener = null;
     }
 
+    public ImageView getMainPhoto() {
+        if (isViewInBounds(getActivity().getWindow().getDecorView(), mainPicture)) {
+            return mainPicture;
+        }
+        return null;
+    }
+
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * returns true if {@param view} is contained within {@param container}'s bounds
      */
+    private static boolean isViewInBounds(@NonNull View container, @NonNull View view) {
+        Rect containerBounds = new Rect();
+        container.getHitRect(containerBounds);
+        return view.getLocalVisibleRect(containerBounds);
+    }
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

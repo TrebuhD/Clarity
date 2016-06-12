@@ -15,6 +15,7 @@
             android:background="#000"
             android:layout_height="300dp"
             android:layout_width="match_parent"
+            android:transitionGroup="true"
             >
 
             <ImageView
@@ -44,14 +45,15 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >
-
+            android:transitionGroup="true">
+            
             <TextView
                 android:id="@+id/details_photo_title_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="18dp"
                 android:fontFamily="sans-serif-light"
+                android:textAppearance="@android:style/TextAppearance.Material.Title"
                 android:textSize="40sp"/>
 
             <TextView
@@ -63,6 +65,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:lineSpacingMultiplier="1.2"
+                android:textAppearance="@android:style/TextAppearance.Material.Medium"
                 android:textSize="20sp"
                 />
 

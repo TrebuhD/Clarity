@@ -34,6 +34,8 @@ public class Photo implements Parcelable {
     private Boolean isNsfw;
     private int timesViewed;
     private float rating;
+    private String avatarUrl;
+
 
     private Photo(PhotoBuilder builder) {
         this.id = builder.id;
@@ -83,6 +85,10 @@ public class Photo implements Parcelable {
         return username;
     }
 
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -116,9 +122,15 @@ public class Photo implements Parcelable {
         name = in.readString();
         url = in.readString();
         description = in.readString();
+        avatarUrl = in.readString();
         width = in.readInt();
         height = in.readInt();
         favCount = in.readInt();
+        isNsfw = in.readByte() != 0;
+        rating = in.readFloat();
+        timesViewed = in.readInt();
+        voteCount = in.readInt();
+        commentCount = in.readInt();
     }
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {
@@ -144,9 +156,15 @@ public class Photo implements Parcelable {
         dest.writeString(name);
         dest.writeString(url);
         dest.writeString(description);
+        dest.writeString(avatarUrl);
         dest.writeInt(width);
         dest.writeInt(height);
         dest.writeInt(favCount);
+        dest.writeByte((byte) (isNsfw ? 1 : 0));
+        dest.writeFloat(rating);
+        dest.writeInt(timesViewed);
+        dest.writeInt(voteCount);
+        dest.writeInt(commentCount);
     }
 
     public static class PhotoBuilder {
@@ -167,6 +185,7 @@ public class Photo implements Parcelable {
         private Boolean isNsfw = false;
         private int timesViewed = 0;
         private float rating = 0.0f;
+        private String avatarUrl;
 
         public PhotoBuilder(int id, int userId, String url, int width, int height) {
             this.id = id;
@@ -218,6 +237,11 @@ public class Photo implements Parcelable {
 
         public PhotoBuilder username(String username) {
             this.username = username;
+            return this;
+        }
+
+        public PhotoBuilder avatar(String avatarUrl) {
+            this.avatarUrl = avatarUrl;
             return this;
         }
 

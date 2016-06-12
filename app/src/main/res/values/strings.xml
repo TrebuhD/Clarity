@@ -29,4 +29,6 @@
     <string name="drawer_bookmark_fresh_week">Fresh this week</string>
     <string name="search_hind">Find photos</string>
     <string name="error_button">Network error. Refresh?</string>
+    <string name="title_activity_details">DetailsActivity</string>
+    <string name="action_settings">Settings</string>
 </resources>

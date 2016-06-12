@@ -2,7 +2,6 @@ package com.trebuh.clarity;
 
 import android.app.SearchManager;
 import android.net.Uri;
-import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -17,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.transition.Fade;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +25,6 @@ import android.widget.Toast;
 import com.trebuh.clarity.adapters.ClarityPagerAdapter;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
 import com.trebuh.clarity.fragments.DetailsFragment;
-import com.trebuh.clarity.fragments.DetailsTransition;
 import com.trebuh.clarity.fragments.DownloadsFragment;
 import com.trebuh.clarity.fragments.PhotoGridFragment;
 
@@ -39,6 +36,10 @@ public class ClarityActivity extends AppCompatActivity
     private static final int FRAGMENT_DOWNLOADS = 0;
     private static final int FRAGMENT_PHOTOS = 1;
     private static final int FRAGMENT_PHOTO_DETAILS = 1;
+
+    static final String EXTRA_STARTING_ALBUM_POSITION = "extra_starting_album_position";
+    static final String EXTRA_CURRENT_ALBUM_POSITION = "extra_current_album_position";
+    static final String EXTRA_PHOTOS_ARRAY_LIST = "extra_photos_array_list";
 
     // Container for fragments
     private ClarityPagerAdapter adapter;
@@ -134,8 +135,8 @@ public class ClarityActivity extends AppCompatActivity
         adapter.addItem(PhotoGridFragment.newInstance(feature, sortMethod), gridTitle);
     }
 
-    private void addDetailsFragment(String photoId, String photoUrl, String title) {
-        adapter.addItem(DetailsFragment.newInstance(photoId, photoUrl), title);
+    private void addAuthorPhotosFragment(String photoId, String photoUrl, String title) {
+        // TODO create and append author photos fragment
         adapter.notifyDataSetChanged();
     }
 
@@ -156,7 +157,7 @@ public class ClarityActivity extends AppCompatActivity
                             transitionToFragment(FRAGMENT_DOWNLOADS);
                             break;
                         case R.id.navigation_item_settings:
-                            // TODO add settings
+                            // TODO add settings activity
                             Snackbar.make(coordinatorLayout, "Settings button clicked",
                                     Snackbar.LENGTH_LONG)
                                     .show();
@@ -227,23 +228,25 @@ public class ClarityActivity extends AppCompatActivity
 
     @Override
     public void onPhotoGridItemClick(PhotoGridAdapter.PhotoGridItemHolder caller, String url) {
-        DetailsFragment photoDetailsFragment = DetailsFragment.newInstance("1", url);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            photoDetailsFragment.setSharedElementEnterTransition(new DetailsTransition());
-            photoDetailsFragment.setEnterTransition(new Fade());
-            photoDetailsFragment.setExitTransition(new Fade());
-            photoDetailsFragment.setSharedElementReturnTransition(new DetailsTransition());
-        }
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .addSharedElement(caller.photoImageView, "photo")
-                .replace(R.id.rec_view_container, photoDetailsFragment)
-                .addToBackStack(null)
-                .commit();
-
-//        addDetailsFragment("1", url, "Photo details");
+        // TODO handle on photo grid item click
+//        DetailsFragment photoDetailsFragment = DetailsFragment.newInstance("1", url);
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            photoDetailsFragment.setSharedElementEnterTransition(new DetailsTransition());
+//            photoDetailsFragment.setEnterTransition(new Fade());
+//            photoDetailsFragment.setExitTransition(new Fade());
+//            photoDetailsFragment.setSharedElementReturnTransition(new DetailsTransition());
+//        }
+//
+//        addAuthorPhotosFragment("1", url, "Photo details");
+//
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .addSharedElement(caller.photoImageView, "photo")
+//                .replace(R.id.details_container, photoDetailsFragment)
+//                .addToBackStack(null)
+//                .commit();
+//
 //        transitionToFragment(FRAGMENT_PHOTO_DETAILS);
     }
 

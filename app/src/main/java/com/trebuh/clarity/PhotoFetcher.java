@@ -74,6 +74,9 @@ public class PhotoFetcher {
     private static final String KEY_USER_COUNTRY = "lastname";
     private static final String KEY_USER_PIC_URL = "userpic_https_url";
     private static final String KEY_USER_FOLLOWER_COUNT = "followers_count";
+    private static final String KEY_USER_AVATARS = "avatars";
+    private static final String KEY_AVATAR_DEFAULT = "default";
+    private static final String KEY_HTTPS = "https";
 
     static final String FEATURE_DEFAULT = "";
     static final String FEATURE_POPULAR = "popular";
@@ -168,10 +171,16 @@ public class PhotoFetcher {
                 int userId = jsonUserObject.optInt(KEY_USER_ID);
                 String username = jsonUserObject.optString(KEY_USER_USERNAME);
 
+                JSONObject jsonUserAvatarObject = jsonUserObject.getJSONObject(KEY_USER_AVATARS);
+                String avatarDefaultSize = jsonUserAvatarObject.
+                        getJSONObject(KEY_AVATAR_DEFAULT)
+                        .optString(KEY_HTTPS);
+
                 Photo photo = new Photo.PhotoBuilder(id, userId, photo_url, width, height)
                         .name(name)
                         .description(description)
                         .username(username)
+                        .avatar(avatarDefaultSize)
                         .nsfw(isNsfw)
                         .build();
 
