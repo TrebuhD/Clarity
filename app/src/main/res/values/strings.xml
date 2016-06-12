@@ -17,7 +17,7 @@
     <string name="action_refresh">refresh</string>
     <string name="action_search">search</string>
     <string name="image">image</string>
-    <string name="sort_by_created_at">New</string>
+    <string name="sort_by_created_at">Fresh</string>
     <string name="sort_by_rating">Top rated</string>
     <string name="sort_by_views">Most viewed</string>
     <string name="sort_by_votes">Most votes</string>

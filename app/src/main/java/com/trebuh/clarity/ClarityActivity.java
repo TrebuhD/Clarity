@@ -66,6 +66,8 @@ public class ClarityActivity extends AppCompatActivity
 
     private Fragment currentPhotoGridFragment;
 
+    private String currentSortMethod;
+
     // Shared element transition stuff
     private RecyclerView recyclerView;
     private Bundle tmpReenterState;
@@ -146,12 +148,14 @@ public class ClarityActivity extends AppCompatActivity
                 }
                 onAppBarShow();
 
-                // hide fab in gallery view
+                // hide fab and subtitle in gallery view
                 if (fab != null) {
-                    if (position == FRAGMENT_PHOTOS) {
-                        fab.hide();
-                    } else {
+                    if (position == FRAGMENT_DOWNLOADS) {
                         fab.show();
+                        clearToolbarSubtitle();
+                    } else {
+                        fab.hide();
+                        setToolbarSubtitle(currentSortMethod);
                     }
                 }
             }
@@ -376,6 +380,19 @@ public class ClarityActivity extends AppCompatActivity
         return super.onCreateOptionsMenu(menu);
     }
 
+    private void clearToolbarSubtitle() {
+        if (toolbar != null) {
+            toolbar.setSubtitle("");
+        }
+    }
+
+    private void setToolbarSubtitle(String subtitle) {
+        currentSortMethod = subtitle;
+        if (toolbar != null) {
+            toolbar.setSubtitle(subtitle);
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -392,25 +409,32 @@ public class ClarityActivity extends AppCompatActivity
 //                searchManager.startSearch();
                 break;
             case R.id.menu_action_sortby_comments:
+                setToolbarSubtitle("Most comments");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
                         PhotoFetcher.SORT_METHOD_COMMENTS_COUNT);
                 break;
             case R.id.menu_action_sortby_rating:
+                setToolbarSubtitle("Top rated");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
                         PhotoFetcher.SORT_METHOD_RATING);
                 break;
             case R.id.menu_action_sortby_times_viewed:
+                setToolbarSubtitle("Most viewed");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
                         PhotoFetcher.SORT_METHOD_TIMES_VIEWED);
                 break;
             case R.id.menu_action_sortby_votes:
+                setToolbarSubtitle("Most votes");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
                         PhotoFetcher.SORT_METHOD_VOTES_COUNT);
                 break;
             case R.id.menu_action_sortby_new:
+                setToolbarSubtitle("Fresh");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
                         PhotoFetcher.SORT_METHOD_CREATED_AT);
+                break;
             case R.id.menu_action_sortby_favorites:
+                setToolbarSubtitle("Most favorited");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
                         PhotoFetcher.SORT_METHOD_FAVORITES_COUNT);
         }

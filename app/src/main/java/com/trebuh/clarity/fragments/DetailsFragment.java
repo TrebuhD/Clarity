@@ -122,17 +122,17 @@ public class DetailsFragment extends Fragment {
         RequestCreator photoRequest = Picasso.with(getActivity()).load(photoUrl).fit().centerCrop();
         RequestCreator profilePicRequest = Picasso.with(getActivity()).load(profilePicUrl);
 
-        if (isTransitioning) {
-            photoRequest.noFade();
-            profilePicRequest.noFade();
-            mainPicture.setAlpha(0f);
-            getActivity().getWindow().getSharedElementEnterTransition().addListener(new TransitionListenerAdapter() {
-                @Override
-                public void onTransitionEnd(Transition transition) {
-                    mainPicture.animate().setDuration(backgroundImageFadeMillis).alpha(1f);
-                }
-            });
-        }
+//        if (isTransitioning) {
+//            photoRequest.noFade();
+//            profilePicRequest.noFade();
+//            mainPicture.setAlpha(0f);
+//            getActivity().getWindow().getSharedElementEnterTransition().addListener(new TransitionListenerAdapter() {
+//                @Override
+//                public void onTransitionEnd(Transition transition) {
+//                    mainPicture.animate().setDuration(backgroundImageFadeMillis).alpha(1f);
+//                }
+//            });
+//        }
 
         photoRequest.into(mainPicture, photoCallback);
         profilePicRequest.into(profilePicture);
