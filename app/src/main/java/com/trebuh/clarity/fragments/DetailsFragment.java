@@ -72,10 +72,11 @@ public class DetailsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static DetailsFragment newInstance(int position, int startingPosition) {
+    public static DetailsFragment newInstance(int position, int startingPosition, ArrayList<Photo> photos) {
         Bundle args = new Bundle();
         args.putInt(ARG_IMAGE_POSITION, position);
         args.putInt(ARG_STARTING_IMAGE_POSITION, startingPosition);
+        args.putParcelableArrayList(ARG_PHOTOS_ARRAY_LIST, photos);
         DetailsFragment fragment = new DetailsFragment();
         fragment.setArguments(args);
         return fragment;
@@ -194,6 +195,7 @@ public class DetailsFragment extends Fragment {
         return null;
     }
 
+
     /**
      * returns true if {@param view} is contained within {@param container}'s bounds
      */
@@ -201,6 +203,10 @@ public class DetailsFragment extends Fragment {
         Rect containerBounds = new Rect();
         container.getHitRect(containerBounds);
         return view.getLocalVisibleRect(containerBounds);
+    }
+
+    public int getPhotoCount() {
+        return photos.size();
     }
 
     public interface OnFragmentInteractionListener {

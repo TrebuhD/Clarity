@@ -1,41 +1,51 @@
 package com.trebuh.clarity;
 
+import android.annotation.TargetApi;
 import android.app.SearchManager;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import com.trebuh.clarity.adapters.ClarityPagerAdapter;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
-import com.trebuh.clarity.fragments.DetailsFragment;
 import com.trebuh.clarity.fragments.DownloadsFragment;
 import com.trebuh.clarity.fragments.PhotoGridFragment;
+import com.trebuh.clarity.models.Photo;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ClarityActivity extends AppCompatActivity
         implements DownloadsFragment.OnFragmentInteractionListener,
-        PhotoGridFragment.PhotoGridFragmentListener, DetailsFragment.OnFragmentInteractionListener {
+        PhotoGridFragment.PhotoGridFragmentListener {
     private static final String TAG = "ClarityActivity";
 
     private static final int FRAGMENT_DOWNLOADS = 0;
     private static final int FRAGMENT_PHOTOS = 1;
-    private static final int FRAGMENT_PHOTO_DETAILS = 1;
+    private static final int FRAGMENT_AUTHOR_PHOTOS = 2;
 
     static final String EXTRA_STARTING_ALBUM_POSITION = "extra_starting_album_position";
     static final String EXTRA_CURRENT_ALBUM_POSITION = "extra_current_album_position";
@@ -54,21 +64,44 @@ public class ClarityActivity extends AppCompatActivity
     private SearchView searchView;
     private MenuItem searchMenuItem;
 
+    private Fragment currentPhotoGridFragment;
+
+    // Shared element transition stuff
+    private RecyclerView recyclerView;
+    private Bundle tmpReenterState;
+    private boolean isDetailsActivityStarted;
+
+    private ArrayList<Photo> photoList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clarity);
+        setExitSharedElementCallback(callback);
 
         initToolbar();
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         if (viewPager != null) {
-            initViewpager();
+            initViewPager();
         }
 
         initDrawer();
         initFab();
     }
+
+    @Override
+    protected void onStart() {
+        recyclerView = ((PhotoGridFragment) getCurrentFragment()).getPhotosContainer();
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isDetailsActivityStarted = false;
+    }
+
 
     private void initToolbar() {
         appBar = (AppBarLayout) findViewById(R.id.appbar);
@@ -85,7 +118,7 @@ public class ClarityActivity extends AppCompatActivity
         drawerToggle.syncState();
     }
 
-    private void initViewpager() {
+    private void initViewPager() {
         adapter = new ClarityPagerAdapter(getSupportFragmentManager());
 
         // order important
@@ -121,7 +154,6 @@ public class ClarityActivity extends AppCompatActivity
                         fab.show();
                     }
                 }
-
             }
 
             @Override
@@ -132,10 +164,11 @@ public class ClarityActivity extends AppCompatActivity
     }
 
     private void addPhotoGridFragment(String feature, String sortMethod, String gridTitle) {
-        adapter.addItem(PhotoGridFragment.newInstance(feature, sortMethod), gridTitle);
+        currentPhotoGridFragment = PhotoGridFragment.newInstance(feature, sortMethod);
+        adapter.addItem(currentPhotoGridFragment, gridTitle);
     }
 
-    private void addAuthorPhotosFragment(String photoId, String photoUrl, String title) {
+    private void addOrReplaceAuthorPhotosFragment(String authorId, String sortMethod, String title) {
         // TODO create and append author photos fragment
         adapter.notifyDataSetChanged();
     }
@@ -157,7 +190,7 @@ public class ClarityActivity extends AppCompatActivity
                             transitionToFragment(FRAGMENT_DOWNLOADS);
                             break;
                         case R.id.navigation_item_settings:
-                            // TODO add settings activity
+//                             TODO add settings activity
                             Snackbar.make(coordinatorLayout, "Settings button clicked",
                                     Snackbar.LENGTH_LONG)
                                     .show();
@@ -223,12 +256,53 @@ public class ClarityActivity extends AppCompatActivity
     private void transitionToFragment(int fragmentType) {
         appBar.setExpanded(true);
         viewPager.setCurrentItem(fragmentType);
+    }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public void onActivityReenter(int resultCode, Intent data) {
+        super.onActivityReenter(resultCode, data);
+        tmpReenterState = new Bundle(data.getExtras());
+
+        int startingPosition = tmpReenterState.getInt(EXTRA_STARTING_ALBUM_POSITION);
+        int currentPosition = tmpReenterState.getInt(EXTRA_CURRENT_ALBUM_POSITION);
+        photoList = tmpReenterState.getParcelableArrayList(EXTRA_PHOTOS_ARRAY_LIST);
+        if (startingPosition != currentPosition) {
+            recyclerView.scrollToPosition(currentPosition);
+        }
+        postponeEnterTransition();
+        recyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                // necessary to get a smooth transition
+                recyclerView.requestLayout();
+                startPostponedEnterTransition();
+                return true;
+            }
+        });
     }
 
     @Override
     public void onPhotoGridItemClick(PhotoGridAdapter.PhotoGridItemHolder caller, String url) {
-        // TODO handle on photo grid item click
+
+        Intent intent = new Intent(this, DetailsActivity.class);
+        intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, caller.getLayoutPosition());
+
+        ArrayList<Photo> photos = ((PhotoGridFragment)getCurrentFragment()).getPhotoList();
+        intent.putExtra(EXTRA_PHOTOS_ARRAY_LIST, photos);
+
+        if (!isDetailsActivityStarted) {
+            isDetailsActivityStarted = true;
+//            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+//                startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this,
+//                        caller.photoImageView, caller.photoImageView.getTransitionName()).toBundle());
+//            } else {
+                startActivity(intent);
+//            }
+        }
+
+
 //        DetailsFragment photoDetailsFragment = DetailsFragment.newInstance("1", url);
 //
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -238,7 +312,7 @@ public class ClarityActivity extends AppCompatActivity
 //            photoDetailsFragment.setSharedElementReturnTransition(new DetailsTransition());
 //        }
 //
-//        addAuthorPhotosFragment("1", url, "Photo details");
+//        addOrReplaceAuthorPhotosFragment("1", url, "Photo details");
 //
 //        getSupportFragmentManager()
 //                .beginTransaction()
@@ -254,6 +328,7 @@ public class ClarityActivity extends AppCompatActivity
     public void onAppBarShow() {
         appBar.setExpanded(true);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -354,6 +429,43 @@ public class ClarityActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
     }
+
+    private final SharedElementCallback callback = new SharedElementCallback() {
+        @Override
+        public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+            if (tmpReenterState != null) {
+                int startingPosition = tmpReenterState.getInt(EXTRA_STARTING_ALBUM_POSITION);
+                int currentPosition = tmpReenterState.getInt(EXTRA_CURRENT_ALBUM_POSITION);
+                if (startingPosition != currentPosition) {
+                    // If startingPosition != currentPosition the user must have swiped to a
+                    // different page in the DetailsActivity. We must update the shared element
+                    // so that the correct one falls into place.
+                    String newTransitionName = photoList.get(currentPosition).getName();
+                    View newSharedElement = recyclerView.findViewWithTag(newTransitionName);
+                    if (newSharedElement != null) {
+                        names.clear();
+                        names.add(newTransitionName);
+                        sharedElements.clear();
+                        sharedElements.put(newTransitionName, newSharedElement);
+                    }
+                }
+                tmpReenterState = null;
+            } else {
+                // If tmpReenterState is null, then the activity is exiting.
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    View navigationBar = findViewById(android.R.id.navigationBarBackground);
+                    View statusBar = findViewById(android.R.id.statusBarBackground);
+                    if (navigationBar != null) {
+                        names.add(navigationBar.getTransitionName());
+                        sharedElements.put(navigationBar.getTransitionName(), navigationBar);
+                    }
+                    if (statusBar != null) {
+                        names.add(statusBar.getTransitionName());
+                        sharedElements.put(statusBar.getTransitionName(), statusBar);
+                    }
+                }
+            }
+        }
+    };
 }

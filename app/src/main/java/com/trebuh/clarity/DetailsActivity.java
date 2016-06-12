@@ -2,6 +2,7 @@ package com.trebuh.clarity;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -26,7 +27,8 @@ import static com.trebuh.clarity.ClarityActivity.EXTRA_PHOTOS_ARRAY_LIST;
 import static com.trebuh.clarity.ClarityActivity.EXTRA_STARTING_ALBUM_POSITION;
 import static com.trebuh.clarity.ClarityActivity.EXTRA_CURRENT_ALBUM_POSITION;
 
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsActivity extends AppCompatActivity
+        implements DetailsFragment.OnFragmentInteractionListener {
     public static final String TAG = DetailsActivity.class.getSimpleName();
 
     public static final String STATE_CURRENT_ITEM_POSITION = "state_current_item_position";
@@ -83,7 +85,6 @@ public class DetailsActivity extends AppCompatActivity {
         pager.setCurrentItem(currentPosition);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -96,9 +97,6 @@ public class DetailsActivity extends AppCompatActivity {
 
             }
         });
-
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
     }
 
     @Override
@@ -117,15 +115,20 @@ public class DetailsActivity extends AppCompatActivity {
         super.finishAfterTransition();
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
     private class DetailsFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
-        public DetailsFragmentPagerAdapter(FragmentManager fm) {
+        DetailsFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
-            return DetailsFragment.newInstance(position, startingPosition);
+            return DetailsFragment.newInstance(position, startingPosition, photoList);
         }
 
         @Override
@@ -136,7 +139,7 @@ public class DetailsActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 0;
+            return photoList.size();
         }
     }
 }

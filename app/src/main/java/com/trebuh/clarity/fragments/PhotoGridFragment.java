@@ -55,7 +55,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         // Required empty public constructor
     }
 
-    public static PhotoGridFragment newInstance(String paramFeature, String paramSortBy) {
+    public static PhotoGridFragment newInstance(String paramFeature, String paramSortBy ) {
         PhotoGridFragment fragment = new PhotoGridFragment();
         Bundle args = new Bundle();
         args.putString(ARG_FEATURE, paramFeature);
@@ -190,12 +190,21 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         onRefresh();
     }
 
+    public RecyclerView getPhotosContainer() {
+        return gridRecyclerView;
+    }
+
+    public ArrayList<Photo> getPhotoList() {
+        return photos;
+    }
+
     public interface PhotoGridFragmentListener {
         void onPhotoGridItemClick(PhotoGridAdapter.PhotoGridItemHolder caller, String url);
         void onAppBarShow();
     }
 
     private class FetchPhotosTask extends AsyncTask<FetchPhotosTaskParams, Void, ArrayList<Photo>> {
+        boolean isNetworkError = false;
 
         @Override
         protected void onPreExecute() {
@@ -212,8 +221,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                         params[0].feature,
                         params[0].sortBy);
             } catch (IOException | NetworkErrorException e) {
-                Looper.prepare();
-                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                isNetworkError = true;
                 e.printStackTrace();
             }
             return PhotoFetcher.parsePhotoItems(photosJsonResponse);
@@ -221,7 +229,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
         @Override
         protected void onPostExecute(ArrayList<Photo> photos) {
-            if (photos == null) {
+            if (isNetworkError) {
                 refreshButton.setVisibility(View.VISIBLE);
             } else {
                 refreshButton.setVisibility(View.INVISIBLE);

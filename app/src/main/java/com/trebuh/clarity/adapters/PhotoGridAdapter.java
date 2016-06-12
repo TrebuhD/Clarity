@@ -50,7 +50,6 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
 
         // Each transition has to have an unique transaction name.
         ViewCompat.setTransitionName(viewHolder.photoImageView, String.valueOf(photoId) + "_image");
-
     }
 
     @Override
