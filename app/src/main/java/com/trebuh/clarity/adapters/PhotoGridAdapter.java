@@ -1,6 +1,7 @@
 package com.trebuh.clarity.adapters;
 
 import android.content.Context;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import java.util.List;
 public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.PhotoGridItemHolder> {
     private List<Photo> photoList;
     private PhotoGridItemOnClickListener itemOnClickListener;
+    private PhotoGridItemHolder photoViewHolder;
 
     public PhotoGridAdapter(List<Photo> photoList) {
         this.photoList = photoList;
@@ -36,6 +38,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
     public void onBindViewHolder(PhotoGridItemHolder viewHolder, int position) {
         Photo photo = photoList.get(position);
 
+        int photoId = photo.getId();
         String authorName = photo.getUsername();
         String photoUrl = photo.getUrl();
         String photoTitleText = photo.getName();
@@ -44,6 +47,10 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         viewHolder.setPhotoImage(photoUrl);
         viewHolder.setHiddenUrlTextView(photoUrl);
         viewHolder.setListener(itemOnClickListener);
+
+        // Each transition has to have an unique transaction name.
+        ViewCompat.setTransitionName(viewHolder.photoImageView, String.valueOf(photoId) + "_image");
+
     }
 
     @Override
@@ -77,9 +84,10 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         this.itemOnClickListener = itemOnClickListener;
     }
 
-    static class PhotoGridItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class PhotoGridItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        // public for shared element transition
+        public final ImageView photoImageView;
         private final TextView titleTextView;
-        private final ImageView photoImageView;
         private final TextView hiddenUrlTextView;
         private final ContentLoadingProgressBar progressBar;
 
@@ -124,7 +132,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         @Override
         public void onClick(View v) {
             if (listener != null) {
-                listener.onPhotoGridItemClick(v, hiddenUrlTextView.getText());
+                listener.onPhotoGridItemClick(this, hiddenUrlTextView.getText());
             }
         }
 
@@ -134,7 +142,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
     }
 
     public interface PhotoGridItemOnClickListener {
-        void onPhotoGridItemClick(View caller, CharSequence text);
+        void onPhotoGridItemClick(PhotoGridItemHolder caller, CharSequence text);
     }
 
     private static class ImageLoadedCallback implements Callback {

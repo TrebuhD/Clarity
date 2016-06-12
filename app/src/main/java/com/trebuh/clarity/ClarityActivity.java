@@ -2,6 +2,7 @@ package com.trebuh.clarity;
 
 import android.app.SearchManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +25,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.trebuh.clarity.adapters.ClarityPagerAdapter;
+import com.trebuh.clarity.adapters.PhotoGridAdapter;
 import com.trebuh.clarity.fragments.DetailsFragment;
+import com.trebuh.clarity.fragments.DetailsTransition;
 import com.trebuh.clarity.fragments.DownloadsFragment;
 import com.trebuh.clarity.fragments.PhotoGridFragment;
 
@@ -145,7 +149,6 @@ public class ClarityActivity extends AppCompatActivity
                     drawerLayout.closeDrawers();
                     item.setChecked(true);
                     switch (item.getItemId()) {
-                        //                    TODO Replace with proper actions
                         case R.id.navigation_item_home:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             break;
@@ -153,6 +156,7 @@ public class ClarityActivity extends AppCompatActivity
                             transitionToFragment(FRAGMENT_DOWNLOADS);
                             break;
                         case R.id.navigation_item_settings:
+                            // TODO add settings
                             Snackbar.make(coordinatorLayout, "Settings button clicked",
                                     Snackbar.LENGTH_LONG)
                                     .show();
@@ -218,12 +222,29 @@ public class ClarityActivity extends AppCompatActivity
     private void transitionToFragment(int fragmentType) {
         appBar.setExpanded(true);
         viewPager.setCurrentItem(fragmentType);
+
     }
 
     @Override
-    public void onPhotoGridItemClick(String url) {
-        addDetailsFragment("1", url, "Photo details");
-        transitionToFragment(FRAGMENT_PHOTO_DETAILS);
+    public void onPhotoGridItemClick(PhotoGridAdapter.PhotoGridItemHolder caller, String url) {
+        DetailsFragment photoDetailsFragment = DetailsFragment.newInstance("1", url);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            photoDetailsFragment.setSharedElementEnterTransition(new DetailsTransition());
+            photoDetailsFragment.setEnterTransition(new Fade());
+            photoDetailsFragment.setExitTransition(new Fade());
+            photoDetailsFragment.setSharedElementReturnTransition(new DetailsTransition());
+        }
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .addSharedElement(caller.photoImageView, "photo")
+                .replace(R.id.rec_view_container, photoDetailsFragment)
+                .addToBackStack(null)
+                .commit();
+
+//        addDetailsFragment("1", url, "Photo details");
+//        transitionToFragment(FRAGMENT_PHOTO_DETAILS);
     }
 
     @Override

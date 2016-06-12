@@ -129,8 +129,8 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         adapter = new PhotoGridAdapter(photos);
         adapter.setItemOnClickListener(new PhotoGridAdapter.PhotoGridItemOnClickListener() {
             @Override
-            public void onPhotoGridItemClick(View caller, CharSequence text) {
-                listener.onPhotoGridItemClick((String) text);
+            public void onPhotoGridItemClick(PhotoGridAdapter.PhotoGridItemHolder caller, CharSequence text) {
+                listener.onPhotoGridItemClick(caller, (String) text);
             }
         });
         gridRecyclerView.setAdapter(adapter);
@@ -191,7 +191,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     public interface PhotoGridFragmentListener {
-        void onPhotoGridItemClick(String url);
+        void onPhotoGridItemClick(PhotoGridAdapter.PhotoGridItemHolder caller, String url);
         void onAppBarShow();
     }
 
