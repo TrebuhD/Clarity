@@ -54,7 +54,7 @@
                 android:fontFamily="sans-serif-light"
                 android:textSize="40sp"/>
 
-            <TextView
+            <org.sufficientlysecure.htmltextview.HtmlTextView
                 android:id="@+id/details_photo_description_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -24,6 +24,8 @@ import com.trebuh.clarity.R;
 import com.trebuh.clarity.adapters.TransitionListenerAdapter;
 import com.trebuh.clarity.models.Photo;
 
+import org.sufficientlysecure.htmltextview.HtmlTextView;
+
 import java.util.ArrayList;
 
 /**
@@ -57,8 +59,6 @@ public class DetailsFragment extends Fragment {
 
     private ArrayList<Photo> photos;
 
-    private String photoId;
-    private String photoUrl;
     private ImageView mainPicture;
 
     private int startingPosition;
@@ -106,15 +106,17 @@ public class DetailsFragment extends Fragment {
 
         View textContainer = rootView.findViewById(R.id.details_body_container);
         TextView photoTitleText = (TextView) textContainer.findViewById(R.id.details_photo_title_tv);
-        TextView photoDescriptionText = (TextView) textContainer.findViewById(R.id.details_photo_description_tv);
+        HtmlTextView photoDescriptionText = (HtmlTextView) textContainer.findViewById(R.id.details_photo_description_tv);
 
         String photoUrl = photos.get(photoPosition).getUrl();
         String profilePicUrl = photos.get(photoPosition).getAvatarUrl();
         String photoName = photos.get(photoPosition).getName();
-        String photoDescription = photos.get(photoPosition).getDescription();
+
+        String tempDescription = photos.get(photoPosition).getDescription();
+        String photoDescription = (tempDescription.equals("null") ? "No description" : tempDescription);
 
         photoTitleText.setText(photoName);
-        photoDescriptionText.setText(photoDescription);
+        photoDescriptionText.setHtmlFromString(photoDescription, new HtmlTextView.RemoteImageGetter());
         mainPicture.setTransitionName(photoName);
 
         RequestCreator photoRequest = Picasso.with(getActivity()).load(photoUrl).fit().centerCrop();
@@ -158,11 +160,6 @@ public class DetailsFragment extends Fragment {
 
         mainPicture = (ImageView) view.findViewById(R.id.details_photo_iv);
 
-        Picasso
-                .with(view.getContext())
-                .load(photoUrl)
-                .placeholder(R.drawable.image_placeholder)
-                .into(mainPicture);
     }
 
     public void onButtonPressed(Uri uri) {
