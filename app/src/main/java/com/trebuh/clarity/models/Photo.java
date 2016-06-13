@@ -54,6 +54,7 @@ public class Photo implements Parcelable {
         this.isNsfw = builder.isNsfw;
         this.timesViewed = builder.timesViewed;
         this.rating = builder.rating;
+        this.avatarUrl = builder.avatarUrl;
     }
 
     // getters
@@ -131,6 +132,7 @@ public class Photo implements Parcelable {
         timesViewed = in.readInt();
         voteCount = in.readInt();
         commentCount = in.readInt();
+        username = in.readString();
     }
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {
@@ -165,6 +167,7 @@ public class Photo implements Parcelable {
         dest.writeInt(timesViewed);
         dest.writeInt(voteCount);
         dest.writeInt(commentCount);
+        dest.writeString(username);
     }
 
     public static class PhotoBuilder {
@@ -185,7 +188,7 @@ public class Photo implements Parcelable {
         private Boolean isNsfw = false;
         private int timesViewed = 0;
         private float rating = 0.0f;
-        private String avatarUrl;
+        private String avatarUrl = "";
 
         public PhotoBuilder(int id, int userId, String url, int width, int height) {
             this.id = id;
@@ -240,7 +243,7 @@ public class Photo implements Parcelable {
             return this;
         }
 
-        public PhotoBuilder avatar(String avatarUrl) {
+        public PhotoBuilder avatarUrl(String avatarUrl) {
             this.avatarUrl = avatarUrl;
             return this;
         }

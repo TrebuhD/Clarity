@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.transition.Transition;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.trebuh.clarity.R;
-import com.trebuh.clarity.adapters.TransitionListenerAdapter;
 import com.trebuh.clarity.models.Photo;
 
 import org.sufficientlysecure.htmltextview.HtmlTextView;
@@ -102,25 +100,28 @@ public class DetailsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
 
         mainPicture = (ImageView) rootView.findViewById(R.id.details_photo_iv);
-        final ImageView profilePicture = (ImageView) rootView.findViewById(R.id.details_profile_pic_iv);
+        ImageView profilePicture = (ImageView) rootView.findViewById(R.id.details_profile_pic_iv);
 
         View textContainer = rootView.findViewById(R.id.details_body_container);
         TextView photoTitleText = (TextView) textContainer.findViewById(R.id.details_photo_title_tv);
+        TextView authorNameText = (TextView) textContainer.findViewById(R.id.details_author_name_tv);
         HtmlTextView photoDescriptionText = (HtmlTextView) textContainer.findViewById(R.id.details_photo_description_tv);
 
         String photoUrl = photos.get(photoPosition).getUrl();
         String profilePicUrl = photos.get(photoPosition).getAvatarUrl();
         String photoName = photos.get(photoPosition).getName();
+        String authorName = photos.get(photoPosition).getUsername();
 
         String tempDescription = photos.get(photoPosition).getDescription();
         String photoDescription = (tempDescription.equals("null") ? "No description" : tempDescription);
 
         photoTitleText.setText(photoName);
+        authorNameText.setText(authorName);
         photoDescriptionText.setHtmlFromString(photoDescription, new HtmlTextView.RemoteImageGetter());
         mainPicture.setTransitionName(photoName);
 
         RequestCreator photoRequest = Picasso.with(getActivity()).load(photoUrl).fit().centerCrop();
-        RequestCreator profilePicRequest = Picasso.with(getActivity()).load(profilePicUrl);
+        RequestCreator profilePicRequest = Picasso.with(getActivity()).load(profilePicUrl).fit().centerInside();
 
 //        if (isTransitioning) {
 //            photoRequest.noFade();

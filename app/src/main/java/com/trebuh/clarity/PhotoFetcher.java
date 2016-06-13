@@ -199,7 +199,7 @@ public class PhotoFetcher {
                         .name(name)
                         .description(description)
                         .username(username)
-                        .avatar(avatarDefaultSize)
+                        .avatarUrl(avatarDefaultSize)
                         .nsfw(isNsfw)
                         .build();
 
