@@ -22,13 +22,14 @@ public class PhotoFetcher {
 
     private static final String ENDPOINT = "https://api.500px.com/v1/";
     private static final String ENDPOINT_PHOTOS = "photos";
+    private static final String ENDPOINT_SEARCH_PHOTOS = "search";
     private static final String CONSUMER_KEY = "lp21ZfxrVCcoYDSWsxVo5f40jO8x5AsGU8RntF5f";
 
     private static final String PARAM_CONSUMER_KEY = "consumer_key";
     private static final String PARAM_IMAGE_SIZE = "image_size";
+    private static final String PARAM_SEARCH_TERM = "term";
 
     private static final String PARAM_FEATURE = "feature";
-
     private static final String PARAM_SORT_METHOD = "sort";
 
     // Params that are not required by the 500px API
@@ -99,6 +100,12 @@ public class PhotoFetcher {
     static final String SORT_METHOD_FAVORITES_COUNT = "favorites_count";
     static final String SORT_METHOD_COMMENTS_COUNT = "comments_count";
 
+    // search
+    public static final String NO_SEARCH_QUERY = "no_search_query";
+    public static final int FIRST_PAGE = 0;
+    public static final String NO_FEATURE = "no_sort_method";
+    public static final String NO_SORT_METHOD = "no_sort_method";
+
     private static byte[] getUrlBytes(String urlSpec) throws IOException, NetworkErrorException {
         URL url = new URL(urlSpec);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -127,18 +134,30 @@ public class PhotoFetcher {
         return new String(getUrlBytes(urlSpec));
     }
 
-    public static String fetchPhotosJSON(int page, String feature, String sortMethod) throws IOException, NetworkErrorException {
+    public static String fetchPhotosJSON(int page, String feature, String sortMethod, String searchQuery)
+            throws IOException, NetworkErrorException {
         String jsonString = "";
 
-        String url = Uri.parse(ENDPOINT).buildUpon()
-                .appendPath(ENDPOINT_PHOTOS)
-                .appendQueryParameter(PARAM_CONSUMER_KEY, CONSUMER_KEY)
-                .appendQueryParameter(PARAM_FEATURE, feature)
-                .appendQueryParameter(PARAM_SORT_METHOD, sortMethod)
-                .appendQueryParameter(PARAM_IMAGE_SIZE, DEFAULT_IMAGE_SIZE)
-                .appendQueryParameter(EXTRA_PAGE, String.valueOf(page))
-                .appendQueryParameter(EXTRA_RESULTS_PER_PAGE, String.valueOf(DEFAULT_RESULTS_PER_PAGE))
-                .build().toString();
+        String url;
+        if (searchQuery.equals(NO_SEARCH_QUERY)) {
+            url = Uri.parse(ENDPOINT).buildUpon()
+                    .appendPath(ENDPOINT_PHOTOS)
+                    .appendQueryParameter(PARAM_CONSUMER_KEY, CONSUMER_KEY)
+                    .appendQueryParameter(PARAM_FEATURE, feature)
+                    .appendQueryParameter(PARAM_SORT_METHOD, sortMethod)
+                    .appendQueryParameter(PARAM_IMAGE_SIZE, DEFAULT_IMAGE_SIZE)
+                    .appendQueryParameter(EXTRA_PAGE, String.valueOf(page))
+                    .appendQueryParameter(EXTRA_RESULTS_PER_PAGE, String.valueOf(DEFAULT_RESULTS_PER_PAGE))
+                    .build().toString();
+        } else {
+            url = Uri.parse(ENDPOINT).buildUpon()
+                    .appendPath(ENDPOINT_PHOTOS)
+                    .appendPath(ENDPOINT_SEARCH_PHOTOS)
+                    .appendQueryParameter(PARAM_SEARCH_TERM, searchQuery)
+                    .appendQueryParameter(PARAM_CONSUMER_KEY, CONSUMER_KEY)
+                    .appendQueryParameter(PARAM_IMAGE_SIZE, DEFAULT_IMAGE_SIZE)
+                    .build().toString();
+        }
         jsonString = getUrl(url);
         Log.e(TAG, "request url: " + url);
         return jsonString;

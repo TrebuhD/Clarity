@@ -39,12 +39,14 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         Photo photo = photoList.get(position);
 
         int photoId = photo.getId();
+        String photoTitle = photo.getName();
         String authorName = photo.getUsername();
         String photoUrl = photo.getUrl();
         String photoTitleText = photo.getName();
 
         viewHolder.setUsernameText(authorName);
         viewHolder.setPhotoImage(photoUrl);
+        viewHolder.setPhotoTitle(photoTitle);
         viewHolder.setHiddenUrlTextView(photoUrl);
         viewHolder.setListener(itemOnClickListener);
 
@@ -84,9 +86,10 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
     }
 
     public static class PhotoGridItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        // public for shared element transition
-        public final ImageView photoImageView;
-        private final TextView titleTextView;
+        // imageView for shared element transition
+        final ImageView photoImageView;
+        private final TextView authorNameTextView;
+        private final TextView photoTitleTextView;
         private final TextView hiddenUrlTextView;
         private final ContentLoadingProgressBar progressBar;
 
@@ -98,14 +101,23 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
             progressBar = (ContentLoadingProgressBar) itemView.findViewById(R.id.photo_item_progress_bar);
             progressBar.setVisibility(View.VISIBLE);
 
-            this.titleTextView = (TextView) itemView.findViewById(R.id.photo_grid_item_tv);
-            this.photoImageView = (ImageView) itemView.findViewById(R.id.photo_grid_item_iv);
+            this.authorNameTextView = (TextView) itemView.findViewById(R.id.photo_grid_item_author_name_tv);
+            this.photoTitleTextView = (TextView) itemView.findViewById(R.id.photo_grid_item_title_tv);
             this.hiddenUrlTextView = (TextView) itemView.findViewById(R.id.photo_grid_hidden_url_tv);
+
+            this.photoImageView = (ImageView) itemView.findViewById(R.id.photo_grid_item_iv);
             itemView.setOnClickListener(this);
         }
 
-        void setUsernameText(CharSequence text) {
-            titleTextView.setText(text);
+        @Override
+        public void onClick(View v) {
+            if (listener != null) {
+                listener.onPhotoGridItemClick(this, hiddenUrlTextView.getText());
+            }
+        }
+
+        void setListener(PhotoGridItemOnClickListener listener) {
+            this.listener = listener;
         }
 
         void setPhotoImage(String url) {
@@ -124,19 +136,16 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
                     });
         }
 
+        void setUsernameText(CharSequence text) {
+            authorNameTextView.setText(text);
+        }
+
         void setHiddenUrlTextView(String url) {
             hiddenUrlTextView.setText(url);
         }
 
-        @Override
-        public void onClick(View v) {
-            if (listener != null) {
-                listener.onPhotoGridItemClick(this, hiddenUrlTextView.getText());
-            }
-        }
-
-        void setListener(PhotoGridItemOnClickListener listener) {
-            this.listener = listener;
+        void setPhotoTitle(String photoTitle) {
+            photoTitleTextView.setText(photoTitle);
         }
     }
 

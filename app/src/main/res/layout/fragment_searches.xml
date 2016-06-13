@@ -2,13 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.trebuh.clarity.fragments.DownloadsFragment">
+    tools:context="com.trebuh.clarity.fragments.PastSearchesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/downloads_fragment"
+        android:text="@string/searches_fragment"
         />
 
 </FrameLayout>

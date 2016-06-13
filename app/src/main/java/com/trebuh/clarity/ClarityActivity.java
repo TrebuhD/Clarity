@@ -1,16 +1,14 @@
 package com.trebuh.clarity;
 
 import android.annotation.TargetApi;
-import android.app.SearchManager;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -26,11 +24,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.Toast;
 
 import com.trebuh.clarity.adapters.ClarityPagerAdapter;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
-import com.trebuh.clarity.fragments.DownloadsFragment;
+import com.trebuh.clarity.fragments.PastSearchesFragment;
 import com.trebuh.clarity.fragments.PhotoGridFragment;
 import com.trebuh.clarity.models.Photo;
 
@@ -39,13 +36,15 @@ import java.util.List;
 import java.util.Map;
 
 public class ClarityActivity extends AppCompatActivity
-        implements DownloadsFragment.OnFragmentInteractionListener,
+        implements PastSearchesFragment.OnFragmentInteractionListener,
         PhotoGridFragment.PhotoGridFragmentListener {
     private static final String TAG = "ClarityActivity";
 
-    private static final int FRAGMENT_DOWNLOADS = 0;
+    private static final int FRAGMENT_PAST_SEARCHES = 0;
     private static final int FRAGMENT_PHOTOS = 1;
-    private static final int FRAGMENT_AUTHOR_PHOTOS = 2;
+    private static final int FRAGMENT_EXTRA_GRID = 2;
+
+    private static final int SIZE_HAS_EXTRA_FRAGMENT = 3;
 
     static final String EXTRA_STARTING_ALBUM_POSITION = "extra_starting_album_position";
     static final String EXTRA_CURRENT_ALBUM_POSITION = "extra_current_album_position";
@@ -66,7 +65,7 @@ public class ClarityActivity extends AppCompatActivity
 
     private Fragment currentPhotoGridFragment;
 
-    private String currentSortMethod;
+    private String currentSortMethod = "";
 
     // Shared element transition stuff
     private RecyclerView recyclerView;
@@ -124,7 +123,7 @@ public class ClarityActivity extends AppCompatActivity
         adapter = new ClarityPagerAdapter(getSupportFragmentManager());
 
         // order important
-        adapter.addItem(DownloadsFragment.newInstance("", ""), "Downloads");
+        adapter.addItem(PastSearchesFragment.newInstance(), "Past Searches");
         addPhotoGridFragment(
                 PhotoFetcher.FEATURE_POPULAR,
                 PhotoFetcher.SORT_METHOD_COMMENTS_COUNT,
@@ -150,13 +149,19 @@ public class ClarityActivity extends AppCompatActivity
 
                 // hide fab and subtitle in gallery view
                 if (fab != null) {
-                    if (position == FRAGMENT_DOWNLOADS) {
+                    if (position == FRAGMENT_PAST_SEARCHES) {
                         fab.show();
                         clearToolbarSubtitle();
                     } else {
                         fab.hide();
                         setToolbarSubtitle(currentSortMethod);
                     }
+                }
+
+                if (position == FRAGMENT_EXTRA_GRID) {
+                    setToolbarSubtitle("Search results");
+                } else {
+                    setToolbarSubtitle(currentSortMethod);
                 }
             }
 
@@ -172,8 +177,14 @@ public class ClarityActivity extends AppCompatActivity
         adapter.addItem(currentPhotoGridFragment, gridTitle);
     }
 
-    private void addOrReplaceAuthorPhotosFragment(String authorId, String sortMethod, String title) {
-        // TODO create and append author photos fragment
+    private void addOrReplaceExtraGridFragment(String searchTerm) {
+        if (adapter.getCount() == SIZE_HAS_EXTRA_FRAGMENT) {
+            transitionToFragment(FRAGMENT_EXTRA_GRID);
+            ((PhotoGridFragment) getCurrentFragment()).newSearch(searchTerm);
+            adapter.setNewTitle(SIZE_HAS_EXTRA_FRAGMENT - 1, searchTerm);
+        } else {
+            adapter.addItem(PhotoGridFragment.newSearchInstance(searchTerm), searchTerm);
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -190,15 +201,14 @@ public class ClarityActivity extends AppCompatActivity
                         case R.id.navigation_item_home:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             break;
-                        case R.id.navigation_item_downloads:
-                            transitionToFragment(FRAGMENT_DOWNLOADS);
+                        case R.id.navigation_item_past_searches:
+                            transitionToFragment(FRAGMENT_PAST_SEARCHES);
                             break;
-                        case R.id.navigation_item_settings:
-//                             TODO add settings activity
-                            Snackbar.make(coordinatorLayout, "Settings button clicked",
-                                    Snackbar.LENGTH_LONG)
-                                    .show();
-                            break;
+//                        case R.id.navigation_item_settings:
+//                            Snackbar.make(coordinatorLayout, "Settings button clicked",
+//                                    Snackbar.LENGTH_LONG)
+//                                    .show();
+//                            break;
                         case R.id.drawer_bookmark_editors:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_editors);
@@ -247,7 +257,6 @@ public class ClarityActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                searchView.setQuery("test", false);
                 searchView.setIconified(false);
                 searchView.requestFocus();
                 MenuItemCompat.expandActionView(searchMenuItem);
@@ -293,7 +302,7 @@ public class ClarityActivity extends AppCompatActivity
         Intent intent = new Intent(this, DetailsActivity.class);
         intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, caller.getLayoutPosition());
 
-        ArrayList<Photo> photos = ((PhotoGridFragment)getCurrentFragment()).getPhotoList();
+        ArrayList<Photo> photos = ((PhotoGridFragment) getCurrentFragment()).getPhotoList();
         intent.putExtra(EXTRA_PHOTOS_ARRAY_LIST, photos);
 
         if (!isDetailsActivityStarted) {
@@ -302,7 +311,7 @@ public class ClarityActivity extends AppCompatActivity
 //                startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this,
 //                        caller.photoImageView, caller.photoImageView.getTransitionName()).toBundle());
 //            } else {
-                startActivity(intent);
+            startActivity(intent);
 //            }
         }
 
@@ -316,7 +325,7 @@ public class ClarityActivity extends AppCompatActivity
 //            photoDetailsFragment.setSharedElementReturnTransition(new DetailsTransition());
 //        }
 //
-//        addOrReplaceAuthorPhotosFragment("1", url, "Photo details");
+//        addOrReplaceExtraGridFragment("1", url, "Photo details");
 //
 //        getSupportFragmentManager()
 //                .beginTransaction()
@@ -340,22 +349,16 @@ public class ClarityActivity extends AppCompatActivity
 
         // handle hiding menu items on viewPager fragment change
         if (viewPager != null) {
-            if (viewPager.getCurrentItem() == FRAGMENT_DOWNLOADS) {
+            if (viewPager.getCurrentItem() == FRAGMENT_PAST_SEARCHES) {
                 menu.findItem(R.id.menu_action_refresh).setVisible(false);
                 menu.findItem(R.id.menu_action_search).setVisible(false);
-                menu.findItem(R.id.menu_action_sortby_comments).setVisible(false);
-                menu.findItem(R.id.menu_action_sortby_new).setVisible(false);
-                menu.findItem(R.id.menu_action_sortby_times_viewed).setVisible(false);
-                menu.findItem(R.id.menu_action_sortby_votes).setVisible(false);
-                menu.findItem(R.id.menu_action_sortby_rating).setVisible(false);
+                hideSortButtons(menu, false);
+            } else if (viewPager.getCurrentItem() == FRAGMENT_EXTRA_GRID) {
+                hideSortButtons(menu, false);
             } else {
                 menu.findItem(R.id.menu_action_refresh).setVisible(true);
                 menu.findItem(R.id.menu_action_search).setVisible(true);
-                menu.findItem(R.id.menu_action_sortby_comments).setVisible(true);
-                menu.findItem(R.id.menu_action_sortby_new).setVisible(true);
-                menu.findItem(R.id.menu_action_sortby_times_viewed).setVisible(true);
-                menu.findItem(R.id.menu_action_sortby_votes).setVisible(true);
-                menu.findItem(R.id.menu_action_sortby_rating).setVisible(true);
+                hideSortButtons(menu, true);
             }
         }
 
@@ -364,10 +367,11 @@ public class ClarityActivity extends AppCompatActivity
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(getApplicationContext(), "Query: " + query, Toast.LENGTH_SHORT).show();
+                // collapse the search view
                 if (!searchView.isIconified()) {
                     searchView.setIconified(true);
                 }
+                performSearch(query);
                 return false;
             }
 
@@ -380,6 +384,22 @@ public class ClarityActivity extends AppCompatActivity
         return super.onCreateOptionsMenu(menu);
     }
 
+    private void hideSortButtons(Menu menu, boolean visible) {
+        menu.findItem(R.id.menu_action_sortby_comments).setVisible(visible);
+        menu.findItem(R.id.menu_action_sortby_new).setVisible(visible);
+        menu.findItem(R.id.menu_action_sortby_times_viewed).setVisible(visible);
+        menu.findItem(R.id.menu_action_sortby_votes).setVisible(visible);
+        menu.findItem(R.id.menu_action_sortby_rating).setVisible(visible);
+        menu.findItem(R.id.menu_action_sortby_favorites).setVisible(visible);
+    }
+
+    private void performSearch(String searchTerm) {
+        addOrReplaceExtraGridFragment(searchTerm);
+        transitionToFragment(FRAGMENT_EXTRA_GRID);
+        ((PhotoGridFragment) getCurrentFragment()).performSearch(searchTerm);
+        toolbar.setTitle(searchTerm);
+    }
+
     private void clearToolbarSubtitle() {
         if (toolbar != null) {
             toolbar.setSubtitle("");
@@ -387,7 +407,6 @@ public class ClarityActivity extends AppCompatActivity
     }
 
     private void setToolbarSubtitle(String subtitle) {
-        currentSortMethod = subtitle;
         if (toolbar != null) {
             toolbar.setSubtitle(subtitle);
         }
@@ -402,11 +421,6 @@ public class ClarityActivity extends AppCompatActivity
                     Log.d(TAG, "in fragment PHOTOS");
                     ((PhotoGridFragment) getCurrentFragment()).onRefresh();
                 }
-                break;
-            case R.id.menu_action_search:
-                // TODO add search functionality
-                SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-//                searchManager.startSearch();
                 break;
             case R.id.menu_action_sortby_comments:
                 setToolbarSubtitle("Most comments");
@@ -451,10 +465,6 @@ public class ClarityActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-    }
-
     private final SharedElementCallback callback = new SharedElementCallback() {
         @Override
         public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
@@ -492,4 +502,9 @@ public class ClarityActivity extends AppCompatActivity
             }
         }
     };
+
+    @Override
+    public void onPastSearchItemClick(String searchString) {
+
+    }
 }

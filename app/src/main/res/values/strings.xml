@@ -2,14 +2,14 @@
     <string name="app_name">Clarity</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="drawer_item_downloads">Downloads</string>
+    <string name="drawer_item_past_searches">Downloads</string>
     <string name="drawer_item_settings">Settings</string>
     <string name="drawer_bookmark_subheader">Bookmarks</string>
     <string name="drawer_bookmark_upcoming">Upcoming</string>
     <string name="drawer_bookmark_highest_rated">Highest rated</string>
     <string name="drawer_header_background_desc">drawer header background</string>
     <string name="drawer_item_home">Home</string>
-    <string name="downloads_fragment">Downloads Fragment</string>
+    <string name="searches_fragment">Downloads Fragment</string>
     <string name="photo_grid_fragment_desc">Photo grid fragment</string>
     <string name="open_drawer">open drawer</string>
     <string name="close_drawer">close drawer</string>

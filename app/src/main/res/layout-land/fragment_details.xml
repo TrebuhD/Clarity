@@ -8,14 +8,13 @@
         android:id="@+id/details_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <FrameLayout
             android:id="@+id/details_header_container"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:background="#000"
-            android:transitionGroup="true">
+            android:background="#000">
 
             <ImageView
                 android:id="@+id/details_photo_iv"
@@ -32,7 +31,6 @@
                 android:layout_marginBottom="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
-                android:elevation="10dp"
                 android:tint="@color/profile_pic_tint"
                 tools:ignore="ContentDescription" />
 
@@ -42,9 +40,7 @@
             android:id="@+id/details_body_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:elevation="12dp"
-            android:orientation="vertical"
-            android:transitionGroup="true">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/details_photo_title_tv"
@@ -52,7 +48,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="18dp"
                 android:fontFamily="sans-serif-light"
-                android:textAppearance="@android:style/TextAppearance.Material.Title"
                 android:textSize="40sp" />
 
             <org.sufficientlysecure.htmltextview.HtmlTextView
@@ -64,7 +59,6 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:lineSpacingMultiplier="1.2"
-                android:textAppearance="@android:style/TextAppearance.Material.Medium"
                 android:textSize="20sp" />
 
 

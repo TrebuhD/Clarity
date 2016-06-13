@@ -31,7 +31,7 @@ public class DetailsActivity extends AppCompatActivity
         implements DetailsFragment.OnFragmentInteractionListener {
     public static final String TAG = DetailsActivity.class.getSimpleName();
 
-    public static final String STATE_CURRENT_ITEM_POSITION = "state_current_item_position";
+    private static final String STATE_CURRENT_ITEM_POSITION = "state_current_item_position";
 
     private final SharedElementCallback callback = new SharedElementCallback() {
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -139,7 +139,7 @@ public class DetailsActivity extends AppCompatActivity
 
         @Override
         public int getCount() {
-            return photoList.size();
+            return (photoList == null ? 0 : photoList.size());
         }
     }
 }

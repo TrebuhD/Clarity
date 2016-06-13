@@ -8,15 +8,15 @@
             android:icon="@drawable/ic_home_black_24dp"
             android:title="@string/drawer_item_home"/>
         <item
-            android:id="@+id/navigation_item_downloads"
+            android:id="@+id/navigation_item_past_searches"
             android:checked="false"
-            android:icon="@drawable/ic_file_download_black_24px"
-            android:title="@string/drawer_item_downloads"/>
-        <item
-            android:id="@+id/navigation_item_settings"
-            android:checked="false"
-            android:icon="@drawable/ic_settings_black_24dp"
-            android:title="@string/drawer_item_settings"/>
+            android:icon="@drawable/ic_searched_for_black_24dp"
+            android:title="@string/drawer_item_past_searches"/>
+        <!--<item-->
+            <!--android:id="@+id/navigation_item_settings"-->
+            <!--android:checked="false"-->
+            <!--android:icon="@drawable/ic_settings_black_24dp"-->
+            <!--android:title="@string/drawer_item_settings"/>-->
     </group>
     <item
         android:id="@+id/drawer_bookmark_subheader"

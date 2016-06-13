@@ -18,6 +18,13 @@ public class ClarityPagerAdapter extends FragmentPagerAdapter {
     public void addItem(Fragment fragment, String title) {
         fragments.add(fragment);
         fragmentTitles.add(title);
+        notifyDataSetChanged();
+    }
+
+    public void deleteItem(int position) {
+        fragments.remove(position);
+        fragmentTitles.remove(position);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -35,4 +42,7 @@ public class ClarityPagerAdapter extends FragmentPagerAdapter {
         return fragmentTitles.get(position);
     }
 
+    public void setNewTitle(int i, String searchTerm) {
+        fragmentTitles.set(i, searchTerm);
+    }
 }

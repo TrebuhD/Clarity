@@ -5,9 +5,8 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.trebuh.clarity.ClarityActivity"
     android:fitsSystemWindows="true"
-    >
+    tools:context="com.trebuh.clarity.ClarityActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +14,7 @@
         android:orientation="vertical">
 
         <!--Supercharged Frame Layout-->
-        <include layout="@layout/main_coordinator"/>
+        <include layout="@layout/main_coordinator" />
 
     </LinearLayout>
 
