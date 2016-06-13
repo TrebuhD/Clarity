@@ -26,19 +26,9 @@ import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link DetailsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link DetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class DetailsFragment extends Fragment {
     public static final String TAG = DetailsFragment.class.getSimpleName();
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_IMAGE_POSITION = "arg_photo_image_position";
     private static final String ARG_STARTING_IMAGE_POSITION = "arg_starting_photo_image_position";
     private static final String ARG_PHOTOS_ARRAY_LIST = "arg_photos_array_list";

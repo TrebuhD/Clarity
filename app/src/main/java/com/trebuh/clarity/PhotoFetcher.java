@@ -159,7 +159,7 @@ public class PhotoFetcher {
                     .build().toString();
         }
         jsonString = getUrl(url);
-        Log.e(TAG, "request url: " + url);
+        Log.d(TAG, "request url: " + url);
         return jsonString;
     }
 

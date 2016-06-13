@@ -38,23 +38,21 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private static String ARG_SEARCH_TERM = "search_term";
     private static String ARG_IS_SEARCH_INSTANCE = "is_search_instance";
 
+    private static final String STATE_PHOTO_LIST = "state_photo_list";
+
+    private static final String STATE_FEATURE = "state_feature";
+    private static final String STATE_SORT_METHOD = "state_sort_method";
+    private static final String STATE_IS_SEARCH_INSTANCE = "state_is_sort_instance";
+
     private String paramFeature;
     private String paramSortBy;
     private String paramSearchTerm;
     private boolean paramIsSearchInstance;
 
-    private static final String STATE_PHOTO_LIST = "state_photo_list";
-    private static final String STATE_FEATURE = "state_feature";
-    private static final String STATE_SORT_METHOD = "state_sort_method";
-    private static final String STATE_IS_SEARCH_INSTANCE = "state_is_sort_instance";
-
     private PhotoGridAdapter adapter;
     private PhotoGridFragmentListener listener;
-
     private SwipeRefreshLayout swipeContainer;
-
     private RecyclerView gridRecyclerView;
-
     private ArrayList<Photo> photos;
     private AppCompatButton refreshButton;
 
