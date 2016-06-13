@@ -62,14 +62,14 @@ public class DetailsActivity extends AppCompatActivity
     private int currentPosition;
     private int startingPosition;
     private boolean isReturning;
+
     private ArrayList<Photo> photoList;
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-        postponeEnterTransition();
+//        postponeEnterTransition();
         setEnterSharedElementCallback(callback);
 
         photoList = getIntent().getParcelableArrayListExtra(EXTRA_PHOTOS_ARRAY_LIST);

@@ -3,12 +3,11 @@ package com.trebuh.clarity;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
+import android.os.PersistableBundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -27,7 +26,7 @@ import android.view.ViewTreeObserver;
 
 import com.trebuh.clarity.adapters.ClarityPagerAdapter;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
-import com.trebuh.clarity.fragments.PastSearchesFragment;
+import com.trebuh.clarity.fragments.SearchHistoryFragment;
 import com.trebuh.clarity.fragments.PhotoGridFragment;
 import com.trebuh.clarity.models.Photo;
 
@@ -36,15 +35,16 @@ import java.util.List;
 import java.util.Map;
 
 public class ClarityActivity extends AppCompatActivity
-        implements PastSearchesFragment.OnFragmentInteractionListener,
+        implements SearchHistoryFragment.OnFragmentInteractionListener,
         PhotoGridFragment.PhotoGridFragmentListener {
     private static final String TAG = "ClarityActivity";
 
-    private static final int FRAGMENT_PAST_SEARCHES = 0;
+    private static final int FRAGMENT_SEARCH_HISTORY = 0;
     private static final int FRAGMENT_PHOTOS = 1;
     private static final int FRAGMENT_EXTRA_GRID = 2;
 
     private static final int SIZE_HAS_EXTRA_FRAGMENT = 3;
+    private static final String STATE_PAST_SEARCHES_LIST = "state_past_searches_list";
 
     static final String EXTRA_STARTING_ALBUM_POSITION = "extra_starting_album_position";
     static final String EXTRA_CURRENT_ALBUM_POSITION = "extra_current_album_position";
@@ -54,7 +54,6 @@ public class ClarityActivity extends AppCompatActivity
     private ClarityPagerAdapter adapter;
     private ViewPager viewPager;
     private DrawerLayout drawerLayout;
-    private CoordinatorLayout coordinatorLayout;
     private FloatingActionButton fab;
 
     private AppBarLayout appBar;
@@ -62,8 +61,6 @@ public class ClarityActivity extends AppCompatActivity
 
     private SearchView searchView;
     private MenuItem searchMenuItem;
-
-    private Fragment currentPhotoGridFragment;
 
     private String currentSortMethod = "";
 
@@ -73,6 +70,7 @@ public class ClarityActivity extends AppCompatActivity
     private boolean isDetailsActivityStarted;
 
     private ArrayList<Photo> photoList;
+    private ArrayList<String> searchHistoryList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +79,15 @@ public class ClarityActivity extends AppCompatActivity
         setExitSharedElementCallback(callback);
 
         initToolbar();
+
+        if (savedInstanceState != null) {
+            searchHistoryList = savedInstanceState.getStringArrayList(STATE_PAST_SEARCHES_LIST);
+        } else {
+            searchHistoryList = new ArrayList<>();
+            searchHistoryList.add("Cats");
+            searchHistoryList.add("Guitars");
+            searchHistoryList.add("Family");
+        }
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         if (viewPager != null) {
@@ -123,7 +130,7 @@ public class ClarityActivity extends AppCompatActivity
         adapter = new ClarityPagerAdapter(getSupportFragmentManager());
 
         // order important
-        adapter.addItem(PastSearchesFragment.newInstance(), "Past Searches");
+        adapter.addItem(SearchHistoryFragment.newInstance(searchHistoryList), "Search history");
         addPhotoGridFragment(
                 PhotoFetcher.FEATURE_POPULAR,
                 PhotoFetcher.SORT_METHOD_COMMENTS_COUNT,
@@ -149,7 +156,7 @@ public class ClarityActivity extends AppCompatActivity
 
                 // hide fab and subtitle in gallery view
                 if (fab != null) {
-                    if (position == FRAGMENT_PAST_SEARCHES) {
+                    if (position == FRAGMENT_SEARCH_HISTORY) {
                         fab.show();
                         clearToolbarSubtitle();
                     } else {
@@ -173,7 +180,7 @@ public class ClarityActivity extends AppCompatActivity
     }
 
     private void addPhotoGridFragment(String feature, String sortMethod, String gridTitle) {
-        currentPhotoGridFragment = PhotoGridFragment.newInstance(feature, sortMethod);
+        Fragment currentPhotoGridFragment = PhotoGridFragment.newInstance(feature, sortMethod);
         adapter.addItem(currentPhotoGridFragment, gridTitle);
     }
 
@@ -189,7 +196,6 @@ public class ClarityActivity extends AppCompatActivity
     }
 
     private void initDrawer() {
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator);
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_drawer);
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -202,7 +208,7 @@ public class ClarityActivity extends AppCompatActivity
                             transitionToFragment(FRAGMENT_PHOTOS);
                             break;
                         case R.id.navigation_item_past_searches:
-                            transitionToFragment(FRAGMENT_PAST_SEARCHES);
+                            transitionToFragment(FRAGMENT_SEARCH_HISTORY);
                             break;
 //                        case R.id.navigation_item_settings:
 //                            Snackbar.make(coordinatorLayout, "Settings button clicked",
@@ -333,8 +339,6 @@ public class ClarityActivity extends AppCompatActivity
 //                .replace(R.id.details_container, photoDetailsFragment)
 //                .addToBackStack(null)
 //                .commit();
-//
-//        transitionToFragment(FRAGMENT_PHOTO_DETAILS);
     }
 
     @Override
@@ -349,11 +353,13 @@ public class ClarityActivity extends AppCompatActivity
 
         // handle hiding menu items on viewPager fragment change
         if (viewPager != null) {
-            if (viewPager.getCurrentItem() == FRAGMENT_PAST_SEARCHES) {
+            if (viewPager.getCurrentItem() == FRAGMENT_SEARCH_HISTORY) {
                 menu.findItem(R.id.menu_action_refresh).setVisible(false);
                 menu.findItem(R.id.menu_action_search).setVisible(false);
                 hideSortButtons(menu, false);
             } else if (viewPager.getCurrentItem() == FRAGMENT_EXTRA_GRID) {
+                menu.findItem(R.id.menu_action_refresh).setVisible(false);
+                menu.findItem(R.id.menu_action_search).setVisible(true);
                 hideSortButtons(menu, false);
             } else {
                 menu.findItem(R.id.menu_action_refresh).setVisible(true);
@@ -397,6 +403,7 @@ public class ClarityActivity extends AppCompatActivity
         addOrReplaceExtraGridFragment(searchTerm);
         transitionToFragment(FRAGMENT_EXTRA_GRID);
         ((PhotoGridFragment) getCurrentFragment()).performSearch(searchTerm);
+        searchHistoryList.add(searchTerm);
         toolbar.setTitle(searchTerm);
     }
 
@@ -465,6 +472,12 @@ public class ClarityActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putStringArrayList(STATE_PAST_SEARCHES_LIST, searchHistoryList);
+    }
+
     private final SharedElementCallback callback = new SharedElementCallback() {
         @Override
         public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
@@ -505,6 +518,6 @@ public class ClarityActivity extends AppCompatActivity
 
     @Override
     public void onPastSearchItemClick(String searchString) {
-
+        performSearch(searchString);
     }
 }
