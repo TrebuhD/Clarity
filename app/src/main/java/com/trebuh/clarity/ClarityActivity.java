@@ -377,7 +377,7 @@ public class ClarityActivity extends AppCompatActivity
                 if (!searchView.isIconified()) {
                     searchView.setIconified(true);
                 }
-                performSearch(query);
+                performSearch(query, true);
                 return false;
             }
 
@@ -399,11 +399,13 @@ public class ClarityActivity extends AppCompatActivity
         menu.findItem(R.id.menu_action_sortby_favorites).setVisible(visible);
     }
 
-    private void performSearch(String searchTerm) {
+    private void performSearch(String searchTerm, boolean saveInHistory) {
         addOrReplaceExtraGridFragment(searchTerm);
         transitionToFragment(FRAGMENT_EXTRA_GRID);
         ((PhotoGridFragment) getCurrentFragment()).performSearch(searchTerm);
-        searchHistoryList.add(searchTerm);
+        if (saveInHistory) {
+            searchHistoryList.add(searchTerm);
+        }
         toolbar.setTitle(searchTerm);
     }
 
@@ -518,6 +520,6 @@ public class ClarityActivity extends AppCompatActivity
 
     @Override
     public void onPastSearchItemClick(String searchString) {
-        performSearch(searchString);
+        performSearch(searchString, false);
     }
 }
