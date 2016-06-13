@@ -3,11 +3,13 @@ package com.trebuh.clarity.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClarityPagerAdapter extends FragmentPagerAdapter {
+public class ClarityPagerAdapter extends FragmentStatePagerAdapter {
     private List<Fragment> fragments = new ArrayList<>();
     private List<String> fragmentTitles = new ArrayList<>();
 
@@ -25,6 +27,16 @@ public class ClarityPagerAdapter extends FragmentPagerAdapter {
         fragments.remove(position);
         fragmentTitles.remove(position);
         notifyDataSetChanged();
+    }
+
+    @Override
+    // Yet another bug in FragmentStatePagerAdapter that destroyItem is called on fragment that hasnt been added. Need to catch
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        try {
+            super.destroyItem(container, position, object);
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override

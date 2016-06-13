@@ -33,15 +33,20 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private static int GRID_SPAN_COUNT = 2;
     private static final int MINIMUM_ITEM_COUNT = 2;
 
-    private static final String ARG_FEATURE = "feature";
-    private static final String ARG_SORT_BY = "sort_by";
-    private static final String ARG_SEARCH_TERM = "search_term";
-    private static final String ARG_IS_SEARCH_INSTANCE = "is_search_instance";
+    private static String ARG_FEATURE = "feature";
+    private static String ARG_SORT_BY = "sort_by";
+    private static String ARG_SEARCH_TERM = "search_term";
+    private static String ARG_IS_SEARCH_INSTANCE = "is_search_instance";
 
     private String paramFeature;
     private String paramSortBy;
     private String paramSearchTerm;
     private boolean paramIsSearchInstance;
+
+    private static final String STATE_PHOTO_LIST = "state_photo_list";
+    private static final String STATE_FEATURE = "state_feature";
+    private static final String STATE_SORT_METHOD = "state_sort_method";
+    private static final String STATE_IS_SEARCH_INSTANCE = "state_is_sort_instance";
 
     private PhotoGridAdapter adapter;
     private PhotoGridFragmentListener listener;
@@ -107,7 +112,14 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_photo_grid, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_photo_grid, container, false);
+        if (savedInstanceState != null) {
+            paramFeature = savedInstanceState.getString(STATE_FEATURE);
+            paramSortBy = savedInstanceState.getString(STATE_SORT_METHOD);
+            paramIsSearchInstance = savedInstanceState.getBoolean(STATE_IS_SEARCH_INSTANCE);
+            photos = savedInstanceState.getParcelableArrayList(STATE_PHOTO_LIST);
+        }
+        return rootView;
     }
 
     @Override
@@ -173,7 +185,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         gridRecyclerView.getItemAnimator().setRemoveDuration(250);
     }
 
-
     private void initRefreshButton(View view) {
         refreshButton = (AppCompatButton) view.findViewById(R.id.network_error_button);
         refreshButton.setOnClickListener(new View.OnClickListener() {
@@ -230,6 +241,15 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         this.paramFeature = feature;
         this.paramSortBy = PhotoFetcher.SORT_METHOD_DEFAULT;
         onRefresh();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STATE_PHOTO_LIST, photos);
+        outState.putBoolean(STATE_IS_SEARCH_INSTANCE, paramIsSearchInstance);
+        outState.putString(STATE_FEATURE, paramFeature);
+        outState.putString(STATE_SORT_METHOD, paramSortBy);
     }
 
     public RecyclerView getPhotosContainer() {

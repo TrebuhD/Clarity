@@ -3,7 +3,6 @@ package com.trebuh.clarity;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
-import android.os.PersistableBundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -50,6 +49,9 @@ public class ClarityActivity extends AppCompatActivity
     static final String EXTRA_CURRENT_ALBUM_POSITION = "extra_current_album_position";
     static final String EXTRA_PHOTOS_ARRAY_LIST = "extra_photos_array_list";
 
+    private static final String STATE_FRAGMENT_PHOTOS = "state_fragment_photos";
+    private static final String STATE_FRAGMENT_EXTRA_GRID = "state_fragment_extra_grid";
+
     // Container for fragments
     private ClarityPagerAdapter adapter;
     private ViewPager viewPager;
@@ -72,6 +74,10 @@ public class ClarityActivity extends AppCompatActivity
     private ArrayList<Photo> photoList;
     private ArrayList<String> searchHistoryList;
 
+    // for saving fragment state
+    private Fragment retainedPhotoGridFragment;
+    private Fragment extraGridFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +88,8 @@ public class ClarityActivity extends AppCompatActivity
 
         if (savedInstanceState != null) {
             searchHistoryList = savedInstanceState.getStringArrayList(STATE_PAST_SEARCHES_LIST);
+            retainedPhotoGridFragment = getSupportFragmentManager().getFragment(savedInstanceState, STATE_FRAGMENT_PHOTOS);
+            extraGridFragment = getSupportFragmentManager().getFragment(savedInstanceState, STATE_FRAGMENT_EXTRA_GRID);
         } else {
             searchHistoryList = new ArrayList<>();
             searchHistoryList.add("Cats");
@@ -131,10 +139,16 @@ public class ClarityActivity extends AppCompatActivity
 
         // order important
         adapter.addItem(SearchHistoryFragment.newInstance(searchHistoryList), "Search history");
-        addPhotoGridFragment(
-                PhotoFetcher.FEATURE_POPULAR,
-                PhotoFetcher.SORT_METHOD_COMMENTS_COUNT,
-                "Popular Photos");
+
+        PhotoGridFragment photoFragment = (retainedPhotoGridFragment == null) ?
+                PhotoGridFragment.newInstance(PhotoFetcher.FEATURE_POPULAR,
+                        PhotoFetcher.SORT_METHOD_COMMENTS_COUNT) : (PhotoGridFragment) retainedPhotoGridFragment;
+
+        adapter.addItem(photoFragment, "Popular Photos");
+
+        if (extraGridFragment != null) {
+            adapter.addItem(extraGridFragment, "");
+        }
 
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -177,11 +191,6 @@ public class ClarityActivity extends AppCompatActivity
             }
         });
         transitionToFragment(FRAGMENT_PHOTOS);
-    }
-
-    private void addPhotoGridFragment(String feature, String sortMethod, String gridTitle) {
-        Fragment currentPhotoGridFragment = PhotoGridFragment.newInstance(feature, sortMethod);
-        adapter.addItem(currentPhotoGridFragment, gridTitle);
     }
 
     private void addOrReplaceExtraGridFragment(String searchTerm) {
@@ -466,18 +475,22 @@ public class ClarityActivity extends AppCompatActivity
 
     private Fragment getCurrentFragment() {
         int currItem = viewPager.getCurrentItem();
-        Fragment currFragment = adapter.getItem(currItem);
-        if (currFragment instanceof PhotoGridFragment) {
-            return currFragment;
-        } else {
-            return currFragment;
-        }
+        return adapter.getItem(currItem);
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putStringArrayList(STATE_PAST_SEARCHES_LIST, searchHistoryList);
+
+        // save the fragment's instance
+        if (viewPager.getCurrentItem() == FRAGMENT_PHOTOS) {
+            if (getCurrentFragment().isAdded()) {
+                getSupportFragmentManager().putFragment(outState, STATE_FRAGMENT_PHOTOS, getCurrentFragment());
+            }
+        } else if (viewPager.getCurrentItem() == FRAGMENT_EXTRA_GRID) {
+            getSupportFragmentManager().putFragment(outState, STATE_FRAGMENT_EXTRA_GRID, getCurrentFragment());
+        }
     }
 
     private final SharedElementCallback callback = new SharedElementCallback() {
