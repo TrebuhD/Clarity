@@ -1,7 +1,7 @@
 # Clarity
 Material design image browser for 500px.
 
-[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](#)
 
 Final project for my Android programming course.
 
