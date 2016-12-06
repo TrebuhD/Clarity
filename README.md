@@ -1,7 +1,7 @@
 # Clarity
 Material design image browser for 500px.
 
-[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](#)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](#) [![Build Status](https://travis-ci.org/TrebuhD/Clarity.svg?branch=master)](https://travis-ci.org/TrebuhD/Clarity)
 
 Final project for my Android programming course.
 
