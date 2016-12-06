@@ -35,4 +35,4 @@ after_failure:
 
 script:
   - jdk_switcher use oraclejdk8
-  - ./gradlew build connectedCheck
+  - ./gradlew build connectedCheck --stacktrace
