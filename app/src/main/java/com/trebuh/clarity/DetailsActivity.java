@@ -141,5 +141,10 @@ public class DetailsActivity extends AppCompatActivity
         public int getCount() {
             return (photoList == null ? 0 : photoList.size());
         }
+
+        @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+        }
     }
 }

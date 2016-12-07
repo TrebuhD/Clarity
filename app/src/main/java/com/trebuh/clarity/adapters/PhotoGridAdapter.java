@@ -16,6 +16,8 @@ import com.trebuh.clarity.R;
 import com.trebuh.clarity.models.Photo;
 
 import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.PhotoGridItemHolder> {
     private List<Photo> photoList;
@@ -42,7 +44,6 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         String photoTitle = photo.getName();
         String authorName = photo.getUsername();
         String photoUrl = photo.getUrl();
-        String photoTitleText = photo.getName();
 
         viewHolder.setUsernameText(authorName);
         viewHolder.setPhotoImage(photoUrl);
@@ -65,9 +66,8 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
     }
 
     public void addItemRange(List<Photo> photos) {
-        int currentSize = getItemCount();
+//        int currentSize = getItemCount();
         photoList.addAll(photos);
-        notifyItemRangeInserted(currentSize, photos.size());
     }
 
     public void removeItem(int position) {

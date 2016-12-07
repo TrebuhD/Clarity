@@ -44,7 +44,7 @@ public class PhotoFetcher {
     private static final String DEFAULT_IMAGE_SIZE = "3";
     private static final String DEFAULT_FEATURE = "fresh_today";
     private static final String DEFAULT_SORT_METHOD = "created_at";
-    private static final int DEFAULT_RESULTS_PER_PAGE = 30;
+    public static final int DEFAULT_RESULTS_PER_PAGE = 30;
 
     // Response keys:
     private static final String KEY_TOTAL_PAGES = "total_pages";

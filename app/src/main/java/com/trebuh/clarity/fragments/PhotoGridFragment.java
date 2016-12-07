@@ -4,6 +4,8 @@ import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Debug;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -165,7 +167,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             }
         });
         gridRecyclerView.setAdapter(adapter);
-        final GridLayoutManager layoutManager = new GridLayoutManager(getContext(), GRID_SPAN_COUNT);
+        final GridLayoutManager layoutManager = new WrapContentGridLayoutManager(getContext(), GRID_SPAN_COUNT);
         gridRecyclerView.setLayoutManager(layoutManager);
 
         // Handle loading more items after scrolling to end of page
@@ -173,9 +175,13 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (totalItemsCount > MINIMUM_ITEM_COUNT) {
-                    Log.d(TAG, "loading more items");
-                    // (page + 1) - don't download the first page twice
-                    adapter.addItemRange(loadNewPhotos(page + 1));
+                    ArrayList<Photo> morePhotos = loadNewPhotos(page + 1);
+                    adapter.addItemRange(morePhotos);
+
+                    Handler handler = new Handler();
+                    Log.d(TAG, "loading more items, current page: " + page + ", current items: " +
+                            photos.size() + ", totalItemsCount:" + totalItemsCount + ", adding " + morePhotos.size() + " photos");
+                    handler.post(new NotifyItemsInsertedRunnable(photos.size(), morePhotos.size()));
                 }
             }
         });
@@ -215,7 +221,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             // TODO use Rx
             String photosJson = new FetchPhotosTask().execute(params).get();
             photos = PhotoFetcher.parsePhotoItems(photosJson);
-            this.photos = photos;
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Failed to fetch new photos", e);
         }
@@ -332,6 +337,38 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             this.feature = feature;
             this.sortBy = sortBy;
             this.searchQuery = searchQuery;
+        }
+    }
+
+    private class NotifyItemsInsertedRunnable implements Runnable {
+        private int startPos;
+        private int numberOfItems;
+
+        public NotifyItemsInsertedRunnable(int startPos, int numberOfItems) {
+            this.startPos = startPos;
+            this.numberOfItems = numberOfItems;
+        }
+
+        @Override
+        public void run() {
+            adapter.notifyItemRangeInserted(startPos, numberOfItems);
+        }
+    }
+
+    // this has to exist due to an android bug:
+    // http://stackoverflow.com/questions/35653439/recycler-view-inconsistency-detected-invalid-view-holder-adapter-positionviewh
+    private class WrapContentGridLayoutManager extends GridLayoutManager {
+        WrapContentGridLayoutManager(Context context, int gridSpanCount) {
+            super(context, gridSpanCount);
+        }
+
+        @Override
+        public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+            try {
+                super.onLayoutChildren(recycler, state);
+            } catch (IndexOutOfBoundsException e) {
+                Log.e(TAG, "Error, Index out of bounds");
+            }
         }
     }
 }

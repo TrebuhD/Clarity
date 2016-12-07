@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -118,7 +119,6 @@ public class ClarityActivity extends AppCompatActivity
         super.onResume();
         isDetailsActivityStarted = false;
     }
-
 
     private void initToolbar() {
         appBar = (AppBarLayout) findViewById(R.id.appbar);
@@ -492,6 +492,20 @@ public class ClarityActivity extends AppCompatActivity
         } else if (viewPager.getCurrentItem() == FRAGMENT_EXTRA_GRID) {
             getSupportFragmentManager().putFragment(outState, STATE_FRAGMENT_EXTRA_GRID, getCurrentFragment());
         }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle inState) {
+        super.onRestoreInstanceState(inState);
+        // load the fragment's instance
+        if (viewPager.getCurrentItem() == FRAGMENT_PHOTOS) {
+            if (getCurrentFragment().isAdded()) {
+                getSupportFragmentManager().getFragment(inState, STATE_FRAGMENT_PHOTOS);
+            }
+        } else if (viewPager.getCurrentItem() == FRAGMENT_EXTRA_GRID) {
+            getSupportFragmentManager().getFragment(inState, STATE_FRAGMENT_EXTRA_GRID);
+        }
+
     }
 
     private final SharedElementCallback callback = new SharedElementCallback() {
