@@ -28,6 +28,8 @@ import java.util.concurrent.ExecutionException;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
+import static com.trebuh.clarity.PhotoFetcher.FIRST_PAGE;
+
 public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "PhotoGridFragment";
     private static int GRID_SPAN_COUNT = 2;
@@ -139,7 +141,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     public void onRefresh() {
         if (adapter != null) {
             adapter.removeAllItems();
-            adapter.addItemRange(loadNewPhotos(0));
+            adapter.addItemRange(loadNewPhotos(FIRST_PAGE));
         }
     }
 
@@ -154,7 +156,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     private void initRecView(View view) {
         gridRecyclerView = (RecyclerView) view.findViewById(R.id.rec_view_photos);
-        photos = loadNewPhotos(0);
+        photos = loadNewPhotos(FIRST_PAGE);
         adapter = new PhotoGridAdapter(photos);
         adapter.setItemOnClickListener(new PhotoGridAdapter.PhotoGridItemOnClickListener() {
             @Override
@@ -188,7 +190,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                photos = loadNewPhotos(0);
+                photos = loadNewPhotos(FIRST_PAGE);
             }
         });
     }
@@ -210,7 +212,9 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                         paramSortBy,
                         PhotoFetcher.NO_SEARCH_QUERY);
             }
-            photos = new FetchPhotosTask().execute(params).get();
+            // TODO use Rx
+            String photosJson = new FetchPhotosTask().execute(params).get();
+            photos = PhotoFetcher.parsePhotoItems(photosJson);
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Failed to fetch new photos", e);
         }
@@ -226,9 +230,10 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         ArrayList<Photo> photos = new ArrayList<>();
         try {
             FetchPhotosTaskParams params = new FetchPhotosTaskParams(
-                    PhotoFetcher.FIRST_PAGE, PhotoFetcher.NO_FEATURE, PhotoFetcher.NO_SORT_METHOD,
+                    FIRST_PAGE, PhotoFetcher.NO_FEATURE, PhotoFetcher.NO_SORT_METHOD,
                     searchQuery);
-            photos = new FetchPhotosTask().execute(params).get();
+            // TODO use Rx
+            String photosJson = new FetchPhotosTask().execute(params).get();
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Failed to fetch new photos", e);
         }
@@ -268,11 +273,12 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         void onAppBarShow();
     }
 
-    private class FetchPhotosTask extends AsyncTask<FetchPhotosTaskParams, Void, ArrayList<Photo>> {
+    private class FetchPhotosTask extends AsyncTask<FetchPhotosTaskParams, Void, String> {
         boolean isNetworkError = false;
 
         @Override
         protected void onPreExecute() {
+            Log.d(TAG, "PhotoGridFragmentListener::OnPreExecute()");
             if (swipeContainer != null) {
                 swipeContainer.setRefreshing(true);
             }
@@ -280,7 +286,8 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         }
 
         @Override
-        protected ArrayList<Photo> doInBackground(FetchPhotosTaskParams... params) {
+        protected String doInBackground(FetchPhotosTaskParams... params) {
+            Log.d(TAG, "PhotoGridFragmentListener::DoInBackground()");
             String photosJsonResponse = null;
             try {
                 photosJsonResponse = PhotoFetcher.fetchPhotosJSON(
@@ -292,11 +299,12 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                 isNetworkError = true;
                 e.printStackTrace();
             }
-            return PhotoFetcher.parsePhotoItems(photosJsonResponse);
+            return  photosJsonResponse;
+//            return PhotoFetcher.parsePhotoItems(photosJsonResponse);
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Photo> photos) {
+        protected void onPostExecute(String photosJson) {
             if (refreshButton != null) {
                 if (isNetworkError) {
                     refreshButton.setVisibility(View.VISIBLE);
@@ -306,8 +314,9 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             }
             if (swipeContainer != null) {
                 swipeContainer.setRefreshing(false);
+                Log.d(TAG, "PhotoGridFragmentListener::OnPostExecute()");
             }
-            super.onPostExecute(photos);
+//            super.onPostExecute(photos);
         }
     }
 
