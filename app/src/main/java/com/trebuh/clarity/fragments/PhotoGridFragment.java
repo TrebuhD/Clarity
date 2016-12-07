@@ -215,6 +215,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             // TODO use Rx
             String photosJson = new FetchPhotosTask().execute(params).get();
             photos = PhotoFetcher.parsePhotoItems(photosJson);
+            this.photos = photos;
         } catch (InterruptedException | ExecutionException e) {
             Log.e(TAG, "Failed to fetch new photos", e);
         }
