@@ -232,20 +232,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         onRefresh();
     }
 
-    public ArrayList<Photo> performSearch(String searchQuery) {
-        ArrayList<Photo> photos = new ArrayList<>();
-        try {
-            FetchPhotosTaskParams params = new FetchPhotosTaskParams(
-                    FIRST_PAGE, PhotoFetcher.NO_FEATURE, PhotoFetcher.NO_SORT_METHOD,
-                    searchQuery);
-            // TODO use Rx
-            String photosJson = new FetchPhotosTask().execute(params).get();
-        } catch (InterruptedException | ExecutionException e) {
-            Log.e(TAG, "Failed to fetch new photos", e);
-        }
-        return photos;
-    }
-
     public void transitionToNewFeature(String feature) {
         this.paramFeature = feature;
         this.paramSortBy = PhotoFetcher.SORT_METHOD_DEFAULT;

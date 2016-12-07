@@ -412,7 +412,7 @@ public class ClarityActivity extends AppCompatActivity
     private void performSearch(String searchTerm, boolean saveInHistory) {
         addOrReplaceExtraGridFragment(searchTerm);
         transitionToFragment(FRAGMENT_EXTRA_GRID);
-        ((PhotoGridFragment) getCurrentFragment()).performSearch(searchTerm);
+//        ((PhotoGridFragment) getCurrentFragment()).performSearch(searchTerm, PhotoFetcher.FIRST_PAGE);
         if (saveInHistory) {
             searchHistoryList.add(searchTerm);
         }

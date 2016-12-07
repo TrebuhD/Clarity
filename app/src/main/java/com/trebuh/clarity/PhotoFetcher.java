@@ -153,6 +153,7 @@ public class PhotoFetcher {
             url = Uri.parse(ENDPOINT).buildUpon()
                     .appendPath(ENDPOINT_PHOTOS)
                     .appendPath(ENDPOINT_SEARCH_PHOTOS)
+                    .appendQueryParameter(EXTRA_PAGE, String.valueOf(page))
                     .appendQueryParameter(PARAM_SEARCH_TERM, searchQuery)
                     .appendQueryParameter(PARAM_CONSUMER_KEY, CONSUMER_KEY)
                     .appendQueryParameter(PARAM_IMAGE_SIZE, DEFAULT_IMAGE_SIZE)
