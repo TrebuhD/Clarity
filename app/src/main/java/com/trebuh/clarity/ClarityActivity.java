@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.MenuItemCompat;
@@ -219,11 +220,11 @@ public class ClarityActivity extends AppCompatActivity
                         case R.id.navigation_item_past_searches:
                             transitionToFragment(FRAGMENT_SEARCH_HISTORY);
                             break;
-//                        case R.id.navigation_item_settings:
-//                            Snackbar.make(coordinatorLayout, "Settings button clicked",
-//                                    Snackbar.LENGTH_LONG)
-//                                    .show();
-//                            break;
+                        case R.id.navigation_item_settings:
+                            Snackbar.make(drawerLayout, "Settings button clicked",
+                                    Snackbar.LENGTH_LONG)
+                                    .show();
+                            break;
                         case R.id.drawer_bookmark_editors:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_editors);

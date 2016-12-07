@@ -12,11 +12,11 @@
             android:checked="false"
             android:icon="@drawable/ic_searched_for_black_24dp"
             android:title="@string/drawer_item_past_searches"/>
-        <!--<item-->
-            <!--android:id="@+id/navigation_item_settings"-->
-            <!--android:checked="false"-->
-            <!--android:icon="@drawable/ic_settings_black_24dp"-->
-            <!--android:title="@string/drawer_item_settings"/>-->
+        <item
+            android:id="@+id/navigation_item_settings"
+            android:checked="false"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/drawer_item_settings"/>
     </group>
     <item
         android:id="@+id/drawer_bookmark_subheader"

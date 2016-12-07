@@ -2,6 +2,7 @@ package com.trebuh.clarity.fragments;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
+import com.trebuh.clarity.FullscreenPictureActivity;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.models.Photo;
 
@@ -128,6 +130,14 @@ public class DetailsFragment extends Fragment {
         photoRequest.into(mainPicture, photoCallback);
         profilePicRequest.into(profilePicture);
 
+        mainPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent fullscreenPhotoIntent = new Intent(getActivity(), FullscreenPictureActivity.class);
+                startActivity(fullscreenPhotoIntent);
+            }
+        });
+
         return rootView;
     }
 
@@ -198,7 +208,6 @@ public class DetailsFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

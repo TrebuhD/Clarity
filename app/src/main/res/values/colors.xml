@@ -7,4 +7,6 @@
     <color name="colorPrimaryDarker">#1d265f</color>
     <color name="profile_pic_tint">#2f505050</color>
     <color name="header_photo_tint">#4f808080</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

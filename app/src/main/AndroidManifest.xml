@@ -19,6 +19,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -29,7 +30,17 @@
         <activity
             android:name=".DetailsActivity"
             android:label="@string/title_activity_details"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".FullscreenPictureActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_fullscreen_picture"
+            android:parentActivityName=".DetailsActivity"
+            android:theme="@style/FullscreenTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.trebuh.clarity.DetailsActivity" />
+        </activity>
     </application>
 
 </manifest>
