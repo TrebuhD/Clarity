@@ -8,11 +8,9 @@ I made this app for a school project, with Material Design principles in mind.
 
 Features photo search, endless scrolling, sorting, bookmarks and search history.
 
-Utilizes the [500px API](https://github.com/500px/api-documentation) without using Retrofit (those were the rules for the final project).
+Utilizes the [500px API](https://github.com/500px/api-documentation) without using Retrofit (those were the rules for the project).
 
 It's not entirely finished, hence not published on Google Play.
-
-I have no current plans to develop this app.
 
 Feel free to fork the project or submit pull requests!
 
