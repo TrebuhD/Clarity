@@ -4,7 +4,6 @@ import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,18 +18,23 @@ import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 
 import com.trebuh.clarity.EndlessRecyclerViewScrollListener;
-import com.trebuh.clarity.PhotoFetcher;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
 import com.trebuh.clarity.models.Photo;
+import com.trebuh.clarity.network.ApiConstants;
+import com.trebuh.clarity.network.FiveHundredPxService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
-
-import static com.trebuh.clarity.PhotoFetcher.FIRST_PAGE;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "PhotoGridFragment";
@@ -79,8 +83,8 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         Bundle args = new Bundle();
         args.putString(ARG_SEARCH_TERM, searchQuery);
         args.putBoolean(ARG_IS_SEARCH_INSTANCE, true);
-        args.putString(ARG_FEATURE, PhotoFetcher.NO_FEATURE);
-        args.putString(ARG_SORT_BY, PhotoFetcher.NO_SORT_METHOD);
+        args.putString(ARG_FEATURE, ApiConstants.NO_FEATURE);
+        args.putString(ARG_SORT_BY, ApiConstants.NO_SORT_METHOD);
         fragment.setArguments(args);
         return fragment;
     }
@@ -143,7 +147,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     public void onRefresh() {
         if (adapter != null) {
             adapter.removeAllItems();
-            adapter.addItemRange(loadNewPhotos(FIRST_PAGE));
+            adapter.addItemRange(loadNewPhotos(ApiConstants.FIRST_PAGE));
         }
     }
 
@@ -158,7 +162,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     private void initRecView(View view) {
         gridRecyclerView = (RecyclerView) view.findViewById(R.id.rec_view_photos);
-        photos = loadNewPhotos(FIRST_PAGE);
+        photos = loadNewPhotos(ApiConstants.FIRST_PAGE);
         adapter = new PhotoGridAdapter(photos);
         adapter.setItemOnClickListener(new PhotoGridAdapter.PhotoGridItemOnClickListener() {
             @Override
@@ -196,34 +200,69 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                photos = loadNewPhotos(FIRST_PAGE);
+                photos = loadNewPhotos(ApiConstants.FIRST_PAGE);
             }
         });
     }
 
     private ArrayList<Photo> loadNewPhotos(int page) {
-        ArrayList<Photo> photos = new ArrayList<>();
-        try {
-            FetchPhotosTaskParams params;
-            if (paramIsSearchInstance) {
-                params = new FetchPhotosTaskParams(
-                        page,
-                        PhotoFetcher.NO_FEATURE,
-                        PhotoFetcher.NO_SORT_METHOD,
-                        paramSearchTerm);
-            } else {
-                params = new FetchPhotosTaskParams(
-                        page,
-                        paramFeature,
-                        paramSortBy,
-                        PhotoFetcher.NO_SEARCH_QUERY);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ApiConstants.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        FiveHundredPxService service = retrofit.create(FiveHundredPxService.class);
+
+        String feature = paramIsSearchInstance ? ApiConstants.NO_FEATURE : paramFeature;
+        String sortMethod = paramIsSearchInstance ? ApiConstants.NO_SORT_METHOD : paramSortBy;
+        String searchQuery = paramIsSearchInstance ? paramSearchTerm : ApiConstants.NO_SEARCH_QUERY;
+
+        service.listPhotos(ApiConstants.CONSUMER_KEY,
+                feature,
+                sortMethod,
+                ApiConstants.DEFAULT_IMAGE_SIZE,
+                page,
+                ApiConstants.DEFAULT_RESULTS_PER_PAGE,
+                searchQuery).enqueue(new Callback<List<Photo>>() {
+            @Override
+            public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
+                if (response.isSuccessful()) {
+
+                } else {
+//                        todo Handle network error
+                }
             }
-            // TODO use Rx
-            String photosJson = new FetchPhotosTask().execute(params).get();
-            photos = PhotoFetcher.parsePhotoItems(photosJson);
-        } catch (InterruptedException | ExecutionException e) {
-            Log.e(TAG, "Failed to fetch new photos", e);
-        }
+
+            @Override
+            public void onFailure(Call<List<Photo>> call, Throwable t) {
+                Log.d(TAG, "Error: " +  t.getMessage());
+            }
+        });
+
+
+//        try {
+//            FetchPhotosTaskParams params;
+//            if (paramIsSearchInstance) {
+//                params = new FetchPhotosTaskParams(
+//                        page,
+//                        ApiConstants.NO_FEATURE,
+//                        ApiConstants.NO_SORT_METHOD,
+//                        paramSearchTerm);
+//            } else {
+//                params = new FetchPhotosTaskParams(
+//                        page,
+//                        paramFeature,
+//                        paramSortBy,
+//                        ApiConstants.NO_SEARCH_QUERY);
+//            }
+//            // TODO use Rx & Retrofit
+//
+////            String photosJson = new FetchPhotosTask().execute(params).get();
+////            photos = PhotoFetcher.parsePhotoItems(photosJson);
+//
+//        } catch (InterruptedException | ExecutionException e) {
+//            Log.e(TAG, "Failed to fetch new photos", e);
+//        }
         return photos;
     }
 
@@ -234,7 +273,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     public void transitionToNewFeature(String feature) {
         this.paramFeature = feature;
-        this.paramSortBy = PhotoFetcher.SORT_METHOD_DEFAULT;
+        this.paramSortBy = ApiConstants.SORT_METHOD_DEFAULT;
         onRefresh();
     }
 
@@ -265,7 +304,9 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         void onAppBarShow();
     }
 
-    private class FetchPhotosTask extends AsyncTask<FetchPhotosTaskParams, Void, String> {
+
+
+    private class FetchPhotosTask extends AsyncTask<FetchPhotosTaskParams, Void, List<Photo>> {
         boolean isNetworkError = false;
 
         @Override
@@ -278,20 +319,21 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         }
 
         @Override
-        protected String doInBackground(FetchPhotosTaskParams... params) {
+        protected List<Photo> doInBackground(FetchPhotosTaskParams... params) {
             Log.d(TAG, "PhotoGridFragmentListener::DoInBackground()");
-            String photosJsonResponse = null;
-            try {
-                photosJsonResponse = PhotoFetcher.fetchPhotosJSON(
-                        params[0].page,
-                        params[0].feature,
-                        params[0].sortBy,
-                        params[0].searchQuery);
-            } catch (IOException | NetworkErrorException e) {
-                isNetworkError = true;
-                e.printStackTrace();
-            }
-            return  photosJsonResponse;
+//            String photosJsonResponse = null;
+//            try {
+//                photosJsonResponse = PhotoFetcher.fetchPhotosJSON(
+//                        params[0].page,
+//                        params[0].feature,
+//                        params[0].sortBy,
+//                        params[0].searchQuery);
+//            } catch (IOException | NetworkErrorException e) {
+//                isNetworkError = true;
+//                e.printStackTrace();
+//            }
+
+            return  null;
 //            return PhotoFetcher.parsePhotoItems(photosJsonResponse);
         }
 
