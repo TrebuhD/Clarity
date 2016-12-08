@@ -22,7 +22,7 @@ public class Photo implements Parcelable
     private String name;
     @SerializedName("description")
     @Expose
-    private Object description;
+    private String description;
     @SerializedName("camera")
     @Expose
     private String camera;
@@ -187,7 +187,7 @@ public class Photo implements Parcelable
             instance.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.userId = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.name = ((String) in.readValue((String.class.getClassLoader())));
-            instance.description = ((Object) in.readValue((Object.class.getClassLoader())));
+            instance.description = ((String) in.readValue((Object.class.getClassLoader())));
             instance.camera = ((String) in.readValue((String.class.getClassLoader())));
             instance.lens = ((String) in.readValue((String.class.getClassLoader())));
             instance.focalLength = ((String) in.readValue((String.class.getClassLoader())));
@@ -323,7 +323,7 @@ public class Photo implements Parcelable
      * @return
      *     The description
      */
-    public Object getDescription() {
+    public String getDescription() {
         return description;
     }
 
@@ -332,11 +332,11 @@ public class Photo implements Parcelable
      * @param description
      *     The description
      */
-    public void setDescription(Object description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public Photo withDescription(Object description) {
+    public Photo withDescription(String description) {
         this.description = description;
         return this;
     }

@@ -100,9 +100,9 @@ public class DetailsFragment extends Fragment {
         HtmlTextView photoDescriptionText = (HtmlTextView) textContainer.findViewById(R.id.details_photo_description_tv);
 
         String photoUrl = photos.get(photoPosition).getUrl();
-        String profilePicUrl = photos.get(photoPosition).getAvatarUrl();
+        String profilePicUrl = photos.get(photoPosition).getUser().getUserpicUrl();
         String photoName = photos.get(photoPosition).getName();
-        String authorName = photos.get(photoPosition).getUsername();
+        String authorName = photos.get(photoPosition).getUser().getUsername();
 
         String tempDescription = photos.get(photoPosition).getDescription();
         String photoDescription = (tempDescription.equals("null") ? "No description" : tempDescription);

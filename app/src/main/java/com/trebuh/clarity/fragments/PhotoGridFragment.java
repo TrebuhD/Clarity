@@ -1,6 +1,5 @@
 package com.trebuh.clarity.fragments;
 
-import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +20,7 @@ import com.trebuh.clarity.EndlessRecyclerViewScrollListener;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
 import com.trebuh.clarity.models.Photo;
+import com.trebuh.clarity.models.PhotosEndpoint;
 import com.trebuh.clarity.network.ApiConstants;
 import com.trebuh.clarity.network.FiveHundredPxService;
 
@@ -31,7 +31,6 @@ import java.util.concurrent.ExecutionException;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -321,7 +320,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             String sortMethod = paramIsSearchInstance ? ApiConstants.NO_SORT_METHOD : paramSortBy;
             String searchQuery = paramIsSearchInstance ? paramSearchTerm : ApiConstants.NO_SEARCH_QUERY;
 
-            Call<List<Photo>> photosCall = service.listPhotos(ApiConstants.CONSUMER_KEY,
+            Call<List<PhotosEndpoint>> photosCall = service.listPhotos(ApiConstants.CONSUMER_KEY,
                     feature,
                     sortMethod,
                     ApiConstants.DEFAULT_IMAGE_SIZE,
