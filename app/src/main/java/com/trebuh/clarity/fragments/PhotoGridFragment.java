@@ -206,64 +206,53 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     private ArrayList<Photo> loadNewPhotos(int page) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ApiConstants.ENDPOINT)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        FiveHundredPxService service = retrofit.create(FiveHundredPxService.class);
-
-        String feature = paramIsSearchInstance ? ApiConstants.NO_FEATURE : paramFeature;
-        String sortMethod = paramIsSearchInstance ? ApiConstants.NO_SORT_METHOD : paramSortBy;
-        String searchQuery = paramIsSearchInstance ? paramSearchTerm : ApiConstants.NO_SEARCH_QUERY;
-
-        service.listPhotos(ApiConstants.CONSUMER_KEY,
-                feature,
-                sortMethod,
-                ApiConstants.DEFAULT_IMAGE_SIZE,
-                page,
-                ApiConstants.DEFAULT_RESULTS_PER_PAGE,
-                searchQuery).enqueue(new Callback<List<Photo>>() {
-            @Override
-            public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
-                if (response.isSuccessful()) {
-
-                } else {
-//                        todo Handle network error
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Photo>> call, Throwable t) {
-                Log.d(TAG, "Error: " +  t.getMessage());
-            }
-        });
-
-
-//        try {
-//            FetchPhotosTaskParams params;
-//            if (paramIsSearchInstance) {
-//                params = new FetchPhotosTaskParams(
-//                        page,
-//                        ApiConstants.NO_FEATURE,
-//                        ApiConstants.NO_SORT_METHOD,
-//                        paramSearchTerm);
-//            } else {
-//                params = new FetchPhotosTaskParams(
-//                        page,
-//                        paramFeature,
-//                        paramSortBy,
-//                        ApiConstants.NO_SEARCH_QUERY);
+        // todo switch to async retrofit
+//        service.listPhotos(ApiConstants.CONSUMER_KEY,
+//                feature,
+//                sortMethod,
+//                ApiConstants.DEFAULT_IMAGE_SIZE,
+//                page,
+//                ApiConstants.DEFAULT_RESULTS_PER_PAGE,
+//                searchQuery).enqueue(new Callback<List<Photo>>() {
+//            @Override
+//            public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
+//                if (response.isSuccessful()) {
+//                    List<Photo> photoList = response.body();
+//                } else {
+////                        todo Handle network error
+//                }
 //            }
+//
+//            @Override
+//            public void onFailure(Call<List<Photo>> call, Throwable t) {
+//                Log.d(TAG, "Error: " +  t.getMessage());
+//            }
+//        });
+
+        List<Photo> photoList = null;
+        try {
+            FetchPhotosTaskParams params;
+            if (paramIsSearchInstance) {
+                params = new FetchPhotosTaskParams(
+                        page,
+                        ApiConstants.NO_FEATURE,
+                        ApiConstants.NO_SORT_METHOD,
+                        paramSearchTerm);
+            } else {
+                params = new FetchPhotosTaskParams(
+                        page,
+                        paramFeature,
+                        paramSortBy,
+                        ApiConstants.NO_SEARCH_QUERY);
+            }
 //            // TODO use Rx & Retrofit
 //
-////            String photosJson = new FetchPhotosTask().execute(params).get();
-////            photos = PhotoFetcher.parsePhotoItems(photosJson);
-//
-//        } catch (InterruptedException | ExecutionException e) {
-//            Log.e(TAG, "Failed to fetch new photos", e);
-//        }
-        return photos;
+            photoList = new FetchPhotosTask().execute(params).get();
+
+        } catch (InterruptedException | ExecutionException e) {
+            Log.e(TAG, "Failed to fetch new photos", e);
+        }
+        return (ArrayList<Photo>) photoList;
     }
 
     public void sortAndReplaceItems(String sortBy) {
@@ -304,8 +293,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         void onAppBarShow();
     }
 
-
-
     private class FetchPhotosTask extends AsyncTask<FetchPhotosTaskParams, Void, List<Photo>> {
         boolean isNetworkError = false;
 
@@ -321,24 +308,39 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         @Override
         protected List<Photo> doInBackground(FetchPhotosTaskParams... params) {
             Log.d(TAG, "PhotoGridFragmentListener::DoInBackground()");
-//            String photosJsonResponse = null;
-//            try {
-//                photosJsonResponse = PhotoFetcher.fetchPhotosJSON(
-//                        params[0].page,
-//                        params[0].feature,
-//                        params[0].sortBy,
-//                        params[0].searchQuery);
-//            } catch (IOException | NetworkErrorException e) {
-//                isNetworkError = true;
-//                e.printStackTrace();
-//            }
+            ArrayList<Photo> photos = null;
 
-            return  null;
-//            return PhotoFetcher.parsePhotoItems(photosJsonResponse);
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(ApiConstants.ENDPOINT)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            FiveHundredPxService service = retrofit.create(FiveHundredPxService.class);
+
+            String feature = paramIsSearchInstance ? ApiConstants.NO_FEATURE : paramFeature;
+            String sortMethod = paramIsSearchInstance ? ApiConstants.NO_SORT_METHOD : paramSortBy;
+            String searchQuery = paramIsSearchInstance ? paramSearchTerm : ApiConstants.NO_SEARCH_QUERY;
+
+            Call<List<Photo>> photosCall = service.listPhotos(ApiConstants.CONSUMER_KEY,
+                    feature,
+                    sortMethod,
+                    ApiConstants.DEFAULT_IMAGE_SIZE,
+                    params[0].page,
+                    ApiConstants.DEFAULT_RESULTS_PER_PAGE,
+                    searchQuery);
+
+            try {
+                Response response = photosCall.execute();
+                photos = (ArrayList<Photo>) response.body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return photos;
         }
 
         @Override
-        protected void onPostExecute(String photosJson) {
+        protected void onPostExecute(List<Photo> photos) {
             if (refreshButton != null) {
                 if (isNetworkError) {
                     refreshButton.setVisibility(View.VISIBLE);
