@@ -91,4 +91,7 @@ public class ApiConstants {
     public static final String NO_FEATURE = "no_feature";
     public static final String NO_SORT_METHOD = "no_sort_method";
 
+    public static final String PARAM_EXCLUDE = "exclude";
+
+    public static final String NUDE = "nude";
 }

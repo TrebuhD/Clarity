@@ -4,11 +4,11 @@ package com.trebuh.clarity.models;
 import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class PhotosEndpoint implements Parcelable
+public class PhotosResponse implements Parcelable
 {
 
     @SerializedName("current_page")
@@ -29,14 +29,14 @@ public class PhotosEndpoint implements Parcelable
     @SerializedName("feature")
     @Expose
     private String feature;
-    public final static Parcelable.Creator<PhotosEndpoint> CREATOR = new Creator<PhotosEndpoint>() {
+    public final static Parcelable.Creator<PhotosResponse> CREATOR = new Creator<PhotosResponse>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public PhotosEndpoint createFromParcel(Parcel in) {
-            PhotosEndpoint instance = new PhotosEndpoint();
+        public PhotosResponse createFromParcel(Parcel in) {
+            PhotosResponse instance = new PhotosResponse();
             instance.currentPage = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.totalPages = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.totalItems = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -46,8 +46,8 @@ public class PhotosEndpoint implements Parcelable
             return instance;
         }
 
-        public PhotosEndpoint[] newArray(int size) {
-            return (new PhotosEndpoint[size]);
+        public PhotosResponse[] newArray(int size) {
+            return (new PhotosResponse[size]);
         }
 
     }
@@ -71,7 +71,7 @@ public class PhotosEndpoint implements Parcelable
         this.currentPage = currentPage;
     }
 
-    public PhotosEndpoint withCurrentPage(Integer currentPage) {
+    public PhotosResponse withCurrentPage(Integer currentPage) {
         this.currentPage = currentPage;
         return this;
     }
@@ -94,7 +94,7 @@ public class PhotosEndpoint implements Parcelable
         this.totalPages = totalPages;
     }
 
-    public PhotosEndpoint withTotalPages(Integer totalPages) {
+    public PhotosResponse withTotalPages(Integer totalPages) {
         this.totalPages = totalPages;
         return this;
     }
@@ -117,7 +117,7 @@ public class PhotosEndpoint implements Parcelable
         this.totalItems = totalItems;
     }
 
-    public PhotosEndpoint withTotalItems(Integer totalItems) {
+    public PhotosResponse withTotalItems(Integer totalItems) {
         this.totalItems = totalItems;
         return this;
     }
@@ -140,7 +140,7 @@ public class PhotosEndpoint implements Parcelable
         this.photos = photos;
     }
 
-    public PhotosEndpoint withPhotos(List<Photo> photos) {
+    public PhotosResponse withPhotos(List<Photo> photos) {
         this.photos = photos;
         return this;
     }
@@ -163,7 +163,7 @@ public class PhotosEndpoint implements Parcelable
         this.filters = filters;
     }
 
-    public PhotosEndpoint withFilters(Filters filters) {
+    public PhotosResponse withFilters(Filters filters) {
         this.filters = filters;
         return this;
     }
@@ -186,7 +186,7 @@ public class PhotosEndpoint implements Parcelable
         this.feature = feature;
     }
 
-    public PhotosEndpoint withFeature(String feature) {
+    public PhotosResponse withFeature(String feature) {
         this.feature = feature;
         return this;
     }
