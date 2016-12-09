@@ -208,7 +208,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             gridRecyclerView.getItemAnimator().setRemoveDuration(250);
         }
         else {
-            adapter.notifyDataSetChanged();
+//            adapter.notifyDataSetChanged();
         }
     }
 
@@ -342,35 +342,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             networkErrorRefreshButton.setVisibility(View.VISIBLE);
         }
     }
-
-//    private class FetchPhotosTask extends AsyncTask<FetchPhotosTaskParams, Void, List<Photo>> {
-//        boolean isNetworkError = false;
-//
-//        @Override
-//        protected void onPreExecute() {
-//            Log.d(TAG, "PhotoGridFragmentListener::OnPreExecute()");
-//            if (swipeContainer != null) {
-//                swipeContainer.setRefreshing(true);
-//            }
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected void onPostExecute(List<Photo> photos) {
-//            if (networkErrorRefreshButton != null) {
-//                if (isNetworkError) {
-//                    networkErrorRefreshButton.setVisibility(View.VISIBLE);
-//                } else {
-//                    networkErrorRefreshButton.setVisibility(View.GONE);
-//                }
-//            }
-//            if (swipeContainer != null) {
-//                swipeContainer.setRefreshing(false);
-//                Log.d(TAG, "PhotoGridFragmentListener::OnPostExecute()");
-//            }
-////            super.onPostExecute(photos);
-//        }
-//    }
 
     private class NotifyItemsInsertedRunnable implements Runnable {
         private int startPos;
