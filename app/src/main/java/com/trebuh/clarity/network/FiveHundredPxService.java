@@ -13,7 +13,6 @@ public interface FiveHundredPxService {
             @Query(ApiConstants.PARAM_FEATURE) String feature,
             @Query(ApiConstants.PARAM_SORT_METHOD) String sortMethod,
             @Query(ApiConstants.PARAM_IMAGE_SIZE) String imageSize,
-            @Query(ApiConstants.PARAM_SEARCH_TERM) String searchTerm,
             @Query(ApiConstants.EXTRA_PAGE) int page,
             @Query(ApiConstants.EXTRA_RESULTS_PER_PAGE) int rpp
     );

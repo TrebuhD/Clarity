@@ -331,7 +331,6 @@ public class ClarityActivity extends AppCompatActivity
 //            }
         }
 
-
 //        DetailsFragment photoDetailsFragment = DetailsFragment.newInstance("1", url);
 //
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

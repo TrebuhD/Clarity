@@ -15,7 +15,7 @@ public class Filters implements Parcelable
     private Boolean category;
     @SerializedName("exclude")
     @Expose
-    private Boolean exclude;
+    private String exclude;
     public final static Parcelable.Creator<Filters> CREATOR = new Creator<Filters>() {
 
 
@@ -25,7 +25,7 @@ public class Filters implements Parcelable
         public Filters createFromParcel(Parcel in) {
             Filters instance = new Filters();
             instance.category = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-            instance.exclude = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+            instance.exclude = ((String) in.readValue((String.class.getClassLoader())));
             return instance;
         }
 
@@ -39,7 +39,8 @@ public class Filters implements Parcelable
     /**
      * 
      * @return
-     *     The category
+     *     Category of the photo, (short) integer
+     *     https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#categories
      */
     public Boolean getCategory() {
         return category;
@@ -48,7 +49,8 @@ public class Filters implements Parcelable
     /**
      * 
      * @param category
-     *     The category
+     *     Category of the photo, (short) integer
+     *     https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#categories
      */
     public void setCategory(Boolean category) {
         this.category = category;
@@ -62,22 +64,24 @@ public class Filters implements Parcelable
     /**
      * 
      * @return
-     *     The exclude
+     *     String name of the category to exclude photos by. Note: Case sensitive, separate multiple values with a comma.
+     *     https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#categories
      */
-    public Boolean getExclude() {
+    public String getExclude() {
         return exclude;
     }
 
     /**
      * 
      * @param exclude
-     *     The exclude
+     *     String name of the category to exclude photos by. Note: Case sensitive, separate multiple values with a comma.
+     *     https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#categories
      */
-    public void setExclude(Boolean exclude) {
+    public void setExclude(String exclude) {
         this.exclude = exclude;
     }
 
-    public Filters withExclude(Boolean exclude) {
+    public Filters withExclude(String exclude) {
         this.exclude = exclude;
         return this;
     }

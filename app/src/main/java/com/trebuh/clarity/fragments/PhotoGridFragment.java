@@ -2,8 +2,6 @@ package com.trebuh.clarity.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Debug;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -68,7 +66,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     private ArrayList<Photo> photos;
-    private AppCompatButton refreshButton;
+    private AppCompatButton networkErrorRefreshButton;
 
     public PhotoGridFragment() {
         // Required empty public constructor
@@ -138,7 +136,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initSwipeContainer(view);
         loadFirstPage();
-//        initRecView(view);
         initRefreshButton(view);
 
         super.onViewCreated(view, savedInstanceState);
@@ -210,11 +207,14 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             gridRecyclerView.getItemAnimator().setAddDuration(250);
             gridRecyclerView.getItemAnimator().setRemoveDuration(250);
         }
+        else {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private void initRefreshButton(View view) {
-        refreshButton = (AppCompatButton) view.findViewById(R.id.network_error_button);
-        refreshButton.setOnClickListener(new View.OnClickListener() {
+        networkErrorRefreshButton = (AppCompatButton) view.findViewById(R.id.network_error_button);
+        networkErrorRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loadNewPhotos(ApiConstants.FIRST_PAGE, new PhotosCallbackHandler());
@@ -225,7 +225,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private void loadNewPhotos(int page, final PhotosCallbackHandler callbackHandler) {
         // Customize the call based on whether we're doing a search.
         String feature = paramIsSearchInstance ? ApiConstants.NO_FEATURE : paramFeature;
-        String sortBy = paramIsSearchInstance ? ApiConstants.NO_SORT_METHOD : paramFeature;
+        String sortBy = paramIsSearchInstance ? ApiConstants.NO_SORT_METHOD : paramSortBy;
         String searchQuery = paramIsSearchInstance ? paramSearchTerm : ApiConstants.NO_SEARCH_QUERY;
 
         FiveHundredPxService service = RetrofitService.getInstance().getService();
@@ -234,7 +234,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                 feature,
                 sortBy,
                 ApiConstants.DEFAULT_IMAGE_SIZE,
-                searchQuery,
                 ApiConstants.FIRST_PAGE,
                 ApiConstants.DEFAULT_RESULTS_PER_PAGE
         );
@@ -251,8 +250,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                 {
                     callbackHandler.onSuccess(statusCode, response.body());
                 }
-//                setPhotos(photos);
-//                adapter.addItemRange(photos);
             }
 
             @Override
@@ -309,29 +306,40 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     private class PhotosCallbackHandler implements PhotosCallback {
-        PhotosCallbackHandler() {}
+        PhotosCallbackHandler() {
+            if (swipeContainer != null) {
+                swipeContainer.setRefreshing(true);
+            }
+        }
 
         @Override
         public void onSuccess(int statusCode, PhotosResponse body) {
             Log.d("listPhotos(): ", "Response code: " + statusCode);
+            networkErrorRefreshButton.setVisibility(View.GONE);
             ArrayList<Photo> photoList = (ArrayList<Photo>) body.getPhotos();
             setPhotos(photoList);
             if (photoList == null) {
                 Log.d(TAG, "p" +
                         "photoList is null");
             }
+            setPhotos(photoList);
             initRecView(getView());
             adapter.addItemRange(photoList);
+            if (swipeContainer != null) {
+                swipeContainer.setRefreshing(false);
+            }
         }
 
         @Override
         public void onError() {
             Log.e(TAG, "PhotosCallbackHandler error");
+            networkErrorRefreshButton.setVisibility(View.VISIBLE);
         }
 
         @Override
         public void onErrorCode(int statusCode) {
             Log.e(TAG, "PhotosCallbackHandler error: " + statusCode);
+            networkErrorRefreshButton.setVisibility(View.VISIBLE);
         }
     }
 
@@ -349,11 +357,11 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 //
 //        @Override
 //        protected void onPostExecute(List<Photo> photos) {
-//            if (refreshButton != null) {
+//            if (networkErrorRefreshButton != null) {
 //                if (isNetworkError) {
-//                    refreshButton.setVisibility(View.VISIBLE);
+//                    networkErrorRefreshButton.setVisibility(View.VISIBLE);
 //                } else {
-//                    refreshButton.setVisibility(View.GONE);
+//                    networkErrorRefreshButton.setVisibility(View.GONE);
 //                }
 //            }
 //            if (swipeContainer != null) {
