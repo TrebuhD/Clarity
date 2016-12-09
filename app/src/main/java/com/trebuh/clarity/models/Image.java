@@ -93,7 +93,7 @@ public class Image implements Parcelable
     /**
      * 
      * @return
-     *     The httpsUrl
+     *     The image url in httpsUrl
      */
     public String getHttpsUrl() {
         return httpsUrl;
@@ -102,7 +102,7 @@ public class Image implements Parcelable
     /**
      * 
      * @param httpsUrl
-     *     The https_url
+     *     The image url in https_url
      */
     public void setHttpsUrl(String httpsUrl) {
         this.httpsUrl = httpsUrl;

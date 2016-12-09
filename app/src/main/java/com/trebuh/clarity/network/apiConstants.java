@@ -88,7 +88,7 @@ public class ApiConstants {
     // search
     public static final String NO_SEARCH_QUERY = "no_search_query";
     public static final int FIRST_PAGE = 1;
-    public static final String NO_FEATURE = "no_sort_method";
+    public static final String NO_FEATURE = "no_feature";
     public static final String NO_SORT_METHOD = "no_sort_method";
 
 }

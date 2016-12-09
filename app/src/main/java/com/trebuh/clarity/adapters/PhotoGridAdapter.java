@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.models.Photo;
+import com.trebuh.clarity.network.ApiConstants;
 
 import java.util.List;
 import java.util.logging.Handler;
@@ -43,7 +45,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         int photoId = photo.getId();
         String photoTitle = photo.getName();
         String authorName = photo.getUser().getUsername();
-        String photoUrl = photo.getUrl();
+        String photoUrl = photo.getImageUrl();
 
         viewHolder.setUsernameText(authorName);
         viewHolder.setPhotoImage(photoUrl);

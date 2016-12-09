@@ -3,6 +3,7 @@ package com.trebuh.clarity.fragments;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,15 +25,14 @@ import com.trebuh.clarity.models.PhotosEndpoint;
 import com.trebuh.clarity.network.ApiConstants;
 import com.trebuh.clarity.network.FiveHundredPxService;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -62,6 +62,15 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private PhotoGridFragmentListener listener;
     private SwipeRefreshLayout swipeContainer;
     private RecyclerView gridRecyclerView;
+
+    public ArrayList<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(ArrayList<Photo> photos) {
+        this.photos = photos;
+    }
+
     private ArrayList<Photo> photos;
     private AppCompatButton refreshButton;
 
@@ -148,7 +157,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     public void onRefresh() {
         if (adapter != null) {
             adapter.removeAllItems();
-            adapter.addItemRange(loadNewPhotos(ApiConstants.FIRST_PAGE));
+            loadNewPhotos(ApiConstants.FIRST_PAGE);
         }
     }
 
@@ -163,7 +172,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     private void initRecView(View view) {
         gridRecyclerView = (RecyclerView) view.findViewById(R.id.rec_view_photos);
-        photos = loadNewPhotos(ApiConstants.FIRST_PAGE);
+        loadNewPhotos(ApiConstants.FIRST_PAGE);
         adapter = new PhotoGridAdapter(photos);
         adapter.setItemOnClickListener(new PhotoGridAdapter.PhotoGridItemOnClickListener() {
             @Override
@@ -180,13 +189,13 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (totalItemsCount > MINIMUM_ITEM_COUNT) {
-                    ArrayList<Photo> morePhotos = loadNewPhotos(page + 1);
-                    adapter.addItemRange(morePhotos);
+//                    ArrayList<Photo> morePhotos = loadNewPhotos(page + 1);
+//                    adapter.addItemRange(morePhotos);
 
                     Handler handler = new Handler();
-                    Log.d(TAG, "loading more items, current page: " + page + ", current items: " +
-                            photos.size() + ", totalItemsCount:" + totalItemsCount + ", adding " + morePhotos.size() + " photos");
-                    handler.post(new NotifyItemsInsertedRunnable(photos.size(), morePhotos.size()));
+//                    Log.d(TAG, "loading more items, current page: " + page + ", current items: " +
+//                            photos.size() + ", totalItemsCount:" + totalItemsCount + ", adding " + morePhotos.size() + " photos");
+//                    handler.post(new NotifyItemsInsertedRunnable(photos.size(), morePhotos.size()));
                 }
             }
         });
@@ -201,59 +210,84 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                photos = loadNewPhotos(ApiConstants.FIRST_PAGE);
+                loadNewPhotos(ApiConstants.FIRST_PAGE);
             }
         });
     }
 
-    private ArrayList<Photo> loadNewPhotos(int page) {
+    private void loadNewPhotos(int page) {
         // todo switch to async retrofit
-//        service.listPhotos(ApiConstants.CONSUMER_KEY,
-//                feature,
-//                sortMethod,
-//                ApiConstants.DEFAULT_IMAGE_SIZE,
-//                page,
-//                ApiConstants.DEFAULT_RESULTS_PER_PAGE,
-//                searchQuery).enqueue(new Callback<List<Photo>>() {
-//            @Override
-//            public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
-//                if (response.isSuccessful()) {
-//                    List<Photo> photoList = response.body();
-//                } else {
-////                        todo Handle network error
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<Photo>> call, Throwable t) {
-//                Log.d(TAG, "Error: " +  t.getMessage());
-//            }
-//        });
-
         List<Photo> photoList = null;
-        try {
-            FetchPhotosTaskParams params;
-            if (paramIsSearchInstance) {
-                params = new FetchPhotosTaskParams(
-                        page,
-                        ApiConstants.NO_FEATURE,
-                        ApiConstants.NO_SORT_METHOD,
-                        paramSearchTerm);
-            } else {
-                params = new FetchPhotosTaskParams(
-                        page,
-                        paramFeature,
-                        paramSortBy,
-                        ApiConstants.NO_SEARCH_QUERY);
-            }
-//            // TODO use Rx & Retrofit
-//
-            photoList = new FetchPhotosTask().execute(params).get();
-
-        } catch (InterruptedException | ExecutionException e) {
-            Log.e(TAG, "Failed to fetch new photos", e);
+//        try {
+        FetchPhotosTaskParams params;
+        if (paramIsSearchInstance) {
+            params = new FetchPhotosTaskParams(
+                    page,
+                    ApiConstants.NO_FEATURE,
+                    ApiConstants.NO_SORT_METHOD,
+                    paramSearchTerm);
+        } else {
+            params = new FetchPhotosTaskParams(
+                    page,
+                    paramFeature,
+                    paramSortBy,
+                    ApiConstants.NO_SEARCH_QUERY);
         }
-        return (ArrayList<Photo>) photoList;
+
+//        Add logging to retrofit
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+        Retrofit retrofit = new Retrofit.Builder().
+                baseUrl(ApiConstants.ENDPOINT)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        FiveHundredPxService service = retrofit.create(FiveHundredPxService.class);
+
+        // Customize the call based on whether we're doing a search.
+        String feature = paramIsSearchInstance ? ApiConstants.NO_FEATURE : paramFeature;
+        String sortBy = paramIsSearchInstance ? ApiConstants.NO_SORT_METHOD : paramFeature;
+        String searchQuery = paramIsSearchInstance ? paramSearchTerm : ApiConstants.NO_SEARCH_QUERY;
+
+        Call<PhotosEndpoint> call = service.listPhotos(
+                ApiConstants.CONSUMER_KEY,
+                feature,
+                sortBy,
+                ApiConstants.DEFAULT_IMAGE_SIZE,
+                searchQuery,
+                ApiConstants.FIRST_PAGE,
+                ApiConstants.DEFAULT_RESULTS_PER_PAGE
+        );
+
+        call.enqueue(new Callback<PhotosEndpoint>() {
+            @Override
+            public void onResponse(Call<PhotosEndpoint> call, Response<PhotosEndpoint> response) {
+                int statusCode = response.code();
+                Log.d("listPhotos(): ", "Response code: " + statusCode);
+                PhotosEndpoint photosEndpoint = response.body();
+                ArrayList<Photo> photos = (ArrayList<Photo>) photosEndpoint.getPhotos();
+                setPhotos(photos);
+                PhotoGridAdapter adapter = new PhotoGridAdapter(photos);
+                gridRecyclerView.setAdapter(adapter);
+
+//                adapter.addItemRange(photos);
+            }
+
+            @Override
+            public void onFailure(Call<PhotosEndpoint> call, Throwable t) {
+                Log.e("listPhotos(): ", "error, " + t.getMessage());
+            }
+        });
+
+//            photoList = new FetchPhotosTask().execute(params).get();
+
+//        } catch (InterruptedException | ExecutionException e) {
+//            Log.e(TAG, "Failed to fetch new photos", e);
+//        }
+//        return (ArrayList<Photo>) photoList;
     }
 
     public void sortAndReplaceItems(String sortBy) {
@@ -294,74 +328,73 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         void onAppBarShow();
     }
 
-    private class FetchPhotosTask extends AsyncTask<FetchPhotosTaskParams, Void, List<Photo>> {
-        boolean isNetworkError = false;
-
-        @Override
-        protected void onPreExecute() {
-            Log.d(TAG, "PhotoGridFragmentListener::OnPreExecute()");
-            if (swipeContainer != null) {
-                swipeContainer.setRefreshing(true);
-            }
-            super.onPreExecute();
-        }
-
-        @Override
-        protected List<Photo> doInBackground(FetchPhotosTaskParams... params) {
-            Log.d(TAG, "PhotoGridFragmentListener::DoInBackground()");
-            ArrayList<Photo> photos = null;
-
-            // Add logging to retrofit
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(ApiConstants.ENDPOINT)
-                    .client(client)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            FiveHundredPxService service = retrofit.create(FiveHundredPxService.class);
-
-            String feature = paramIsSearchInstance ? ApiConstants.NO_FEATURE : paramFeature;
-            String sortMethod = paramIsSearchInstance ? ApiConstants.NO_SORT_METHOD : paramSortBy;
-            String searchQuery = paramIsSearchInstance ? paramSearchTerm : ApiConstants.NO_SEARCH_QUERY;
-
-            Call<PhotosEndpoint> photosCall = service.listPhotos(ApiConstants.CONSUMER_KEY,
-                    feature,
-                    sortMethod,
-                    ApiConstants.DEFAULT_IMAGE_SIZE,
-                    params[0].page,
-                    ApiConstants.DEFAULT_RESULTS_PER_PAGE,
-                    searchQuery);
-
-            try {
-                Response response = photosCall.execute();
-                photos = (ArrayList<Photo>) ((PhotosEndpoint) response.body()).getPhotos();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return photos;
-        }
-
-        @Override
-        protected void onPostExecute(List<Photo> photos) {
-            if (refreshButton != null) {
-                if (isNetworkError) {
-                    refreshButton.setVisibility(View.VISIBLE);
-                } else {
-                    refreshButton.setVisibility(View.GONE);
-                }
-            }
-            if (swipeContainer != null) {
-                swipeContainer.setRefreshing(false);
-                Log.d(TAG, "PhotoGridFragmentListener::OnPostExecute()");
-            }
-//            super.onPostExecute(photos);
-        }
-    }
+//    private class FetchPhotosTask extends AsyncTask<FetchPhotosTaskParams, Void, List<Photo>> {
+//        boolean isNetworkError = false;
+//
+//        @Override
+//        protected void onPreExecute() {
+//            Log.d(TAG, "PhotoGridFragmentListener::OnPreExecute()");
+//            if (swipeContainer != null) {
+//                swipeContainer.setRefreshing(true);
+//            }
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected List<Photo> doInBackground(FetchPhotosTaskParams... params) {
+//            Log.d(TAG, "PhotoGridFragmentListener::DoInBackground()");
+//            ArrayList<Photo> photos = null;
+//
+//            // Add logging to retrofit
+//            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+//            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+//            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+//
+//            Retrofit retrofit = new Retrofit.Builder()
+//                    .baseUrl(ApiConstants.ENDPOINT)
+//                    .client(client)
+//                    .addConverterFactory(GsonConverterFactory.create())
+//                    .build();
+//
+//            FiveHundredPxService service = retrofit.create(FiveHundredPxService.class);
+//
+//            String feature = paramIsSearchInstance ? ApiConstants.NO_FEATURE : paramFeature;
+//            String sortMethod = paramIsSearchInstance ? ApiConstants.NO_SORT_METHOD : paramSortBy;
+//            String searchQuery = paramIsSearchInstance ? paramSearchTerm : ApiConstants.NO_SEARCH_QUERY;
+//
+//            Call<PhotosEndpoint> photosCall = service.listPhotos(ApiConstants.CONSUMER_KEY,
+//                    feature,
+//                    sortMethod,
+//                    ApiConstants.DEFAULT_IMAGE_SIZE,
+//                    params[0].page,
+//                    ApiConstants.DEFAULT_RESULTS_PER_PAGE,
+//                    searchQuery);
+//
+//            try {
+//                Response response = photosCall.execute();
+//                photos = (ArrayList<Photo>) ((PhotosEndpoint) response.body()).getPhotos();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            return photos;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(List<Photo> photos) {
+//            if (refreshButton != null) {
+//                if (isNetworkError) {
+//                    refreshButton.setVisibility(View.VISIBLE);
+//                } else {
+//                    refreshButton.setVisibility(View.GONE);
+//                }
+//            }
+//            if (swipeContainer != null) {
+//                swipeContainer.setRefreshing(false);
+//                Log.d(TAG, "PhotoGridFragmentListener::OnPostExecute()");
+//            }
+////            super.onPostExecute(photos);
+//        }
+//    }
 
     private static class FetchPhotosTaskParams {
         int page;

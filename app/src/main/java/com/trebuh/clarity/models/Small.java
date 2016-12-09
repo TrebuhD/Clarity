@@ -35,18 +35,18 @@ public class Small implements Parcelable
     /**
      * 
      * @return
-     *     The https
+     *     The image url in https
      */
-    public String getHttps() {
+    public String getHttpsUrl() {
         return https;
     }
 
     /**
      * 
      * @param https
-     *     The https
+     *     The image url in https
      */
-    public void setHttps(String https) {
+    public void setHttpsUrl(String https) {
         this.https = https;
     }
 
