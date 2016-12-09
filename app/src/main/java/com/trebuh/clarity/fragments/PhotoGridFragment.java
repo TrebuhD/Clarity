@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -309,8 +311,14 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             Log.d(TAG, "PhotoGridFragmentListener::DoInBackground()");
             ArrayList<Photo> photos = null;
 
+            // Add logging to retrofit
+            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(ApiConstants.ENDPOINT)
+                    .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
@@ -320,7 +328,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             String sortMethod = paramIsSearchInstance ? ApiConstants.NO_SORT_METHOD : paramSortBy;
             String searchQuery = paramIsSearchInstance ? paramSearchTerm : ApiConstants.NO_SEARCH_QUERY;
 
-            Call<List<PhotosEndpoint>> photosCall = service.listPhotos(ApiConstants.CONSUMER_KEY,
+            Call<PhotosEndpoint> photosCall = service.listPhotos(ApiConstants.CONSUMER_KEY,
                     feature,
                     sortMethod,
                     ApiConstants.DEFAULT_IMAGE_SIZE,
@@ -330,7 +338,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
             try {
                 Response response = photosCall.execute();
-                photos = (ArrayList<Photo>) response.body();
+                photos = (ArrayList<Photo>) ((PhotosEndpoint) response.body()).getPhotos();
             } catch (IOException e) {
                 e.printStackTrace();
             }
