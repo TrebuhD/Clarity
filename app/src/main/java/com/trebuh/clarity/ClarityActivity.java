@@ -325,6 +325,7 @@ public class ClarityActivity extends AppCompatActivity
 
         Photo clickedPhoto = photos.get(clickedItemPos);
         int startStrippedIndex = clickedItemPos < 15 ? 0 : clickedItemPos - 15;
+
         int endStrippedIndex = photos.size() > (clickedItemPos + 15) ? (clickedItemPos + 15) : photos.size();
 
         // strip the list to max 30 items
