@@ -25,10 +25,8 @@ import com.trebuh.clarity.network.PhotosCallback;
 import com.trebuh.clarity.network.RetrofitService;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -123,7 +121,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_photo_grid, container, false);
         if (savedInstanceState != null) {
-            this.photos = loadSavedPhotoList();
+//            this.photos = loadSavedPhotoList();
             paramFeature = savedInstanceState.getString(STATE_FEATURE);
             paramSortBy = savedInstanceState.getString(STATE_SORT_METHOD);
             isSearchFragmentInstance = savedInstanceState.getBoolean(STATE_IS_SEARCH_INSTANCE);
@@ -158,12 +156,14 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        savePhotoList();
+
+        // save photos to internal storage
+//        Thread savePhotosThread = new Thread(new SavePhotos());
+//        savePhotosThread.run();
 //        outState.putParcelableArrayList(STATE_PHOTO_LIST, photos);
         outState.putBoolean(STATE_IS_SEARCH_INSTANCE, isSearchFragmentInstance);
         outState.putString(STATE_FEATURE, paramFeature);
         outState.putString(STATE_SORT_METHOD, paramSortBy);
-        savePhotoList();
     }
 
     @Override
@@ -221,30 +221,37 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         }
     }
 
-    private void savePhotoList() {
-        FileOutputStream fos;
-        try {
-            fos = getContext().openFileOutput(isSearchFragmentInstance ? "searchFragmentPhotos" : "gridFragmentPhotos",
-                    Context.MODE_PRIVATE);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(photos);
-            oos.close();
-        } catch (IOException e) {
-            Log.e(TAG, "savePhotoList() I/O error");
-            e.printStackTrace();
+    private class SavePhotos implements Runnable {
+
+        @Override
+        public void run() {
+            FileOutputStream fos;
+            try {
+                fos = getContext().openFileOutput(isSearchFragmentInstance ? "searchFragmentPhotos" : "gridFragmentPhotos",
+                        Context.MODE_PRIVATE);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(photos);
+                oos.close();
+                Log.d(TAG, "SavePhotos runnable: photos saved");
+            } catch (IOException e) {
+                Log.e(TAG, "SavePhotos runnable: I/O error");
+                e.printStackTrace();
+            }
         }
     }
 
     private ArrayList<Photo> loadSavedPhotoList() {
         FileInputStream fis;
         ArrayList<Photo> returnedList = null;
+        Log.d(TAG, "loadSavedPhotos() " + "loading saved photos");
         try {
             fis = getContext().openFileInput(isSearchFragmentInstance ? "searchFragmentPhotos" : "gridFragmentPhotos");
             ObjectInputStream ois = new ObjectInputStream(fis);
             returnedList = (ArrayList<Photo>) ois.readObject();
             ois.close();
+            Log.d(TAG, "loadSavedPhotos(): images loaded");
         } catch (Exception e) {
-            Log.e(TAG, "loadSavedPhotoList() error");
+            Log.d(TAG, "loadSavedPhotos() I/O error");
             e.printStackTrace();
         }
         return  returnedList;
@@ -295,7 +302,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         Call<PhotosResponse> call = service.listPhotos(
                 paramFeature,
                 paramSortBy,
-                ApiConstants.IMAGE_SIZE_1_3,
+                ApiConstants.IMAGE_SIZE_XS_M,
                 page,
                 ApiConstants.DEFAULT_RESULTS_PER_PAGE,
                 ApiConstants.NUDE

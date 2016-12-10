@@ -131,7 +131,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
             Picasso
                     .with(itemView.getContext())
                     .load(thumbUrl)
-                    .placeholder(R.drawable.geometry2)
+                    .placeholder(R.drawable.progress_animation)
                     .into(photoImageView, new ImageLoadedCallback(progressBar) {
                         // load bigger version
                         @Override
