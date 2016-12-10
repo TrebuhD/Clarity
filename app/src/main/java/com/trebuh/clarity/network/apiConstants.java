@@ -2,25 +2,25 @@ package com.trebuh.clarity.network;
 
 public class ApiConstants {
 
-    public static final String ENDPOINT = "https://api.500px.com/v1/";
+    static final String ENDPOINT = "https://api.500px.com/v1/";
     public static final String ENDPOINT_PHOTOS = "photos";
     public static final String ENDPOINT_SEARCH = "search";
-    public static final String CONSUMER_KEY = "lp21ZfxrVCcoYDSWsxVo5f40jO8x5AsGU8RntF5f";
+    static final String CONSUMER_KEY = "lp21ZfxrVCcoYDSWsxVo5f40jO8x5AsGU8RntF5f";
 
-    public static final String PARAM_CONSUMER_KEY = "consumer_key";
-    public static final String PARAM_IMAGE_SIZE = "image_size";
-    public static final String PARAM_SEARCH_TERM = "term";
+    static final String PARAM_CONSUMER_KEY = "consumer_key";
+    static final String PARAM_IMAGE_SIZE = "image_size";
+    static final String PARAM_SEARCH_TERM = "term";
 
-    public static final String PARAM_FEATURE = "feature";
-    public static final String PARAM_SORT_METHOD = "sort";
+    static final String PARAM_FEATURE = "feature";
+    static final String PARAM_SORT_METHOD = "sort";
 
     // Params that are not required by the 500px API
     public static final String EXTRA_USER_ID = "user_id";
     public static final String EXTRA_USERNAME = "username";
     public static final String EXTRA_TAGS = "tags";
     public static final String EXTRA_ONLY_CATEGORY = "only";
-    public static final String EXTRA_PAGE = "page";
-    public static final String EXTRA_RESULTS_PER_PAGE = "rpp";
+    static final String EXTRA_PAGE = "page";
+    static final String EXTRA_RESULTS_PER_PAGE = "rpp";
 
     // Default values:
     public static final String DEFAULT_IMAGE_SIZE = "3";
@@ -91,7 +91,8 @@ public class ApiConstants {
     public static final String NO_FEATURE = "no_feature";
     public static final String NO_SORT_METHOD = "no_sort_method";
 
-    public static final String PARAM_EXCLUDE = "exclude";
+    static final String PARAM_EXCLUDE = "exclude";
+    public static final String NUDE = "Nude";
 
-    public static final String NUDE = "nude";
+    public static final String IMAGE_SIZE_1_3 = "1,3";
 }

@@ -75,6 +75,8 @@ public class DetailsActivity extends AppCompatActivity
 
         photoList = getIntent().getParcelableArrayListExtra(EXTRA_PHOTOS_ARRAY_LIST);
 
+        Log.d(TAG, "onCreate(): photoList size: " + photoList.size());
+
         startingPosition = getIntent().getIntExtra(EXTRA_STARTING_ALBUM_POSITION, 0);
         if (savedInstanceState == null) {
             currentPosition = startingPosition;

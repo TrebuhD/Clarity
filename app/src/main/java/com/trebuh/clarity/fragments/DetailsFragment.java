@@ -79,6 +79,9 @@ public class DetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             photos = getArguments().getParcelableArrayList(ARG_PHOTOS_ARRAY_LIST);
+
+            Log.d(TAG, "onCreate(): photos size" + photos.size());
+
             startingPosition = getArguments().getInt(ARG_STARTING_IMAGE_POSITION);
             photoPosition = getArguments().getInt(ARG_IMAGE_POSITION);
 
@@ -194,7 +197,6 @@ public class DetailsFragment extends Fragment {
         }
         return null;
     }
-
 
     /**
      * returns true if {@param view} is contained within {@param container}'s bounds

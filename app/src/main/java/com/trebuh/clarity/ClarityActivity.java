@@ -316,13 +316,26 @@ public class ClarityActivity extends AppCompatActivity
     public void onPhotoGridItemClick(PhotoGridAdapter.PhotoGridItemHolder caller, String url) {
 
         Intent intent = new Intent(this, DetailsActivity.class);
-        intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, caller.getLayoutPosition());
+        int clickedItemPos = caller.getLayoutPosition();
 
         ArrayList<Photo> photos = ((PhotoGridFragment) getCurrentFragment()).getPhotoList();
         if (photos == null) {
             Log.e(TAG, "onPhotoGridItemClick(): photos is null");
+            throw new IllegalStateException();
         }
-        intent.putExtra(EXTRA_PHOTOS_ARRAY_LIST, photos);
+
+        // strip the list to max 30 items
+        ArrayList<Photo> strippedPhotos = new ArrayList<>(photos.subList(
+                clickedItemPos < 15 ? 0 : clickedItemPos - 15,
+                photos.size() > (clickedItemPos + 15) ? (clickedItemPos + 15) : photos.size()
+        ));
+
+        // todo fix item pos
+        intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, clickedItemPos);
+
+        Log.d(TAG, "Stripped photos size: " + strippedPhotos.size());
+
+        intent.putExtra(EXTRA_PHOTOS_ARRAY_LIST, strippedPhotos);
 
         if (!isDetailsActivityStarted) {
             isDetailsActivityStarted = true;
@@ -472,6 +485,7 @@ public class ClarityActivity extends AppCompatActivity
                 setToolbarSubtitle("Most favorited");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
                         ApiConstants.SORT_METHOD_FAVORITES_COUNT);
+                break;
         }
         return true;
     }

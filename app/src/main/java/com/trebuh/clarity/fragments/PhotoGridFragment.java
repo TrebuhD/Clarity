@@ -213,6 +213,13 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         onRefresh();
     }
 
+    @Override
+    public void onPause() {
+        this.photos = new ArrayList<>();
+        adapter.removeAllItems();
+        super.onPause();
+    }
+
     public void transitionToNewFeature(String feature) {
         this.photos = new ArrayList<>();
         this.paramFeature = feature;
@@ -245,6 +252,8 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     private void loadPhotos(int page, final PhotosCallbackHandler callbackHandler) {
         FiveHundredPxService service = RetrofitService.getInstance().getService();
+
+        Log.d(TAG, "paramSortBy: " + paramSortBy);
 
         Call<PhotosResponse> call = service.listPhotos(
                 paramFeature,
@@ -282,6 +291,9 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             if (swipeContainer != null) {
                 swipeContainer.setRefreshing(true);
             }
+            if (networkErrorRefreshButton != null) {
+                networkErrorRefreshButton.setVisibility(View.GONE);
+            }
         }
 
         @Override
@@ -308,6 +320,10 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                 swipeContainer.setRefreshing(false);
             }
             networkErrorRefreshButton.setVisibility(View.VISIBLE);
+            if (photos.size() != 0) {
+                photos.clear();
+                adapter.removeAllItems();
+            }
         }
 
         @Override
@@ -317,6 +333,10 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                 swipeContainer.setRefreshing(false);
             }
             networkErrorRefreshButton.setVisibility(View.VISIBLE);
+            if (photos.size() != 0) {
+                photos.clear();
+                adapter.removeAllItems();
+            }
         }
     }
 
