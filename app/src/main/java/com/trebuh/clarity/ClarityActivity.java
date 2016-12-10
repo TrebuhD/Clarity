@@ -34,6 +34,7 @@ import com.trebuh.clarity.network.ApiConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ClarityActivity extends AppCompatActivity
         implements SearchHistoryFragment.OnFragmentInteractionListener,
@@ -314,27 +315,32 @@ public class ClarityActivity extends AppCompatActivity
 
     @Override
     public void onPhotoGridItemClick(PhotoGridAdapter.PhotoGridItemHolder caller, String url) {
-
         Intent intent = new Intent(this, DetailsActivity.class);
         int clickedItemPos = caller.getLayoutPosition();
 
         ArrayList<Photo> photos = ((PhotoGridFragment) getCurrentFragment()).getPhotoList();
         if (photos == null) {
-            Log.e(TAG, "onPhotoGridItemClick(): photos is null");
             throw new IllegalStateException();
         }
 
+        Photo clickedPhoto = photos.get(clickedItemPos);
+        int startStrippedIndex = clickedItemPos < 15 ? 0 : clickedItemPos - 15;
+        int endStrippedIndex = photos.size() > (clickedItemPos + 15) ? (clickedItemPos + 15) : photos.size();
+
         // strip the list to max 30 items
         ArrayList<Photo> strippedPhotos = new ArrayList<>(photos.subList(
-                clickedItemPos < 15 ? 0 : clickedItemPos - 15,
-                photos.size() > (clickedItemPos + 15) ? (clickedItemPos + 15) : photos.size()
+                startStrippedIndex,
+                endStrippedIndex
         ));
 
-        // todo fix item pos
-        intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, clickedItemPos);
+        int newPos = -1;
+        for (int i = 0; i < strippedPhotos.size(); i++) {
+            if ((strippedPhotos.get(i)).getId().equals(clickedPhoto.getId())) {
+                newPos = i;
+            }
+        }
 
-        Log.d(TAG, "Stripped photos size: " + strippedPhotos.size());
-
+        intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, newPos);
         intent.putExtra(EXTRA_PHOTOS_ARRAY_LIST, strippedPhotos);
 
         if (!isDetailsActivityStarted) {
