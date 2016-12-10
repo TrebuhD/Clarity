@@ -2,6 +2,8 @@ package com.trebuh.clarity.network;
 
 public class ApiConstants {
 
+    private ApiConstants() {}
+
     static final String ENDPOINT = "https://api.500px.com/v1/";
     public static final String ENDPOINT_PHOTOS = "photos";
     public static final String ENDPOINT_SEARCH = "search";

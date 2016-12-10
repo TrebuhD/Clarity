@@ -24,11 +24,6 @@ import com.trebuh.clarity.network.FiveHundredPxService;
 import com.trebuh.clarity.network.PhotosCallback;
 import com.trebuh.clarity.network.RetrofitService;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
@@ -45,12 +40,10 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private static String ARG_SORT_BY = "sort_by";
     private static String ARG_SEARCH_TERM = "search_term";
     private static String ARG_IS_SEARCH_INSTANCE = "is_search_instance";
-    private static String ARG_EXCLUDE = "exclude";
 
     private static final String STATE_FEATURE = "state_feature";
     private static final String STATE_SORT_METHOD = "state_sort_method";
     private static final String STATE_IS_SEARCH_INSTANCE = "state_is_sort_instance";
-    private static final String STATE_PHOTO_LIST = "state_photo_list";
 
     private String paramFeature;
     private String paramSortBy;
@@ -221,41 +214,41 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         }
     }
 
-    private class SavePhotos implements Runnable {
-
-        @Override
-        public void run() {
-            FileOutputStream fos;
-            try {
-                fos = getContext().openFileOutput(isSearchFragmentInstance ? "searchFragmentPhotos" : "gridFragmentPhotos",
-                        Context.MODE_PRIVATE);
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(photos);
-                oos.close();
-                Log.d(TAG, "SavePhotos runnable: photos saved");
-            } catch (IOException e) {
-                Log.e(TAG, "SavePhotos runnable: I/O error");
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private ArrayList<Photo> loadSavedPhotoList() {
-        FileInputStream fis;
-        ArrayList<Photo> returnedList = null;
-        Log.d(TAG, "loadSavedPhotos() " + "loading saved photos");
-        try {
-            fis = getContext().openFileInput(isSearchFragmentInstance ? "searchFragmentPhotos" : "gridFragmentPhotos");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            returnedList = (ArrayList<Photo>) ois.readObject();
-            ois.close();
-            Log.d(TAG, "loadSavedPhotos(): images loaded");
-        } catch (Exception e) {
-            Log.d(TAG, "loadSavedPhotos() I/O error");
-            e.printStackTrace();
-        }
-        return  returnedList;
-    }
+//    private class SavePhotos implements Runnable {
+//
+//        @Override
+//        public void run() {
+//            FileOutputStream fos;
+//            try {
+//                fos = getContext().openFileOutput(isSearchFragmentInstance ? "searchFragmentPhotos" : "gridFragmentPhotos",
+//                        Context.MODE_PRIVATE);
+//                ObjectOutputStream oos = new ObjectOutputStream(fos);
+//                oos.writeObject(photos);
+//                oos.close();
+//                Log.d(TAG, "SavePhotos runnable: photos saved");
+//            } catch (IOException e) {
+//                Log.e(TAG, "SavePhotos runnable: I/O error");
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+//
+//    private ArrayList<Photo> loadSavedPhotoList() {
+//        FileInputStream fis;
+//        ArrayList<Photo> returnedList = new ArrayList<>();
+//        Log.d(TAG, "loadSavedPhotos() " + "loading saved photos");
+//        try {
+//            fis = getContext().openFileInput(isSearchFragmentInstance ? "searchFragmentPhotos" : "gridFragmentPhotos");
+//            ObjectInputStream ois = new ObjectInputStream(fis);
+//            returnedList = (ArrayList<Photo>) ois.readObject();
+//            ois.close();
+//            Log.d(TAG, "loadSavedPhotos(): images loaded");
+//        } catch (Exception e) {
+//            Log.d(TAG, "loadSavedPhotos() I/O error");
+//            e.printStackTrace();
+//        }
+//        return  returnedList;
+//    }
 
     private void initRefreshButton(View view) {
         networkErrorRefreshButton = (AppCompatButton) view.findViewById(R.id.network_error_button);
