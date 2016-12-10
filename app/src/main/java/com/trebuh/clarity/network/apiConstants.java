@@ -1,8 +1,11 @@
 package com.trebuh.clarity.network;
 
-public class ApiConstants {
+public final class ApiConstants {
 
-    private ApiConstants() {}
+    private ApiConstants() {
+        //this prevents even the native class from calling this:
+        throw new AssertionError();
+    }
 
     static final String ENDPOINT = "https://api.500px.com/v1/";
     public static final String ENDPOINT_PHOTOS = "photos";
