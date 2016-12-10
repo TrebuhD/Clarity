@@ -53,3 +53,7 @@ script:
   - jdk_switcher use oraclejdk8
   - android list target
   - ./gradlew build connectedCheck --stacktrace
+
+notifications:
+  email:
+    on_failure: change
