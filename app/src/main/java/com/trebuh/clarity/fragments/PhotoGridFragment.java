@@ -24,6 +24,13 @@ import com.trebuh.clarity.network.FiveHundredPxService;
 import com.trebuh.clarity.network.PhotosCallback;
 import com.trebuh.clarity.network.RetrofitService;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
@@ -42,11 +49,10 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private static String ARG_IS_SEARCH_INSTANCE = "is_search_instance";
     private static String ARG_EXCLUDE = "exclude";
 
-    private static final String STATE_PHOTO_LIST = "state_photo_list";
-
     private static final String STATE_FEATURE = "state_feature";
     private static final String STATE_SORT_METHOD = "state_sort_method";
     private static final String STATE_IS_SEARCH_INSTANCE = "state_is_sort_instance";
+    private static final String STATE_PHOTO_LIST = "state_photo_list";
 
     private String paramFeature;
     private String paramSortBy;
@@ -117,10 +123,11 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_photo_grid, container, false);
         if (savedInstanceState != null) {
+            this.photos = loadSavedPhotoList();
             paramFeature = savedInstanceState.getString(STATE_FEATURE);
             paramSortBy = savedInstanceState.getString(STATE_SORT_METHOD);
             isSearchFragmentInstance = savedInstanceState.getBoolean(STATE_IS_SEARCH_INSTANCE);
-            photos = savedInstanceState.getParcelableArrayList(STATE_PHOTO_LIST);
+//            photos = savedInstanceState.getParcelableArrayList(STATE_PHOTO_LIST);
         }
         return rootView;
     }
@@ -130,8 +137,9 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         adapter = new PhotoGridAdapter(new ArrayList<Photo>());
 
         initSwipeContainer(view);
-        loadFirstPage();
         initRefreshButton(view);
+
+        loadPage(ApiConstants.FIRST_PAGE);
 
         super.onViewCreated(view, savedInstanceState);
     }
@@ -140,6 +148,22 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     public void onDetach() {
         super.onDetach();
         listener = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        savePhotoList();
+//        outState.putParcelableArrayList(STATE_PHOTO_LIST, photos);
+        outState.putBoolean(STATE_IS_SEARCH_INSTANCE, isSearchFragmentInstance);
+        outState.putString(STATE_FEATURE, paramFeature);
+        outState.putString(STATE_SORT_METHOD, paramSortBy);
+        savePhotoList();
     }
 
     @Override
@@ -159,9 +183,9 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                 android.R.color.holo_orange_dark);
     }
 
-    private void loadFirstPage() {
+    private void loadPage(int number) {
         final PhotosCallbackHandler callbackHandler = new PhotosCallbackHandler();
-        loadPhotos(ApiConstants.FIRST_PAGE, callbackHandler);
+        loadPhotos(number, callbackHandler);
     }
 
     private void initRecView(View view) {
@@ -197,6 +221,35 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         }
     }
 
+    private void savePhotoList() {
+        FileOutputStream fos;
+        try {
+            fos = getContext().openFileOutput(isSearchFragmentInstance ? "searchFragmentPhotos" : "gridFragmentPhotos",
+                    Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(photos);
+            oos.close();
+        } catch (IOException e) {
+            Log.e(TAG, "savePhotoList() I/O error");
+            e.printStackTrace();
+        }
+    }
+
+    private ArrayList<Photo> loadSavedPhotoList() {
+        FileInputStream fis;
+        ArrayList<Photo> returnedList = null;
+        try {
+            fis = getContext().openFileInput(isSearchFragmentInstance ? "searchFragmentPhotos" : "gridFragmentPhotos");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            returnedList = (ArrayList<Photo>) ois.readObject();
+            ois.close();
+        } catch (Exception e) {
+            Log.e(TAG, "loadSavedPhotoList() error");
+            e.printStackTrace();
+        }
+        return  returnedList;
+    }
+
     private void initRefreshButton(View view) {
         networkErrorRefreshButton = (AppCompatButton) view.findViewById(R.id.network_error_button);
         networkErrorRefreshButton.setOnClickListener(new View.OnClickListener() {
@@ -213,27 +266,11 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         onRefresh();
     }
 
-    @Override
-    public void onPause() {
-        this.photos = new ArrayList<>();
-        adapter.removeAllItems();
-        super.onPause();
-    }
-
     public void transitionToNewFeature(String feature) {
         this.photos = new ArrayList<>();
         this.paramFeature = feature;
         this.paramSortBy = ApiConstants.SORT_METHOD_DEFAULT;
         onRefresh();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(STATE_PHOTO_LIST, photos);
-        outState.putBoolean(STATE_IS_SEARCH_INSTANCE, isSearchFragmentInstance);
-        outState.putString(STATE_FEATURE, paramFeature);
-        outState.putString(STATE_SORT_METHOD, paramSortBy);
     }
 
     public RecyclerView getPhotosContainer() {

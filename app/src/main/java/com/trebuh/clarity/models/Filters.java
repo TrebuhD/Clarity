@@ -1,13 +1,14 @@
 
 package com.trebuh.clarity.models;
 
+import java.io.Serializable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Filters implements Parcelable
+public class Filters implements Serializable, Parcelable
 {
 
     @SerializedName("category")
@@ -15,17 +16,17 @@ public class Filters implements Parcelable
     private Boolean category;
     @SerializedName("exclude")
     @Expose
-    private String exclude;
+    private Integer exclude;
     public final static Parcelable.Creator<Filters> CREATOR = new Creator<Filters>() {
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public Filters createFromParcel(Parcel in) {
             Filters instance = new Filters();
             instance.category = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-            instance.exclude = ((String) in.readValue((String.class.getClassLoader())));
+            instance.exclude = ((Integer) in.readValue((Integer.class.getClassLoader())));
             return instance;
         }
 
@@ -34,23 +35,22 @@ public class Filters implements Parcelable
         }
 
     }
-    ;
+            ;
+    private final static long serialVersionUID = 6809003894489441699L;
 
     /**
-     * 
+     *
      * @return
-     *     Category of the photo, (short) integer
-     *     https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#categories
+     *     The category
      */
     public Boolean getCategory() {
         return category;
     }
 
     /**
-     * 
+     *
      * @param category
-     *     Category of the photo, (short) integer
-     *     https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#categories
+     *     The category
      */
     public void setCategory(Boolean category) {
         this.category = category;
@@ -62,26 +62,24 @@ public class Filters implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     String name of the category to exclude photos by. Note: Case sensitive, separate multiple values with a comma.
-     *     https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#categories
+     *     The exclude
      */
-    public String getExclude() {
+    public Integer getExclude() {
         return exclude;
     }
 
     /**
-     * 
+     *
      * @param exclude
-     *     String name of the category to exclude photos by. Note: Case sensitive, separate multiple values with a comma.
-     *     https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#categories
+     *     The exclude
      */
-    public void setExclude(String exclude) {
+    public void setExclude(Integer exclude) {
         this.exclude = exclude;
     }
 
-    public Filters withExclude(String exclude) {
+    public Filters withExclude(Integer exclude) {
         this.exclude = exclude;
         return this;
     }

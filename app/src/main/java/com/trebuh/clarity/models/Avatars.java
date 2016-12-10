@@ -1,13 +1,13 @@
-
 package com.trebuh.clarity.models;
 
+import java.io.Serializable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Avatars implements Parcelable
+public class Avatars implements Serializable, Parcelable
 {
 
     @SerializedName("default")
@@ -26,7 +26,7 @@ public class Avatars implements Parcelable
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public Avatars createFromParcel(Parcel in) {
             Avatars instance = new Avatars();
@@ -42,21 +42,22 @@ public class Avatars implements Parcelable
         }
 
     }
-    ;
+            ;
+    private final static long serialVersionUID = 8712182958265760988L;
 
     /**
-     * 
+     *
      * @return
-     *     The _default
+     * The _default
      */
     public Default getDefault() {
         return _default;
     }
 
     /**
-     * 
+     *
      * @param _default
-     *     The default
+     * The default
      */
     public void setDefault(Default _default) {
         this._default = _default;
@@ -68,18 +69,18 @@ public class Avatars implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The large
+     * The large
      */
     public Large getLarge() {
         return large;
     }
 
     /**
-     * 
+     *
      * @param large
-     *     The large
+     * The large
      */
     public void setLarge(Large large) {
         this.large = large;
@@ -91,18 +92,18 @@ public class Avatars implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The small
+     * The small
      */
     public Small getSmall() {
         return small;
     }
 
     /**
-     * 
+     *
      * @param small
-     *     The small
+     * The small
      */
     public void setSmall(Small small) {
         this.small = small;
@@ -114,18 +115,18 @@ public class Avatars implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The tiny
+     * The tiny
      */
     public Tiny getTiny() {
         return tiny;
     }
 
     /**
-     * 
+     *
      * @param tiny
-     *     The tiny
+     * The tiny
      */
     public void setTiny(Tiny tiny) {
         this.tiny = tiny;
@@ -144,7 +145,7 @@ public class Avatars implements Parcelable
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }

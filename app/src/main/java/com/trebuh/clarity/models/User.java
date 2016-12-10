@@ -1,13 +1,13 @@
-
 package com.trebuh.clarity.models;
 
+import java.io.Serializable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class User implements Parcelable
+public class User implements Serializable, Parcelable
 {
 
     @SerializedName("id")
@@ -55,14 +55,11 @@ public class User implements Parcelable
     @SerializedName("avatars")
     @Expose
     private Avatars avatars;
-    @SerializedName("following")
-    @Expose
-    private Boolean following;
     public final static Parcelable.Creator<User> CREATOR = new Creator<User>() {
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public User createFromParcel(Parcel in) {
             User instance = new User();
@@ -81,7 +78,6 @@ public class User implements Parcelable
             instance.storeOn = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
             instance.affection = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.avatars = ((Avatars) in.readValue((Avatars.class.getClassLoader())));
-            instance.following = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
             return instance;
         }
 
@@ -90,21 +86,22 @@ public class User implements Parcelable
         }
 
     }
-    ;
+            ;
+    private final static long serialVersionUID = -2597198198728088318L;
 
     /**
-     * 
+     *
      * @return
-     *     The id
+     * The id
      */
     public Integer getId() {
         return id;
     }
 
     /**
-     * 
+     *
      * @param id
-     *     The id
+     * The id
      */
     public void setId(Integer id) {
         this.id = id;
@@ -116,18 +113,18 @@ public class User implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The username
+     * The username
      */
     public String getUsername() {
         return username;
     }
 
     /**
-     * 
+     *
      * @param username
-     *     The username
+     * The username
      */
     public void setUsername(String username) {
         this.username = username;
@@ -139,18 +136,18 @@ public class User implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The firstname
+     * The firstname
      */
     public String getFirstname() {
         return firstname;
     }
 
     /**
-     * 
+     *
      * @param firstname
-     *     The firstname
+     * The firstname
      */
     public void setFirstname(String firstname) {
         this.firstname = firstname;
@@ -162,18 +159,18 @@ public class User implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The lastname
+     * The lastname
      */
     public String getLastname() {
         return lastname;
     }
 
     /**
-     * 
+     *
      * @param lastname
-     *     The lastname
+     * The lastname
      */
     public void setLastname(String lastname) {
         this.lastname = lastname;
@@ -185,18 +182,18 @@ public class User implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The city
+     * The city
      */
     public String getCity() {
         return city;
     }
 
     /**
-     * 
+     *
      * @param city
-     *     The city
+     * The city
      */
     public void setCity(String city) {
         this.city = city;
@@ -208,18 +205,18 @@ public class User implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The country
+     * The country
      */
     public String getCountry() {
         return country;
     }
 
     /**
-     * 
+     *
      * @param country
-     *     The country
+     * The country
      */
     public void setCountry(String country) {
         this.country = country;
@@ -231,18 +228,18 @@ public class User implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The usertype
+     * The usertype
      */
     public Integer getUsertype() {
         return usertype;
     }
 
     /**
-     * 
+     *
      * @param usertype
-     *     The usertype
+     * The usertype
      */
     public void setUsertype(Integer usertype) {
         this.usertype = usertype;
@@ -254,18 +251,18 @@ public class User implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The fullname
+     * The fullname
      */
     public String getFullname() {
         return fullname;
     }
 
     /**
-     * 
+     *
      * @param fullname
-     *     The fullname
+     * The fullname
      */
     public void setFullname(String fullname) {
         this.fullname = fullname;
@@ -277,18 +274,18 @@ public class User implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The userpicUrl
+     * The userpicUrl
      */
     public String getUserpicUrl() {
         return userpicUrl;
     }
 
     /**
-     * 
+     *
      * @param userpicUrl
-     *     The userpic_url
+     * The userpic_url
      */
     public void setUserpicUrl(String userpicUrl) {
         this.userpicUrl = userpicUrl;
@@ -300,18 +297,18 @@ public class User implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The userpicHttpsUrl
+     * The userpicHttpsUrl
      */
     public String getUserpicHttpsUrl() {
         return userpicHttpsUrl;
     }
 
     /**
-     * 
+     *
      * @param userpicHttpsUrl
-     *     The userpic_https_url
+     * The userpic_https_url
      */
     public void setUserpicHttpsUrl(String userpicHttpsUrl) {
         this.userpicHttpsUrl = userpicHttpsUrl;
@@ -323,18 +320,18 @@ public class User implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The coverUrl
+     * The coverUrl
      */
     public String getCoverUrl() {
         return coverUrl;
     }
 
     /**
-     * 
+     *
      * @param coverUrl
-     *     The cover_url
+     * The cover_url
      */
     public void setCoverUrl(String coverUrl) {
         this.coverUrl = coverUrl;
@@ -346,18 +343,18 @@ public class User implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The upgradeStatus
+     * The upgradeStatus
      */
     public Integer getUpgradeStatus() {
         return upgradeStatus;
     }
 
     /**
-     * 
+     *
      * @param upgradeStatus
-     *     The upgrade_status
+     * The upgrade_status
      */
     public void setUpgradeStatus(Integer upgradeStatus) {
         this.upgradeStatus = upgradeStatus;
@@ -369,18 +366,18 @@ public class User implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The storeOn
+     * The storeOn
      */
     public Boolean getStoreOn() {
         return storeOn;
     }
 
     /**
-     * 
+     *
      * @param storeOn
-     *     The store_on
+     * The store_on
      */
     public void setStoreOn(Boolean storeOn) {
         this.storeOn = storeOn;
@@ -392,18 +389,18 @@ public class User implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The affection
+     * The affection
      */
     public Integer getAffection() {
         return affection;
     }
 
     /**
-     * 
+     *
      * @param affection
-     *     The affection
+     * The affection
      */
     public void setAffection(Integer affection) {
         this.affection = affection;
@@ -415,18 +412,18 @@ public class User implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The avatars
+     * The avatars
      */
     public Avatars getAvatars() {
         return avatars;
     }
 
     /**
-     * 
+     *
      * @param avatars
-     *     The avatars
+     * The avatars
      */
     public void setAvatars(Avatars avatars) {
         this.avatars = avatars;
@@ -434,29 +431,6 @@ public class User implements Parcelable
 
     public User withAvatars(Avatars avatars) {
         this.avatars = avatars;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The following
-     */
-    public Boolean getFollowing() {
-        return following;
-    }
-
-    /**
-     * 
-     * @param following
-     *     The following
-     */
-    public void setFollowing(Boolean following) {
-        this.following = following;
-    }
-
-    public User withFollowing(Boolean following) {
-        this.following = following;
         return this;
     }
 
@@ -476,11 +450,10 @@ public class User implements Parcelable
         dest.writeValue(storeOn);
         dest.writeValue(affection);
         dest.writeValue(avatars);
-        dest.writeValue(following);
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }

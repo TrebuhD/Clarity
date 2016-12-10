@@ -1,13 +1,14 @@
 
 package com.trebuh.clarity.models;
 
+import java.io.Serializable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Tiny implements Parcelable
+public class Tiny implements Serializable, Parcelable
 {
 
     @SerializedName("https")
@@ -17,7 +18,7 @@ public class Tiny implements Parcelable
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public Tiny createFromParcel(Parcel in) {
             Tiny instance = new Tiny();
@@ -30,21 +31,22 @@ public class Tiny implements Parcelable
         }
 
     }
-    ;
+            ;
+    private final static long serialVersionUID = 1882546690686780919L;
 
     /**
-     * 
+     *
      * @return
-     *     The image url in https
+     *     The https
      */
     public String getHttps() {
         return https;
     }
 
     /**
-     * 
+     *
      * @param https
-     *     The image url in https
+     *     The https
      */
     public void setHttps(String https) {
         this.https = https;

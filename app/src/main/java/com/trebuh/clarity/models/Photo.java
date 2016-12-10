@@ -1,6 +1,6 @@
-
 package com.trebuh.clarity.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import android.os.Parcel;
@@ -9,7 +9,7 @@ import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Photo implements Parcelable
+public class Photo implements Serializable, Parcelable
 {
 
     @SerializedName("id")
@@ -26,22 +26,22 @@ public class Photo implements Parcelable
     private String description;
     @SerializedName("camera")
     @Expose
-    private String camera;
+    private Object camera;
     @SerializedName("lens")
     @Expose
-    private String lens;
+    private Object lens;
     @SerializedName("focal_length")
     @Expose
-    private String focalLength;
+    private Object focalLength;
     @SerializedName("iso")
     @Expose
-    private String iso;
+    private Object iso;
     @SerializedName("shutter_speed")
     @Expose
-    private String shutterSpeed;
+    private Object shutterSpeed;
     @SerializedName("aperture")
     @Expose
-    private String aperture;
+    private Object aperture;
     @SerializedName("times_viewed")
     @Expose
     private Integer timesViewed;
@@ -62,13 +62,13 @@ public class Photo implements Parcelable
     private Object location;
     @SerializedName("latitude")
     @Expose
-    private Object latitude;
+    private Double latitude;
     @SerializedName("longitude")
     @Expose
-    private Object longitude;
+    private Double longitude;
     @SerializedName("taken_at")
     @Expose
-    private String takenAt;
+    private Object takenAt;
     @SerializedName("hi_res_uploaded")
     @Expose
     private Integer hiResUploaded;
@@ -138,27 +138,6 @@ public class Photo implements Parcelable
     @SerializedName("converted_bits")
     @Expose
     private Integer convertedBits;
-    @SerializedName("store_download")
-    @Expose
-    private Boolean storeDownload;
-    @SerializedName("store_print")
-    @Expose
-    private Boolean storePrint;
-    @SerializedName("store_license")
-    @Expose
-    private Boolean storeLicense;
-    @SerializedName("request_to_buy_enabled")
-    @Expose
-    private Boolean requestToBuyEnabled;
-    @SerializedName("license_requests_enabled")
-    @Expose
-    private Boolean licenseRequestsEnabled;
-    @SerializedName("store_width")
-    @Expose
-    private Integer storeWidth;
-    @SerializedName("store_height")
-    @Expose
-    private Integer storeHeight;
     @SerializedName("watermark")
     @Expose
     private Boolean watermark;
@@ -181,29 +160,29 @@ public class Photo implements Parcelable
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public Photo createFromParcel(Parcel in) {
             Photo instance = new Photo();
             instance.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.userId = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.name = ((String) in.readValue((String.class.getClassLoader())));
-            instance.description = ((String) in.readValue((Object.class.getClassLoader())));
-            instance.camera = ((String) in.readValue((String.class.getClassLoader())));
-            instance.lens = ((String) in.readValue((String.class.getClassLoader())));
-            instance.focalLength = ((String) in.readValue((String.class.getClassLoader())));
-            instance.iso = ((String) in.readValue((String.class.getClassLoader())));
-            instance.shutterSpeed = ((String) in.readValue((String.class.getClassLoader())));
-            instance.aperture = ((String) in.readValue((String.class.getClassLoader())));
+            instance.description = ((String) in.readValue((String.class.getClassLoader())));
+            instance.camera = ((Object) in.readValue((Object.class.getClassLoader())));
+            instance.lens = ((Object) in.readValue((Object.class.getClassLoader())));
+            instance.focalLength = ((Object) in.readValue((Object.class.getClassLoader())));
+            instance.iso = ((Object) in.readValue((Object.class.getClassLoader())));
+            instance.shutterSpeed = ((Object) in.readValue((Object.class.getClassLoader())));
+            instance.aperture = ((Object) in.readValue((Object.class.getClassLoader())));
             instance.timesViewed = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.rating = ((Double) in.readValue((Double.class.getClassLoader())));
             instance.status = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.createdAt = ((String) in.readValue((String.class.getClassLoader())));
             instance.category = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.location = ((Object) in.readValue((Object.class.getClassLoader())));
-            instance.latitude = ((Object) in.readValue((Object.class.getClassLoader())));
-            instance.longitude = ((Object) in.readValue((Object.class.getClassLoader())));
-            instance.takenAt = ((String) in.readValue((String.class.getClassLoader())));
+            instance.latitude = ((Double) in.readValue((Double.class.getClassLoader())));
+            instance.longitude = ((Double) in.readValue((Double.class.getClassLoader())));
+            instance.takenAt = ((Object) in.readValue((Object.class.getClassLoader())));
             instance.hiResUploaded = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.forSale = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
             instance.width = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -227,13 +206,6 @@ public class Photo implements Parcelable
             instance.url = ((String) in.readValue((String.class.getClassLoader())));
             instance.positiveVotesCount = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.convertedBits = ((Integer) in.readValue((Integer.class.getClassLoader())));
-            instance.storeDownload = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-            instance.storePrint = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-            instance.storeLicense = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-            instance.requestToBuyEnabled = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-            instance.licenseRequestsEnabled = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-            instance.storeWidth = ((Integer) in.readValue((Integer.class.getClassLoader())));
-            instance.storeHeight = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.watermark = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
             instance.imageFormat = ((String) in.readValue((String.class.getClassLoader())));
             instance.user = ((User) in.readValue((User.class.getClassLoader())));
@@ -248,21 +220,22 @@ public class Photo implements Parcelable
         }
 
     }
-    ;
+            ;
+    private final static long serialVersionUID = -7750400309984778612L;
 
     /**
-     * 
+     *
      * @return
-     *     The id
+     * The id
      */
     public Integer getId() {
         return id;
     }
 
     /**
-     * 
+     *
      * @param id
-     *     The id
+     * The id
      */
     public void setId(Integer id) {
         this.id = id;
@@ -274,18 +247,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The userId
+     * The userId
      */
     public Integer getUserId() {
         return userId;
     }
 
     /**
-     * 
+     *
      * @param userId
-     *     The user_id
+     * The user_id
      */
     public void setUserId(Integer userId) {
         this.userId = userId;
@@ -297,18 +270,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The name
+     * The name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 
+     *
      * @param name
-     *     The name
+     * The name
      */
     public void setName(String name) {
         this.name = name;
@@ -320,18 +293,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The description
+     * The description
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     * 
+     *
      * @param description
-     *     The description
+     * The description
      */
     public void setDescription(String description) {
         this.description = description;
@@ -343,156 +316,156 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The camera
+     * The camera
      */
-    public String getCamera() {
+    public Object getCamera() {
         return camera;
     }
 
     /**
-     * 
+     *
      * @param camera
-     *     The camera
+     * The camera
      */
-    public void setCamera(String camera) {
+    public void setCamera(Object camera) {
         this.camera = camera;
     }
 
-    public Photo withCamera(String camera) {
+    public Photo withCamera(Object camera) {
         this.camera = camera;
         return this;
     }
 
     /**
-     * 
+     *
      * @return
-     *     The lens
+     * The lens
      */
-    public String getLens() {
+    public Object getLens() {
         return lens;
     }
 
     /**
-     * 
+     *
      * @param lens
-     *     The lens
+     * The lens
      */
-    public void setLens(String lens) {
+    public void setLens(Object lens) {
         this.lens = lens;
     }
 
-    public Photo withLens(String lens) {
+    public Photo withLens(Object lens) {
         this.lens = lens;
         return this;
     }
 
     /**
-     * 
+     *
      * @return
-     *     The focalLength
+     * The focalLength
      */
-    public String getFocalLength() {
+    public Object getFocalLength() {
         return focalLength;
     }
 
     /**
-     * 
+     *
      * @param focalLength
-     *     The focal_length
+     * The focal_length
      */
-    public void setFocalLength(String focalLength) {
+    public void setFocalLength(Object focalLength) {
         this.focalLength = focalLength;
     }
 
-    public Photo withFocalLength(String focalLength) {
+    public Photo withFocalLength(Object focalLength) {
         this.focalLength = focalLength;
         return this;
     }
 
     /**
-     * 
+     *
      * @return
-     *     The iso
+     * The iso
      */
-    public String getIso() {
+    public Object getIso() {
         return iso;
     }
 
     /**
-     * 
+     *
      * @param iso
-     *     The iso
+     * The iso
      */
-    public void setIso(String iso) {
+    public void setIso(Object iso) {
         this.iso = iso;
     }
 
-    public Photo withIso(String iso) {
+    public Photo withIso(Object iso) {
         this.iso = iso;
         return this;
     }
 
     /**
-     * 
+     *
      * @return
-     *     The shutterSpeed
+     * The shutterSpeed
      */
-    public String getShutterSpeed() {
+    public Object getShutterSpeed() {
         return shutterSpeed;
     }
 
     /**
-     * 
+     *
      * @param shutterSpeed
-     *     The shutter_speed
+     * The shutter_speed
      */
-    public void setShutterSpeed(String shutterSpeed) {
+    public void setShutterSpeed(Object shutterSpeed) {
         this.shutterSpeed = shutterSpeed;
     }
 
-    public Photo withShutterSpeed(String shutterSpeed) {
+    public Photo withShutterSpeed(Object shutterSpeed) {
         this.shutterSpeed = shutterSpeed;
         return this;
     }
 
     /**
-     * 
+     *
      * @return
-     *     The aperture
+     * The aperture
      */
-    public String getAperture() {
+    public Object getAperture() {
         return aperture;
     }
 
     /**
-     * 
+     *
      * @param aperture
-     *     The aperture
+     * The aperture
      */
-    public void setAperture(String aperture) {
+    public void setAperture(Object aperture) {
         this.aperture = aperture;
     }
 
-    public Photo withAperture(String aperture) {
+    public Photo withAperture(Object aperture) {
         this.aperture = aperture;
         return this;
     }
 
     /**
-     * 
+     *
      * @return
-     *     The timesViewed
+     * The timesViewed
      */
     public Integer getTimesViewed() {
         return timesViewed;
     }
 
     /**
-     * 
+     *
      * @param timesViewed
-     *     The times_viewed
+     * The times_viewed
      */
     public void setTimesViewed(Integer timesViewed) {
         this.timesViewed = timesViewed;
@@ -504,18 +477,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The rating
+     * The rating
      */
     public Double getRating() {
         return rating;
     }
 
     /**
-     * 
+     *
      * @param rating
-     *     The rating
+     * The rating
      */
     public void setRating(Double rating) {
         this.rating = rating;
@@ -527,18 +500,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The status
+     * The status
      */
     public Integer getStatus() {
         return status;
     }
 
     /**
-     * 
+     *
      * @param status
-     *     The status
+     * The status
      */
     public void setStatus(Integer status) {
         this.status = status;
@@ -550,18 +523,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The createdAt
+     * The createdAt
      */
     public String getCreatedAt() {
         return createdAt;
     }
 
     /**
-     * 
+     *
      * @param createdAt
-     *     The created_at
+     * The created_at
      */
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
@@ -573,18 +546,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The category
+     * The category
      */
     public Integer getCategory() {
         return category;
     }
 
     /**
-     * 
+     *
      * @param category
-     *     The category
+     * The category
      */
     public void setCategory(Integer category) {
         this.category = category;
@@ -596,18 +569,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The location
+     * The location
      */
     public Object getLocation() {
         return location;
     }
 
     /**
-     * 
+     *
      * @param location
-     *     The location
+     * The location
      */
     public void setLocation(Object location) {
         this.location = location;
@@ -619,87 +592,87 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The latitude
+     * The latitude
      */
-    public Object getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
     /**
-     * 
+     *
      * @param latitude
-     *     The latitude
+     * The latitude
      */
-    public void setLatitude(Object latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public Photo withLatitude(Object latitude) {
+    public Photo withLatitude(Double latitude) {
         this.latitude = latitude;
         return this;
     }
 
     /**
-     * 
+     *
      * @return
-     *     The longitude
+     * The longitude
      */
-    public Object getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
     /**
-     * 
+     *
      * @param longitude
-     *     The longitude
+     * The longitude
      */
-    public void setLongitude(Object longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
-    public Photo withLongitude(Object longitude) {
+    public Photo withLongitude(Double longitude) {
         this.longitude = longitude;
         return this;
     }
 
     /**
-     * 
+     *
      * @return
-     *     The takenAt
+     * The takenAt
      */
-    public String getTakenAt() {
+    public Object getTakenAt() {
         return takenAt;
     }
 
     /**
-     * 
+     *
      * @param takenAt
-     *     The taken_at
+     * The taken_at
      */
-    public void setTakenAt(String takenAt) {
+    public void setTakenAt(Object takenAt) {
         this.takenAt = takenAt;
     }
 
-    public Photo withTakenAt(String takenAt) {
+    public Photo withTakenAt(Object takenAt) {
         this.takenAt = takenAt;
         return this;
     }
 
     /**
-     * 
+     *
      * @return
-     *     The hiResUploaded
+     * The hiResUploaded
      */
     public Integer getHiResUploaded() {
         return hiResUploaded;
     }
 
     /**
-     * 
+     *
      * @param hiResUploaded
-     *     The hi_res_uploaded
+     * The hi_res_uploaded
      */
     public void setHiResUploaded(Integer hiResUploaded) {
         this.hiResUploaded = hiResUploaded;
@@ -711,18 +684,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The forSale
+     * The forSale
      */
     public Boolean getForSale() {
         return forSale;
     }
 
     /**
-     * 
+     *
      * @param forSale
-     *     The for_sale
+     * The for_sale
      */
     public void setForSale(Boolean forSale) {
         this.forSale = forSale;
@@ -734,18 +707,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The width
+     * The width
      */
     public Integer getWidth() {
         return width;
     }
 
     /**
-     * 
+     *
      * @param width
-     *     The width
+     * The width
      */
     public void setWidth(Integer width) {
         this.width = width;
@@ -757,18 +730,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The height
+     * The height
      */
     public Integer getHeight() {
         return height;
     }
 
     /**
-     * 
+     *
      * @param height
-     *     The height
+     * The height
      */
     public void setHeight(Integer height) {
         this.height = height;
@@ -780,18 +753,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The votesCount
+     * The votesCount
      */
     public Integer getVotesCount() {
         return votesCount;
     }
 
     /**
-     * 
+     *
      * @param votesCount
-     *     The votes_count
+     * The votes_count
      */
     public void setVotesCount(Integer votesCount) {
         this.votesCount = votesCount;
@@ -803,18 +776,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The favoritesCount
+     * The favoritesCount
      */
     public Integer getFavoritesCount() {
         return favoritesCount;
     }
 
     /**
-     * 
+     *
      * @param favoritesCount
-     *     The favorites_count
+     * The favorites_count
      */
     public void setFavoritesCount(Integer favoritesCount) {
         this.favoritesCount = favoritesCount;
@@ -826,18 +799,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The commentsCount
+     * The commentsCount
      */
     public Integer getCommentsCount() {
         return commentsCount;
     }
 
     /**
-     * 
+     *
      * @param commentsCount
-     *     The comments_count
+     * The comments_count
      */
     public void setCommentsCount(Integer commentsCount) {
         this.commentsCount = commentsCount;
@@ -849,18 +822,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The nsfw
+     * The nsfw
      */
     public Boolean getNsfw() {
         return nsfw;
     }
 
     /**
-     * 
+     *
      * @param nsfw
-     *     The nsfw
+     * The nsfw
      */
     public void setNsfw(Boolean nsfw) {
         this.nsfw = nsfw;
@@ -872,18 +845,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The salesCount
+     * The salesCount
      */
     public Integer getSalesCount() {
         return salesCount;
     }
 
     /**
-     * 
+     *
      * @param salesCount
-     *     The sales_count
+     * The sales_count
      */
     public void setSalesCount(Integer salesCount) {
         this.salesCount = salesCount;
@@ -895,18 +868,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The forSaleDate
+     * The forSaleDate
      */
     public Object getForSaleDate() {
         return forSaleDate;
     }
 
     /**
-     * 
+     *
      * @param forSaleDate
-     *     The for_sale_date
+     * The for_sale_date
      */
     public void setForSaleDate(Object forSaleDate) {
         this.forSaleDate = forSaleDate;
@@ -918,18 +891,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The highestRating
+     * The highestRating
      */
     public Double getHighestRating() {
         return highestRating;
     }
 
     /**
-     * 
+     *
      * @param highestRating
-     *     The highest_rating
+     * The highest_rating
      */
     public void setHighestRating(Double highestRating) {
         this.highestRating = highestRating;
@@ -941,18 +914,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The highestRatingDate
+     * The highestRatingDate
      */
     public String getHighestRatingDate() {
         return highestRatingDate;
     }
 
     /**
-     * 
+     *
      * @param highestRatingDate
-     *     The highest_rating_date
+     * The highest_rating_date
      */
     public void setHighestRatingDate(String highestRatingDate) {
         this.highestRatingDate = highestRatingDate;
@@ -964,18 +937,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The licenseType
+     * The licenseType
      */
     public Integer getLicenseType() {
         return licenseType;
     }
 
     /**
-     * 
+     *
      * @param licenseType
-     *     The license_type
+     * The license_type
      */
     public void setLicenseType(Integer licenseType) {
         this.licenseType = licenseType;
@@ -987,18 +960,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The converted
+     * The converted
      */
     public Integer getConverted() {
         return converted;
     }
 
     /**
-     * 
+     *
      * @param converted
-     *     The converted
+     * The converted
      */
     public void setConverted(Integer converted) {
         this.converted = converted;
@@ -1010,18 +983,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The collectionsCount
+     * The collectionsCount
      */
     public Integer getCollectionsCount() {
         return collectionsCount;
     }
 
     /**
-     * 
+     *
      * @param collectionsCount
-     *     The collections_count
+     * The collections_count
      */
     public void setCollectionsCount(Integer collectionsCount) {
         this.collectionsCount = collectionsCount;
@@ -1033,18 +1006,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The cropVersion
+     * The cropVersion
      */
     public Integer getCropVersion() {
         return cropVersion;
     }
 
     /**
-     * 
+     *
      * @param cropVersion
-     *     The crop_version
+     * The crop_version
      */
     public void setCropVersion(Integer cropVersion) {
         this.cropVersion = cropVersion;
@@ -1056,18 +1029,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The privacy
+     * The privacy
      */
     public Boolean getPrivacy() {
         return privacy;
     }
 
     /**
-     * 
+     *
      * @param privacy
-     *     The privacy
+     * The privacy
      */
     public void setPrivacy(Boolean privacy) {
         this.privacy = privacy;
@@ -1079,18 +1052,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The profile
+     * The profile
      */
     public Boolean getProfile() {
         return profile;
     }
 
     /**
-     * 
+     *
      * @param profile
-     *     The profile
+     * The profile
      */
     public void setProfile(Boolean profile) {
         this.profile = profile;
@@ -1102,18 +1075,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The imageUrl
+     * The imageUrl
      */
     public String getImageUrl() {
         return imageUrl;
     }
 
     /**
-     * 
+     *
      * @param imageUrl
-     *     The image_url
+     * The image_url
      */
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
@@ -1125,18 +1098,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The images
+     * The images
      */
     public List<Image> getImages() {
         return images;
     }
 
     /**
-     * 
+     *
      * @param images
-     *     The images
+     * The images
      */
     public void setImages(List<Image> images) {
         this.images = images;
@@ -1148,18 +1121,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The url
+     * The url
      */
     public String getUrl() {
         return url;
     }
 
     /**
-     * 
+     *
      * @param url
-     *     The url
+     * The url
      */
     public void setUrl(String url) {
         this.url = url;
@@ -1171,18 +1144,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The positiveVotesCount
+     * The positiveVotesCount
      */
     public Integer getPositiveVotesCount() {
         return positiveVotesCount;
     }
 
     /**
-     * 
+     *
      * @param positiveVotesCount
-     *     The positive_votes_count
+     * The positive_votes_count
      */
     public void setPositiveVotesCount(Integer positiveVotesCount) {
         this.positiveVotesCount = positiveVotesCount;
@@ -1194,18 +1167,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The convertedBits
+     * The convertedBits
      */
     public Integer getConvertedBits() {
         return convertedBits;
     }
 
     /**
-     * 
+     *
      * @param convertedBits
-     *     The converted_bits
+     * The converted_bits
      */
     public void setConvertedBits(Integer convertedBits) {
         this.convertedBits = convertedBits;
@@ -1217,179 +1190,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The storeDownload
-     */
-    public Boolean getStoreDownload() {
-        return storeDownload;
-    }
-
-    /**
-     * 
-     * @param storeDownload
-     *     The store_download
-     */
-    public void setStoreDownload(Boolean storeDownload) {
-        this.storeDownload = storeDownload;
-    }
-
-    public Photo withStoreDownload(Boolean storeDownload) {
-        this.storeDownload = storeDownload;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The storePrint
-     */
-    public Boolean getStorePrint() {
-        return storePrint;
-    }
-
-    /**
-     * 
-     * @param storePrint
-     *     The store_print
-     */
-    public void setStorePrint(Boolean storePrint) {
-        this.storePrint = storePrint;
-    }
-
-    public Photo withStorePrint(Boolean storePrint) {
-        this.storePrint = storePrint;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The storeLicense
-     */
-    public Boolean getStoreLicense() {
-        return storeLicense;
-    }
-
-    /**
-     * 
-     * @param storeLicense
-     *     The store_license
-     */
-    public void setStoreLicense(Boolean storeLicense) {
-        this.storeLicense = storeLicense;
-    }
-
-    public Photo withStoreLicense(Boolean storeLicense) {
-        this.storeLicense = storeLicense;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The requestToBuyEnabled
-     */
-    public Boolean getRequestToBuyEnabled() {
-        return requestToBuyEnabled;
-    }
-
-    /**
-     * 
-     * @param requestToBuyEnabled
-     *     The request_to_buy_enabled
-     */
-    public void setRequestToBuyEnabled(Boolean requestToBuyEnabled) {
-        this.requestToBuyEnabled = requestToBuyEnabled;
-    }
-
-    public Photo withRequestToBuyEnabled(Boolean requestToBuyEnabled) {
-        this.requestToBuyEnabled = requestToBuyEnabled;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The licenseRequestsEnabled
-     */
-    public Boolean getLicenseRequestsEnabled() {
-        return licenseRequestsEnabled;
-    }
-
-    /**
-     * 
-     * @param licenseRequestsEnabled
-     *     The license_requests_enabled
-     */
-    public void setLicenseRequestsEnabled(Boolean licenseRequestsEnabled) {
-        this.licenseRequestsEnabled = licenseRequestsEnabled;
-    }
-
-    public Photo withLicenseRequestsEnabled(Boolean licenseRequestsEnabled) {
-        this.licenseRequestsEnabled = licenseRequestsEnabled;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The storeWidth
-     */
-    public Integer getStoreWidth() {
-        return storeWidth;
-    }
-
-    /**
-     * 
-     * @param storeWidth
-     *     The store_width
-     */
-    public void setStoreWidth(Integer storeWidth) {
-        this.storeWidth = storeWidth;
-    }
-
-    public Photo withStoreWidth(Integer storeWidth) {
-        this.storeWidth = storeWidth;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The storeHeight
-     */
-    public Integer getStoreHeight() {
-        return storeHeight;
-    }
-
-    /**
-     * 
-     * @param storeHeight
-     *     The store_height
-     */
-    public void setStoreHeight(Integer storeHeight) {
-        this.storeHeight = storeHeight;
-    }
-
-    public Photo withStoreHeight(Integer storeHeight) {
-        this.storeHeight = storeHeight;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The watermark
+     * The watermark
      */
     public Boolean getWatermark() {
         return watermark;
     }
 
     /**
-     * 
+     *
      * @param watermark
-     *     The watermark
+     * The watermark
      */
     public void setWatermark(Boolean watermark) {
         this.watermark = watermark;
@@ -1401,18 +1213,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The imageFormat
+     * The imageFormat
      */
     public String getImageFormat() {
         return imageFormat;
     }
 
     /**
-     * 
+     *
      * @param imageFormat
-     *     The image_format
+     * The image_format
      */
     public void setImageFormat(String imageFormat) {
         this.imageFormat = imageFormat;
@@ -1424,18 +1236,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The user
+     * The user
      */
     public User getUser() {
         return user;
     }
 
     /**
-     * 
+     *
      * @param user
-     *     The user
+     * The user
      */
     public void setUser(User user) {
         this.user = user;
@@ -1447,18 +1259,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The licensingRequested
+     * The licensingRequested
      */
     public Boolean getLicensingRequested() {
         return licensingRequested;
     }
 
     /**
-     * 
+     *
      * @param licensingRequested
-     *     The licensing_requested
+     * The licensing_requested
      */
     public void setLicensingRequested(Boolean licensingRequested) {
         this.licensingRequested = licensingRequested;
@@ -1470,18 +1282,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The licensingSuggested
+     * The licensingSuggested
      */
     public Boolean getLicensingSuggested() {
         return licensingSuggested;
     }
 
     /**
-     * 
+     *
      * @param licensingSuggested
-     *     The licensing_suggested
+     * The licensing_suggested
      */
     public void setLicensingSuggested(Boolean licensingSuggested) {
         this.licensingSuggested = licensingSuggested;
@@ -1493,18 +1305,18 @@ public class Photo implements Parcelable
     }
 
     /**
-     * 
+     *
      * @return
-     *     The isFreePhoto
+     * The isFreePhoto
      */
     public Boolean getIsFreePhoto() {
         return isFreePhoto;
     }
 
     /**
-     * 
+     *
      * @param isFreePhoto
-     *     The is_free_photo
+     * The is_free_photo
      */
     public void setIsFreePhoto(Boolean isFreePhoto) {
         this.isFreePhoto = isFreePhoto;
@@ -1558,13 +1370,6 @@ public class Photo implements Parcelable
         dest.writeValue(url);
         dest.writeValue(positiveVotesCount);
         dest.writeValue(convertedBits);
-        dest.writeValue(storeDownload);
-        dest.writeValue(storePrint);
-        dest.writeValue(storeLicense);
-        dest.writeValue(requestToBuyEnabled);
-        dest.writeValue(licenseRequestsEnabled);
-        dest.writeValue(storeWidth);
-        dest.writeValue(storeHeight);
         dest.writeValue(watermark);
         dest.writeValue(imageFormat);
         dest.writeValue(user);
@@ -1574,7 +1379,7 @@ public class Photo implements Parcelable
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }
