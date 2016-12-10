@@ -104,7 +104,7 @@ public class DetailsFragment extends Fragment {
         TextView authorNameText = (TextView) textContainer.findViewById(R.id.details_author_name_tv);
         HtmlTextView photoDescriptionText = (HtmlTextView) textContainer.findViewById(R.id.details_photo_description_tv);
 
-        String photoUrl = photos.get(photoPosition).getUrl();
+        String photoUrl = photos.get(photoPosition).getImages().get(2).getUrl();
         String profilePicUrl = photos.get(photoPosition).getUser().getUserpicUrl();
         String photoName = photos.get(photoPosition).getName();
         String authorName = photos.get(photoPosition).getUser().getUsername();
@@ -116,6 +116,8 @@ public class DetailsFragment extends Fragment {
         authorNameText.setText(authorName);
         photoDescriptionText.setHtmlFromString(photoDescription, new HtmlTextView.RemoteImageGetter());
         mainPicture.setTransitionName(photoName);
+
+        Log.d(TAG, "photoUrl: " + photoUrl);
 
         RequestCreator photoRequest = Picasso.with(getActivity()).load(photoUrl).fit().centerCrop();
         RequestCreator profilePicRequest = Picasso.with(getActivity()).load(profilePicUrl).fit().centerInside();

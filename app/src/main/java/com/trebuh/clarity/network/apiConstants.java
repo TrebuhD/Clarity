@@ -94,5 +94,6 @@ public class ApiConstants {
     static final String PARAM_EXCLUDE = "exclude";
     public static final String NUDE = "Nude";
 
-    public static final String IMAGE_SIZE_XS_M = "1,3";
+    // Cropped XS, M and uncropped S
+    public static final String IMAGE_SIZE_XS_M_US = "1,3,4";
 }

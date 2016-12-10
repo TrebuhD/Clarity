@@ -299,14 +299,26 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
         Log.d(TAG, "paramSortBy: " + paramSortBy);
 
-        Call<PhotosResponse> call = service.listPhotos(
-                paramFeature,
-                paramSortBy,
-                ApiConstants.IMAGE_SIZE_XS_M,
-                page,
-                ApiConstants.DEFAULT_RESULTS_PER_PAGE,
-                ApiConstants.NUDE
-        );
+        Call<PhotosResponse> call;
+        if (isSearchFragmentInstance) {
+            call = service.searchPhotos(
+                    ApiConstants.NO_SORT_METHOD,
+                    ApiConstants.IMAGE_SIZE_XS_M_US,
+                    ApiConstants.NUDE,
+                    paramSearchTerm,
+                    page,
+                    ApiConstants.DEFAULT_RESULTS_PER_PAGE
+            );
+        } else {
+            call = service.listPhotos(
+                    paramFeature,
+                    paramSortBy,
+                    ApiConstants.IMAGE_SIZE_XS_M_US,
+                    page,
+                    ApiConstants.DEFAULT_RESULTS_PER_PAGE,
+                    ApiConstants.NUDE
+            );
+        }
 
         call.enqueue(new Callback<PhotosResponse>() {
             @Override
