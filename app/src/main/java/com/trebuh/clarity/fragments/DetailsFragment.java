@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
+import com.trebuh.clarity.DetailsActivity;
 import com.trebuh.clarity.FullscreenPictureActivity;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.models.Photo;
@@ -77,6 +79,9 @@ public class DetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             photos = getArguments().getParcelableArrayList(ARG_PHOTOS_ARRAY_LIST);
+
+            Log.d(TAG, "onCreate(): photos size" + photos.size());
+
             startingPosition = getArguments().getInt(ARG_STARTING_IMAGE_POSITION);
             photoPosition = getArguments().getInt(ARG_IMAGE_POSITION);
 
@@ -99,18 +104,20 @@ public class DetailsFragment extends Fragment {
         TextView authorNameText = (TextView) textContainer.findViewById(R.id.details_author_name_tv);
         HtmlTextView photoDescriptionText = (HtmlTextView) textContainer.findViewById(R.id.details_photo_description_tv);
 
-        String photoUrl = photos.get(photoPosition).getUrl();
-        String profilePicUrl = photos.get(photoPosition).getAvatarUrl();
+        String photoUrl = photos.get(photoPosition).getImages().get(2).getUrl();
+        String profilePicUrl = photos.get(photoPosition).getUser().getUserpicUrl();
         String photoName = photos.get(photoPosition).getName();
-        String authorName = photos.get(photoPosition).getUsername();
+        String authorName = photos.get(photoPosition).getUser().getUsername();
 
         String tempDescription = photos.get(photoPosition).getDescription();
-        String photoDescription = (tempDescription.equals("null") ? "No description" : tempDescription);
+        String photoDescription = tempDescription == null ? "No description" : tempDescription;
 
         photoTitleText.setText(photoName);
         authorNameText.setText(authorName);
         photoDescriptionText.setHtmlFromString(photoDescription, new HtmlTextView.RemoteImageGetter());
         mainPicture.setTransitionName(photoName);
+
+        Log.d(TAG, "photoUrl: " + photoUrl);
 
         RequestCreator photoRequest = Picasso.with(getActivity()).load(photoUrl).fit().centerCrop();
         RequestCreator profilePicRequest = Picasso.with(getActivity()).load(profilePicUrl).fit().centerInside();
@@ -192,7 +199,6 @@ public class DetailsFragment extends Fragment {
         }
         return null;
     }
-
 
     /**
      * returns true if {@param view} is contained within {@param container}'s bounds

@@ -29,6 +29,7 @@ import com.trebuh.clarity.adapters.PhotoGridAdapter;
 import com.trebuh.clarity.fragments.SearchHistoryFragment;
 import com.trebuh.clarity.fragments.PhotoGridFragment;
 import com.trebuh.clarity.models.Photo;
+import com.trebuh.clarity.network.ApiConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +120,6 @@ public class ClarityActivity extends AppCompatActivity
         isDetailsActivityStarted = false;
     }
 
-
     private void initToolbar() {
         appBar = (AppBarLayout) findViewById(R.id.appbar);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -142,8 +142,8 @@ public class ClarityActivity extends AppCompatActivity
         adapter.addItem(SearchHistoryFragment.newInstance(searchHistoryList), "Search history");
 
         PhotoGridFragment photoFragment = (retainedPhotoGridFragment == null) ?
-                PhotoGridFragment.newInstance(PhotoFetcher.FEATURE_POPULAR,
-                        PhotoFetcher.SORT_METHOD_COMMENTS_COUNT) : (PhotoGridFragment) retainedPhotoGridFragment;
+                PhotoGridFragment.newInstance(ApiConstants.FEATURE_POPULAR,
+                        ApiConstants.SORT_METHOD_COMMENTS_COUNT) : (PhotoGridFragment) retainedPhotoGridFragment;
 
         adapter.addItem(photoFragment, "Popular Photos");
 
@@ -229,37 +229,37 @@ public class ClarityActivity extends AppCompatActivity
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_editors);
                             ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
-                                    PhotoFetcher.FEATURE_EDITORS);
+                                    ApiConstants.FEATURE_EDITORS);
                             break;
                         case R.id.drawer_bookmark_upcoming:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_upcoming);
                             ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
-                                    PhotoFetcher.FEATURE_UPCOMING);
+                                    ApiConstants.FEATURE_UPCOMING);
                             break;
                         case R.id.drawer_bookmark_highest_rated:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_highest_rated);
                             ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
-                                    PhotoFetcher.FEATURE_HIGHEST_RATED);
+                                    ApiConstants.FEATURE_HIGHEST_RATED);
                             break;
                         case R.id.drawer_bookmark_fresh_today:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_fresh_today);
                             ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
-                                    PhotoFetcher.FEATURE_FRESH_TODAY);
+                                    ApiConstants.FEATURE_FRESH_TODAY);
                             break;
                         case R.id.drawer_bookmark_fresh_week:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_fresh_week);
                             ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
-                                    PhotoFetcher.FEATURE_FRESH_WEEK);
+                                    ApiConstants.FEATURE_FRESH_WEEK);
                             break;
                         case R.id.drawer_bookmark_fresh_yesterday:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_fresh_yesterday);
                             ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
-                                    PhotoFetcher.FEATURE_FRESH_YESTERDAY);
+                                    ApiConstants.FEATURE_FRESH_YESTERDAY);
                             break;
                     }
                     return true;
@@ -314,12 +314,34 @@ public class ClarityActivity extends AppCompatActivity
 
     @Override
     public void onPhotoGridItemClick(PhotoGridAdapter.PhotoGridItemHolder caller, String url) {
-
         Intent intent = new Intent(this, DetailsActivity.class);
-        intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, caller.getLayoutPosition());
+        int clickedItemPos = caller.getLayoutPosition();
 
         ArrayList<Photo> photos = ((PhotoGridFragment) getCurrentFragment()).getPhotoList();
-        intent.putExtra(EXTRA_PHOTOS_ARRAY_LIST, photos);
+        if (photos == null) {
+            throw new IllegalStateException();
+        }
+
+        Photo clickedPhoto = photos.get(clickedItemPos);
+        int startStrippedIndex = clickedItemPos < 15 ? 0 : clickedItemPos - 15;
+
+        int endStrippedIndex = photos.size() > (clickedItemPos + 15) ? (clickedItemPos + 15) : photos.size();
+
+        // strip the list to max 30 items
+        ArrayList<Photo> strippedPhotos = new ArrayList<>(photos.subList(
+                startStrippedIndex,
+                endStrippedIndex
+        ));
+
+        int newPos = -1;
+        for (int i = 0; i < strippedPhotos.size(); i++) {
+            if ((strippedPhotos.get(i)).getId().equals(clickedPhoto.getId())) {
+                newPos = i;
+            }
+        }
+
+        intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, newPos);
+        intent.putExtra(EXTRA_PHOTOS_ARRAY_LIST, strippedPhotos);
 
         if (!isDetailsActivityStarted) {
             isDetailsActivityStarted = true;
@@ -330,7 +352,6 @@ public class ClarityActivity extends AppCompatActivity
             startActivity(intent);
 //            }
         }
-
 
 //        DetailsFragment photoDetailsFragment = DetailsFragment.newInstance("1", url);
 //
@@ -412,7 +433,7 @@ public class ClarityActivity extends AppCompatActivity
     private void performSearch(String searchTerm, boolean saveInHistory) {
         addOrReplaceExtraGridFragment(searchTerm);
         transitionToFragment(FRAGMENT_EXTRA_GRID);
-        ((PhotoGridFragment) getCurrentFragment()).performSearch(searchTerm);
+//        ((PhotoGridFragment) getCurrentFragment()).performSearch(searchTerm, PhotoFetcher.FIRST_PAGE);
         if (saveInHistory) {
             searchHistoryList.add(searchTerm);
         }
@@ -444,32 +465,33 @@ public class ClarityActivity extends AppCompatActivity
             case R.id.menu_action_sortby_comments:
                 setToolbarSubtitle("Most comments");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
-                        PhotoFetcher.SORT_METHOD_COMMENTS_COUNT);
+                        ApiConstants.SORT_METHOD_COMMENTS_COUNT);
                 break;
             case R.id.menu_action_sortby_rating:
                 setToolbarSubtitle("Top rated");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
-                        PhotoFetcher.SORT_METHOD_RATING);
+                        ApiConstants.SORT_METHOD_RATING);
                 break;
             case R.id.menu_action_sortby_times_viewed:
                 setToolbarSubtitle("Most viewed");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
-                        PhotoFetcher.SORT_METHOD_TIMES_VIEWED);
+                        ApiConstants.SORT_METHOD_TIMES_VIEWED);
                 break;
             case R.id.menu_action_sortby_votes:
                 setToolbarSubtitle("Most votes");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
-                        PhotoFetcher.SORT_METHOD_VOTES_COUNT);
+                        ApiConstants.SORT_METHOD_VOTES_COUNT);
                 break;
             case R.id.menu_action_sortby_new:
                 setToolbarSubtitle("Fresh");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
-                        PhotoFetcher.SORT_METHOD_CREATED_AT);
+                        ApiConstants.SORT_METHOD_CREATED_AT);
                 break;
             case R.id.menu_action_sortby_favorites:
                 setToolbarSubtitle("Most favorited");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
-                        PhotoFetcher.SORT_METHOD_FAVORITES_COUNT);
+                        ApiConstants.SORT_METHOD_FAVORITES_COUNT);
+                break;
         }
         return true;
     }
@@ -492,6 +514,20 @@ public class ClarityActivity extends AppCompatActivity
         } else if (viewPager.getCurrentItem() == FRAGMENT_EXTRA_GRID) {
             getSupportFragmentManager().putFragment(outState, STATE_FRAGMENT_EXTRA_GRID, getCurrentFragment());
         }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle inState) {
+        super.onRestoreInstanceState(inState);
+        // load the fragment's instance
+        if (viewPager.getCurrentItem() == FRAGMENT_PHOTOS) {
+            if (getCurrentFragment().isAdded()) {
+                getSupportFragmentManager().getFragment(inState, STATE_FRAGMENT_PHOTOS);
+            }
+        } else if (viewPager.getCurrentItem() == FRAGMENT_EXTRA_GRID) {
+            getSupportFragmentManager().getFragment(inState, STATE_FRAGMENT_EXTRA_GRID);
+        }
+
     }
 
     private final SharedElementCallback callback = new SharedElementCallback() {
