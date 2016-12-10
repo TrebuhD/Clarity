@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -73,6 +74,7 @@ public class DetailsActivity extends AppCompatActivity
         setEnterSharedElementCallback(callback);
 
         photoList = getIntent().getParcelableArrayListExtra(EXTRA_PHOTOS_ARRAY_LIST);
+
         startingPosition = getIntent().getIntExtra(EXTRA_STARTING_ALBUM_POSITION, 0);
         if (savedInstanceState == null) {
             currentPosition = startingPosition;

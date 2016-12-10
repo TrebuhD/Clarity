@@ -47,10 +47,11 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         int photoId = photo.getId();
         String photoTitle = photo.getName();
         String authorName = photo.getUser().getUsername();
-        String photoUrl = photo.getImageUrl();
+        String photoUrl = photo.getImages().get(1).getUrl();
+        String thumbUrl = photo.getImages().get(0).getUrl();
 
         viewHolder.setUsernameText(authorName);
-        viewHolder.setPhotoImage(photoUrl);
+        viewHolder.setPhotoImage(photoUrl, thumbUrl);
         viewHolder.setPhotoTitle(photoTitle);
         viewHolder.setHiddenUrlTextView(photoUrl);
         viewHolder.setListener(itemOnClickListener);
@@ -126,17 +127,21 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
             this.listener = listener;
         }
 
-        void setPhotoImage(String url) {
+        void setPhotoImage(final String url, String thumbUrl) {
             Picasso
                     .with(itemView.getContext())
-                    .load(url)
-                    .placeholder(R.drawable.image_placeholder)
+                    .load(thumbUrl)
                     .into(photoImageView, new ImageLoadedCallback(progressBar) {
+                        // load bigger version
                         @Override
                         public void onSuccess() {
                             if (this.progressBar != null) {
                                 this.progressBar.setVisibility(View.GONE);
                             }
+                            Picasso.with(itemView.getContext())
+                                    .load(url)
+                                    .placeholder(photoImageView.getDrawable())
+                                    .into(photoImageView);
                             super.onSuccess();
                         }
                     });

@@ -14,7 +14,8 @@ public interface FiveHundredPxService {
             @Query(ApiConstants.PARAM_SORT_METHOD) String sortMethod,
             @Query(ApiConstants.PARAM_IMAGE_SIZE) String imageSize,
             @Query(ApiConstants.EXTRA_PAGE) int page,
-            @Query(ApiConstants.EXTRA_RESULTS_PER_PAGE) int rpp
+            @Query(ApiConstants.EXTRA_RESULTS_PER_PAGE) int rpp,
+            @Query(ApiConstants.PARAM_EXCLUDE) String exclude
     );
 
     @GET("photos/search")

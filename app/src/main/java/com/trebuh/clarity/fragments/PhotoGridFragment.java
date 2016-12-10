@@ -40,6 +40,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private static String ARG_SORT_BY = "sort_by";
     private static String ARG_SEARCH_TERM = "search_term";
     private static String ARG_IS_SEARCH_INSTANCE = "is_search_instance";
+    private static String ARG_EXCLUDE = "exclude";
 
     private static final String STATE_PHOTO_LIST = "state_photo_list";
 
@@ -145,7 +146,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     public void onRefresh() {
         if (adapter != null) {
             adapter.removeAllItems();
-            loadNewPhotos(ApiConstants.FIRST_PAGE, new PhotosCallbackHandler());
+            loadPhotos(ApiConstants.FIRST_PAGE, new PhotosCallbackHandler());
         }
     }
 
@@ -160,7 +161,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     private void loadFirstPage() {
         final PhotosCallbackHandler callbackHandler = new PhotosCallbackHandler();
-        loadNewPhotos(ApiConstants.FIRST_PAGE, callbackHandler);
+        loadPhotos(ApiConstants.FIRST_PAGE, callbackHandler);
     }
 
     private void initRecView(View view) {
@@ -185,7 +186,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                 @Override
                 public void onLoadMore(int page, int totalItemsCount) {
                     if (totalItemsCount > MINIMUM_ITEM_COUNT) {
-                        loadNewPhotos(page + 1, new PhotosCallbackHandler());
+                        loadPhotos(page + 1, new PhotosCallbackHandler());
                     }
                 }
             });
@@ -201,17 +202,19 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         networkErrorRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadNewPhotos(ApiConstants.FIRST_PAGE, new PhotosCallbackHandler());
+                loadPhotos(ApiConstants.FIRST_PAGE, new PhotosCallbackHandler());
             }
         });
     }
 
     public void sortAndReplaceItems(String sortBy) {
+        this.photos = new ArrayList<>();
         this.paramSortBy = sortBy;
         onRefresh();
     }
 
     public void transitionToNewFeature(String feature) {
+        this.photos = new ArrayList<>();
         this.paramFeature = feature;
         this.paramSortBy = ApiConstants.SORT_METHOD_DEFAULT;
         onRefresh();
@@ -235,19 +238,21 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     public void newSearch(String searchTerm) {
+        this.photos = new ArrayList<>();
         paramSearchTerm = searchTerm;
         onRefresh();
     }
 
-    private void loadNewPhotos(int page, final PhotosCallbackHandler callbackHandler) {
+    private void loadPhotos(int page, final PhotosCallbackHandler callbackHandler) {
         FiveHundredPxService service = RetrofitService.getInstance().getService();
 
         Call<PhotosResponse> call = service.listPhotos(
                 paramFeature,
                 paramSortBy,
-                ApiConstants.DEFAULT_IMAGE_SIZE,
+                ApiConstants.IMAGE_SIZE_1_3,
                 page,
-                ApiConstants.DEFAULT_RESULTS_PER_PAGE
+                ApiConstants.DEFAULT_RESULTS_PER_PAGE,
+                ApiConstants.NUDE
         );
 
         call.enqueue(new Callback<PhotosResponse>() {
@@ -281,14 +286,14 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
         @Override
         public void onSuccess(int statusCode, PhotosResponse body) {
-            Log.d("loadNewPhotos ", "::OnSuccess(), Response code: " + statusCode);
+            Log.d("loadPhotos ", "::OnSuccess(), Response code: " + statusCode);
             networkErrorRefreshButton.setVisibility(View.GONE);
             ArrayList<Photo> photoList = (ArrayList<Photo>) body.getPhotos();
-            Log.d("loadNewPhotos ", "::OnSuccess(), Photos list size: " + photoList.size());
+            Log.d("loadPhotos ", "::OnSuccess(), Photos list size: " + photoList.size());
+
             if (photos == null) photos = photoList;
-//            } else {
-//                photos.addAll(photoList);
-//            }
+            else photos.addAll(photoList);
+
             initRecView(getView());
             adapter.addItemRange(photoList);
             if (swipeContainer != null) {
