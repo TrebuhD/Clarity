@@ -3,7 +3,7 @@ package com.trebuh.clarity.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -18,7 +18,7 @@ public class Image implements Parcelable
     private String url;
     @SerializedName("https_url")
     @Expose
-    private String httpsUrl;
+    private String https;
     @SerializedName("format")
     @Expose
     private String format;
@@ -32,7 +32,7 @@ public class Image implements Parcelable
             Image instance = new Image();
             instance.size = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.url = ((String) in.readValue((String.class.getClassLoader())));
-            instance.httpsUrl = ((String) in.readValue((String.class.getClassLoader())));
+            instance.https = ((String) in.readValue((String.class.getClassLoader())));
             instance.format = ((String) in.readValue((String.class.getClassLoader())));
             return instance;
         }
@@ -93,23 +93,23 @@ public class Image implements Parcelable
     /**
      * 
      * @return
-     *     The image url in httpsUrl
+     *     The image url in https
      */
-    public String getHttpsUrl() {
-        return httpsUrl;
+    public String getHttps() {
+        return https;
     }
 
     /**
      * 
-     * @param httpsUrl
+     * @param Https
      *     The image url in https_url
      */
-    public void setHttpsUrl(String httpsUrl) {
-        this.httpsUrl = httpsUrl;
+    public void setHttps(String Https) {
+        this.https = Https;
     }
 
-    public Image withHttpsUrl(String httpsUrl) {
-        this.httpsUrl = httpsUrl;
+    public Image withHttps(String Https) {
+        this.https = Https;
         return this;
     }
 
@@ -139,7 +139,7 @@ public class Image implements Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(size);
         dest.writeValue(url);
-        dest.writeValue(httpsUrl);
+        dest.writeValue(https);
         dest.writeValue(format);
     }
 

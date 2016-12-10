@@ -73,7 +73,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         int newImagesSize = photos.size();
         int currentSize = getItemCount();
         photoList.addAll(photos);
-        notifyItemRangeInserted(currentSize, newImagesSize);
+        notifyItemRangeInserted(currentSize + 1, newImagesSize);
     }
 
     public void removeItem(int position) {

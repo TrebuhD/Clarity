@@ -319,6 +319,9 @@ public class ClarityActivity extends AppCompatActivity
         intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, caller.getLayoutPosition());
 
         ArrayList<Photo> photos = ((PhotoGridFragment) getCurrentFragment()).getPhotoList();
+        if (photos == null) {
+            Log.e(TAG, "onPhotoGridItemClick(): photos is null");
+        }
         intent.putExtra(EXTRA_PHOTOS_ARRAY_LIST, photos);
 
         if (!isDetailsActivityStarted) {

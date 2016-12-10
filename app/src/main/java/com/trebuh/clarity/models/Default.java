@@ -37,7 +37,7 @@ public class Default implements Parcelable
      * @return
      *     The image url in https
      */
-    public String getHttpsUrl() {
+    public String getHttps() {
         return https;
     }
 
@@ -46,7 +46,7 @@ public class Default implements Parcelable
      * @param https
      *     The image url in https
      */
-    public void setHttpsUrl(String https) {
+    public void setHttps(String https) {
         this.https = https;
     }
 

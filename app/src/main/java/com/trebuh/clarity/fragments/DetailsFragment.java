@@ -105,7 +105,7 @@ public class DetailsFragment extends Fragment {
         String authorName = photos.get(photoPosition).getUser().getUsername();
 
         String tempDescription = photos.get(photoPosition).getDescription();
-        String photoDescription = (tempDescription.equals("null") ? "No description" : tempDescription);
+        String photoDescription = tempDescription == null ? "No description" : tempDescription;
 
         photoTitleText.setText(photoName);
         authorNameText.setText(authorName);

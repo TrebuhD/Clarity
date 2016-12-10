@@ -1,6 +1,7 @@
 
 package com.trebuh.clarity.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -127,7 +128,7 @@ public class Photo implements Parcelable
     private String imageUrl;
     @SerializedName("images")
     @Expose
-    private List<Image> images = null;
+    private List<Image> images = new ArrayList<>();
     @SerializedName("url")
     @Expose
     private String url;
