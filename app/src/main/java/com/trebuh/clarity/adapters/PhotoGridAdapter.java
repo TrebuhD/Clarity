@@ -1,6 +1,7 @@
 package com.trebuh.clarity.adapters;
 
 import android.content.Context;
+import android.os.Debug;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +23,7 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
 public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.PhotoGridItemHolder> {
+    private static final String TAG = "PhotoGridAdapter";
     private List<Photo> photoList;
     private PhotoGridItemOnClickListener itemOnClickListener;
     private PhotoGridItemHolder photoViewHolder;
@@ -68,9 +70,10 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
     }
 
     public void addItemRange(List<Photo> photos) {
+        int newImagesSize = photos.size();
         int currentSize = getItemCount();
         photoList.addAll(photos);
-        notifyItemRangeInserted(currentSize, photos.size());
+        notifyItemRangeInserted(currentSize, newImagesSize);
     }
 
     public void removeItem(int position) {

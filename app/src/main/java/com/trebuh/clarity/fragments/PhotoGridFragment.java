@@ -50,20 +50,12 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private String paramFeature;
     private String paramSortBy;
     private String paramSearchTerm;
-    private boolean paramIsSearchInstance;
+    private boolean isSearchFragmentInstance;
 
     private PhotoGridAdapter adapter;
     private PhotoGridFragmentListener listener;
     private SwipeRefreshLayout swipeContainer;
     private RecyclerView gridRecyclerView;
-
-    public ArrayList<Photo> getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(ArrayList<Photo> photos) {
-        this.photos = photos;
-    }
 
     private ArrayList<Photo> photos;
     private AppCompatButton networkErrorRefreshButton;
@@ -109,8 +101,8 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            paramIsSearchInstance = getArguments().getBoolean(ARG_IS_SEARCH_INSTANCE);
-            if (paramIsSearchInstance) {
+            isSearchFragmentInstance = getArguments().getBoolean(ARG_IS_SEARCH_INSTANCE);
+            if (isSearchFragmentInstance) {
                 paramSearchTerm = getArguments().getString(ARG_SEARCH_TERM);
             } else {
                 paramFeature = getArguments().getString(ARG_FEATURE);
@@ -126,7 +118,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         if (savedInstanceState != null) {
             paramFeature = savedInstanceState.getString(STATE_FEATURE);
             paramSortBy = savedInstanceState.getString(STATE_SORT_METHOD);
-            paramIsSearchInstance = savedInstanceState.getBoolean(STATE_IS_SEARCH_INSTANCE);
+            isSearchFragmentInstance = savedInstanceState.getBoolean(STATE_IS_SEARCH_INSTANCE);
             photos = savedInstanceState.getParcelableArrayList(STATE_PHOTO_LIST);
         }
         return rootView;
@@ -134,6 +126,8 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        adapter = new PhotoGridAdapter(new ArrayList<Photo>());
+
         initSwipeContainer(view);
         loadFirstPage();
         initRefreshButton(view);
@@ -174,8 +168,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         if (photos == null) {
             Log.d(TAG, "Photos is null");
         }
-        if (adapter == null) {
-            adapter = new PhotoGridAdapter(photos);
+        if (adapter.getItemCount() == 0) {
             gridRecyclerView.setAdapter(adapter);
             final GridLayoutManager layoutManager = new WrapContentGridLayoutManager(getContext(), GRID_SPAN_COUNT);
             gridRecyclerView.setLayoutManager(layoutManager);
@@ -192,13 +185,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                 @Override
                 public void onLoadMore(int page, int totalItemsCount) {
                     if (totalItemsCount > MINIMUM_ITEM_COUNT) {
-//                    ArrayList<Photo> morePhotos = loadNewPhotos(page + 1, callbackHandler);
-//                    adapter.addItemRange(morePhotos);
-//
-//                    Handler handler = new Handler();
-//                    Log.d(TAG, "loading more items, current page: " + page + ", current items: " +
-//                            photos.size() + ", totalItemsCount:" + totalItemsCount + ", adding " + morePhotos.size() + " photos");
-//                    handler.post(new NotifyItemsInsertedRunnable(photos.size(), morePhotos.size()));
+                        loadNewPhotos(page + 1, new PhotosCallbackHandler());
                     }
                 }
             });
@@ -206,9 +193,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             gridRecyclerView.setItemAnimator(new SlideInUpAnimator((new OvershootInterpolator(1f))));
             gridRecyclerView.getItemAnimator().setAddDuration(250);
             gridRecyclerView.getItemAnimator().setRemoveDuration(250);
-        }
-        else {
-//            adapter.notifyDataSetChanged();
         }
     }
 
@@ -222,19 +206,47 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         });
     }
 
-    private void loadNewPhotos(int page, final PhotosCallbackHandler callbackHandler) {
-        // Customize the call based on whether we're doing a search.
-        String feature = paramIsSearchInstance ? ApiConstants.NO_FEATURE : paramFeature;
-        String sortBy = paramIsSearchInstance ? ApiConstants.NO_SORT_METHOD : paramSortBy;
-        String searchQuery = paramIsSearchInstance ? paramSearchTerm : ApiConstants.NO_SEARCH_QUERY;
+    public void sortAndReplaceItems(String sortBy) {
+        this.paramSortBy = sortBy;
+        onRefresh();
+    }
 
+    public void transitionToNewFeature(String feature) {
+        this.paramFeature = feature;
+        this.paramSortBy = ApiConstants.SORT_METHOD_DEFAULT;
+        onRefresh();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(STATE_PHOTO_LIST, photos);
+        outState.putBoolean(STATE_IS_SEARCH_INSTANCE, isSearchFragmentInstance);
+        outState.putString(STATE_FEATURE, paramFeature);
+        outState.putString(STATE_SORT_METHOD, paramSortBy);
+    }
+
+    public RecyclerView getPhotosContainer() {
+        return gridRecyclerView;
+    }
+
+    public ArrayList<Photo> getPhotoList() {
+        return photos;
+    }
+
+    public void newSearch(String searchTerm) {
+        paramSearchTerm = searchTerm;
+        onRefresh();
+    }
+
+    private void loadNewPhotos(int page, final PhotosCallbackHandler callbackHandler) {
         FiveHundredPxService service = RetrofitService.getInstance().getService();
 
         Call<PhotosResponse> call = service.listPhotos(
-                feature,
-                sortBy,
+                paramFeature,
+                paramSortBy,
                 ApiConstants.DEFAULT_IMAGE_SIZE,
-                ApiConstants.FIRST_PAGE,
+                page,
                 ApiConstants.DEFAULT_RESULTS_PER_PAGE
         );
 
@@ -258,51 +270,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                 Log.e("listPhotos(): ", "error, " + t.getMessage());
             }
         });
-
-//            photoList = new FetchPhotosTask().execute(params).get();
-
-//        } catch (InterruptedException | ExecutionException e) {
-//            Log.e(TAG, "Failed to fetch new photos", e);
-//        }
-//        return (ArrayList<Photo>) photoList;
-    }
-
-    public void sortAndReplaceItems(String sortBy) {
-        this.paramSortBy = sortBy;
-        onRefresh();
-    }
-
-    public void transitionToNewFeature(String feature) {
-        this.paramFeature = feature;
-        this.paramSortBy = ApiConstants.SORT_METHOD_DEFAULT;
-        onRefresh();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(STATE_PHOTO_LIST, photos);
-        outState.putBoolean(STATE_IS_SEARCH_INSTANCE, paramIsSearchInstance);
-        outState.putString(STATE_FEATURE, paramFeature);
-        outState.putString(STATE_SORT_METHOD, paramSortBy);
-    }
-
-    public RecyclerView getPhotosContainer() {
-        return gridRecyclerView;
-    }
-
-    public ArrayList<Photo> getPhotoList() {
-        return photos;
-    }
-
-    public void newSearch(String searchTerm) {
-        paramSearchTerm = searchTerm;
-        onRefresh();
-    }
-
-    public interface PhotoGridFragmentListener {
-        void onPhotoGridItemClick(PhotoGridAdapter.PhotoGridItemHolder caller, String url);
-        void onAppBarShow();
     }
 
     private class PhotosCallbackHandler implements PhotosCallback {
@@ -314,15 +281,14 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
         @Override
         public void onSuccess(int statusCode, PhotosResponse body) {
-            Log.d("listPhotos(): ", "Response code: " + statusCode);
+            Log.d("loadNewPhotos ", "::OnSuccess(), Response code: " + statusCode);
             networkErrorRefreshButton.setVisibility(View.GONE);
             ArrayList<Photo> photoList = (ArrayList<Photo>) body.getPhotos();
-            setPhotos(photoList);
-            if (photoList == null) {
-                Log.d(TAG, "p" +
-                        "photoList is null");
-            }
-            setPhotos(photoList);
+            Log.d("loadNewPhotos ", "::OnSuccess(), Photos list size: " + photoList.size());
+            if (photos == null) photos = photoList;
+//            } else {
+//                photos.addAll(photoList);
+//            }
             initRecView(getView());
             adapter.addItemRange(photoList);
             if (swipeContainer != null) {
@@ -333,28 +299,19 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         @Override
         public void onError() {
             Log.e(TAG, "PhotosCallbackHandler error");
+            if (swipeContainer != null) {
+                swipeContainer.setRefreshing(false);
+            }
             networkErrorRefreshButton.setVisibility(View.VISIBLE);
         }
 
         @Override
         public void onErrorCode(int statusCode) {
             Log.e(TAG, "PhotosCallbackHandler error: " + statusCode);
+            if (swipeContainer != null) {
+                swipeContainer.setRefreshing(false);
+            }
             networkErrorRefreshButton.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private class NotifyItemsInsertedRunnable implements Runnable {
-        private int startPos;
-        private int numberOfItems;
-
-        public NotifyItemsInsertedRunnable(int startPos, int numberOfItems) {
-            this.startPos = startPos;
-            this.numberOfItems = numberOfItems;
-        }
-
-        @Override
-        public void run() {
-            adapter.notifyItemRangeInserted(startPos, numberOfItems);
         }
     }
 
@@ -373,5 +330,10 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                 Log.e(TAG, "Error, Index out of bounds");
             }
         }
+    }
+
+    public interface PhotoGridFragmentListener {
+        void onPhotoGridItemClick(PhotoGridAdapter.PhotoGridItemHolder caller, String url);
+        void onAppBarShow();
     }
 }
