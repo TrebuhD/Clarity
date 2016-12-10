@@ -158,7 +158,6 @@ public class Photo implements Serializable, Parcelable
     private Boolean isFreePhoto;
     public final static Parcelable.Creator<Photo> CREATOR = new Creator<Photo>() {
 
-
         @SuppressWarnings({
                 "unchecked"
         })
@@ -168,21 +167,21 @@ public class Photo implements Serializable, Parcelable
             instance.userId = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.name = ((String) in.readValue((String.class.getClassLoader())));
             instance.description = ((String) in.readValue((String.class.getClassLoader())));
-            instance.camera = ((Object) in.readValue((Object.class.getClassLoader())));
-            instance.lens = ((Object) in.readValue((Object.class.getClassLoader())));
-            instance.focalLength = ((Object) in.readValue((Object.class.getClassLoader())));
-            instance.iso = ((Object) in.readValue((Object.class.getClassLoader())));
-            instance.shutterSpeed = ((Object) in.readValue((Object.class.getClassLoader())));
-            instance.aperture = ((Object) in.readValue((Object.class.getClassLoader())));
+            instance.camera = in.readValue((Object.class.getClassLoader()));
+            instance.lens = in.readValue((Object.class.getClassLoader()));
+            instance.focalLength = in.readValue((Object.class.getClassLoader()));
+            instance.iso = in.readValue((Object.class.getClassLoader()));
+            instance.shutterSpeed = in.readValue((Object.class.getClassLoader()));
+            instance.aperture = in.readValue((Object.class.getClassLoader()));
             instance.timesViewed = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.rating = ((Double) in.readValue((Double.class.getClassLoader())));
             instance.status = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.createdAt = ((String) in.readValue((String.class.getClassLoader())));
             instance.category = ((Integer) in.readValue((Integer.class.getClassLoader())));
-            instance.location = ((Object) in.readValue((Object.class.getClassLoader())));
+            instance.location = in.readValue((Object.class.getClassLoader()));
             instance.latitude = ((Double) in.readValue((Double.class.getClassLoader())));
             instance.longitude = ((Double) in.readValue((Double.class.getClassLoader())));
-            instance.takenAt = ((Object) in.readValue((Object.class.getClassLoader())));
+            instance.takenAt = in.readValue((Object.class.getClassLoader()));
             instance.hiResUploaded = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.forSale = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
             instance.width = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -192,7 +191,7 @@ public class Photo implements Serializable, Parcelable
             instance.commentsCount = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.nsfw = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
             instance.salesCount = ((Integer) in.readValue((Integer.class.getClassLoader())));
-            instance.forSaleDate = ((Object) in.readValue((Object.class.getClassLoader())));
+            instance.forSaleDate = in.readValue((Object.class.getClassLoader()));
             instance.highestRating = ((Double) in.readValue((Double.class.getClassLoader())));
             instance.highestRatingDate = ((String) in.readValue((String.class.getClassLoader())));
             instance.licenseType = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -228,6 +227,13 @@ public class Photo implements Serializable, Parcelable
      * @return
      * The id
      */
+
+
+    @Override
+    public String toString() {
+        return getName();
+    }
+
     public Integer getId() {
         return id;
     }

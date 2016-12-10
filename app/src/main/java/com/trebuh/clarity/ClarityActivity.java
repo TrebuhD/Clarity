@@ -3,6 +3,7 @@ package com.trebuh.clarity;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -196,9 +197,9 @@ public class ClarityActivity extends AppCompatActivity
 
     private void addOrReplaceExtraGridFragment(String searchTerm) {
         if (adapter.getCount() == SIZE_HAS_EXTRA_FRAGMENT) {
+            adapter.deleteItem(FRAGMENT_EXTRA_GRID);
+            adapter.addItem(PhotoGridFragment.newSearchInstance(searchTerm), searchTerm);
             transitionToFragment(FRAGMENT_EXTRA_GRID);
-            ((PhotoGridFragment) getCurrentFragment()).newSearch(searchTerm);
-            adapter.setNewTitle(SIZE_HAS_EXTRA_FRAGMENT - 1, searchTerm);
         } else {
             adapter.addItem(PhotoGridFragment.newSearchInstance(searchTerm), searchTerm);
         }
@@ -210,9 +211,10 @@ public class ClarityActivity extends AppCompatActivity
         if (navigationView != null) {
             navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
-                public boolean onNavigationItemSelected(MenuItem item) {
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     drawerLayout.closeDrawers();
                     item.setChecked(true);
+                    assert getSupportActionBar() != null;
                     switch (item.getItemId()) {
                         case R.id.navigation_item_home:
                             transitionToFragment(FRAGMENT_PHOTOS);
@@ -390,7 +392,7 @@ public class ClarityActivity extends AppCompatActivity
                 hideSortButtons(menu, false);
             } else if (viewPager.getCurrentItem() == FRAGMENT_EXTRA_GRID) {
                 menu.findItem(R.id.menu_action_refresh).setVisible(false);
-                menu.findItem(R.id.menu_action_search).setVisible(true);
+                menu.findItem(R.id.menu_action_search).setVisible(false);
                 hideSortButtons(menu, false);
             } else {
                 menu.findItem(R.id.menu_action_refresh).setVisible(true);
