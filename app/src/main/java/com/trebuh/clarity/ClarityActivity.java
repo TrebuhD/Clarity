@@ -29,12 +29,11 @@ import com.trebuh.clarity.adapters.PhotoGridAdapter;
 import com.trebuh.clarity.fragments.SearchHistoryFragment;
 import com.trebuh.clarity.fragments.PhotoGridFragment;
 import com.trebuh.clarity.models.Photo;
-import com.trebuh.clarity.network.ApiConstants;
+import com.trebuh.clarity.network.wtf;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class ClarityActivity extends AppCompatActivity
         implements SearchHistoryFragment.OnFragmentInteractionListener,
@@ -143,8 +142,8 @@ public class ClarityActivity extends AppCompatActivity
         adapter.addItem(SearchHistoryFragment.newInstance(searchHistoryList), "Search history");
 
         PhotoGridFragment photoFragment = (retainedPhotoGridFragment == null) ?
-                PhotoGridFragment.newInstance(ApiConstants.FEATURE_POPULAR,
-                        ApiConstants.SORT_METHOD_COMMENTS_COUNT) : (PhotoGridFragment) retainedPhotoGridFragment;
+                PhotoGridFragment.newInstance(wtf.FEATURE_POPULAR,
+                        wtf.SORT_METHOD_COMMENTS_COUNT) : (PhotoGridFragment) retainedPhotoGridFragment;
 
         adapter.addItem(photoFragment, "Popular Photos");
 
@@ -230,37 +229,37 @@ public class ClarityActivity extends AppCompatActivity
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_editors);
                             ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
-                                    ApiConstants.FEATURE_EDITORS);
+                                    wtf.FEATURE_EDITORS);
                             break;
                         case R.id.drawer_bookmark_upcoming:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_upcoming);
                             ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
-                                    ApiConstants.FEATURE_UPCOMING);
+                                    wtf.FEATURE_UPCOMING);
                             break;
                         case R.id.drawer_bookmark_highest_rated:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_highest_rated);
                             ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
-                                    ApiConstants.FEATURE_HIGHEST_RATED);
+                                    wtf.FEATURE_HIGHEST_RATED);
                             break;
                         case R.id.drawer_bookmark_fresh_today:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_fresh_today);
                             ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
-                                    ApiConstants.FEATURE_FRESH_TODAY);
+                                    wtf.FEATURE_FRESH_TODAY);
                             break;
                         case R.id.drawer_bookmark_fresh_week:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_fresh_week);
                             ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
-                                    ApiConstants.FEATURE_FRESH_WEEK);
+                                    wtf.FEATURE_FRESH_WEEK);
                             break;
                         case R.id.drawer_bookmark_fresh_yesterday:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_fresh_yesterday);
                             ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
-                                    ApiConstants.FEATURE_FRESH_YESTERDAY);
+                                    wtf.FEATURE_FRESH_YESTERDAY);
                             break;
                     }
                     return true;
@@ -466,32 +465,32 @@ public class ClarityActivity extends AppCompatActivity
             case R.id.menu_action_sortby_comments:
                 setToolbarSubtitle("Most comments");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
-                        ApiConstants.SORT_METHOD_COMMENTS_COUNT);
+                        wtf.SORT_METHOD_COMMENTS_COUNT);
                 break;
             case R.id.menu_action_sortby_rating:
                 setToolbarSubtitle("Top rated");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
-                        ApiConstants.SORT_METHOD_RATING);
+                        wtf.SORT_METHOD_RATING);
                 break;
             case R.id.menu_action_sortby_times_viewed:
                 setToolbarSubtitle("Most viewed");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
-                        ApiConstants.SORT_METHOD_TIMES_VIEWED);
+                        wtf.SORT_METHOD_TIMES_VIEWED);
                 break;
             case R.id.menu_action_sortby_votes:
                 setToolbarSubtitle("Most votes");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
-                        ApiConstants.SORT_METHOD_VOTES_COUNT);
+                        wtf.SORT_METHOD_VOTES_COUNT);
                 break;
             case R.id.menu_action_sortby_new:
                 setToolbarSubtitle("Fresh");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
-                        ApiConstants.SORT_METHOD_CREATED_AT);
+                        wtf.SORT_METHOD_CREATED_AT);
                 break;
             case R.id.menu_action_sortby_favorites:
                 setToolbarSubtitle("Most favorited");
                 ((PhotoGridFragment) getCurrentFragment()).sortAndReplaceItems(
-                        ApiConstants.SORT_METHOD_FAVORITES_COUNT);
+                        wtf.SORT_METHOD_FAVORITES_COUNT);
                 break;
         }
         return true;

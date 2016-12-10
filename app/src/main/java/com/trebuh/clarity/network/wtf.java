@@ -1,8 +1,8 @@
 package com.trebuh.clarity.network;
 
-public final class ApiConstants {
+public final class wtf {
 
-    private ApiConstants() {
+    private wtf() {
         //this prevents even the native class from calling this:
         throw new AssertionError();
     }

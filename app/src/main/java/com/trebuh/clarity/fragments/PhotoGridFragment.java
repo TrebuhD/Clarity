@@ -19,7 +19,7 @@ import com.trebuh.clarity.R;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
 import com.trebuh.clarity.models.Photo;
 import com.trebuh.clarity.models.PhotosResponse;
-import com.trebuh.clarity.network.ApiConstants;
+import com.trebuh.clarity.network.wtf;
 import com.trebuh.clarity.network.FiveHundredPxService;
 import com.trebuh.clarity.network.PhotosCallback;
 import com.trebuh.clarity.network.RetrofitService;
@@ -77,8 +77,8 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         Bundle args = new Bundle();
         args.putString(ARG_SEARCH_TERM, searchQuery);
         args.putBoolean(ARG_IS_SEARCH_INSTANCE, true);
-        args.putString(ARG_FEATURE, ApiConstants.NO_FEATURE);
-        args.putString(ARG_SORT_BY, ApiConstants.NO_SORT_METHOD);
+        args.putString(ARG_FEATURE, wtf.NO_FEATURE);
+        args.putString(ARG_SORT_BY, wtf.NO_SORT_METHOD);
         fragment.setArguments(args);
         return fragment;
     }
@@ -130,7 +130,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         initSwipeContainer(view);
         initRefreshButton(view);
 
-        loadPage(ApiConstants.FIRST_PAGE);
+        loadPage(wtf.FIRST_PAGE);
 
         super.onViewCreated(view, savedInstanceState);
     }
@@ -163,7 +163,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     public void onRefresh() {
         if (adapter != null) {
             adapter.removeAllItems();
-            loadPhotos(ApiConstants.FIRST_PAGE, new PhotosCallbackHandler());
+            loadPhotos(wtf.FIRST_PAGE, new PhotosCallbackHandler());
         }
     }
 
@@ -255,7 +255,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         networkErrorRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadPhotos(ApiConstants.FIRST_PAGE, new PhotosCallbackHandler());
+                loadPhotos(wtf.FIRST_PAGE, new PhotosCallbackHandler());
             }
         });
     }
@@ -269,7 +269,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     public void transitionToNewFeature(String feature) {
         this.photos = new ArrayList<>();
         this.paramFeature = feature;
-        this.paramSortBy = ApiConstants.SORT_METHOD_DEFAULT;
+        this.paramSortBy = wtf.SORT_METHOD_DEFAULT;
         onRefresh();
     }
 
@@ -295,21 +295,21 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         Call<PhotosResponse> call;
         if (isSearchFragmentInstance) {
             call = service.searchPhotos(
-                    ApiConstants.NO_SORT_METHOD,
-                    ApiConstants.IMAGE_SIZE_XS_M_US,
-                    ApiConstants.NUDE,
+                    wtf.NO_SORT_METHOD,
+                    wtf.IMAGE_SIZE_XS_M_US,
+                    wtf.NUDE,
                     paramSearchTerm,
                     page,
-                    ApiConstants.DEFAULT_RESULTS_PER_PAGE
+                    wtf.DEFAULT_RESULTS_PER_PAGE
             );
         } else {
             call = service.listPhotos(
                     paramFeature,
                     paramSortBy,
-                    ApiConstants.IMAGE_SIZE_XS_M_US,
+                    wtf.IMAGE_SIZE_XS_M_US,
                     page,
-                    ApiConstants.DEFAULT_RESULTS_PER_PAGE,
-                    ApiConstants.NUDE
+                    wtf.DEFAULT_RESULTS_PER_PAGE,
+                    wtf.NUDE
             );
         }
 

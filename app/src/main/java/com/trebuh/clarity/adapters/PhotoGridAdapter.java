@@ -1,10 +1,8 @@
 package com.trebuh.clarity.adapters;
 
 import android.content.Context;
-import android.os.Debug;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +13,8 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.models.Photo;
-import com.trebuh.clarity.network.ApiConstants;
 
 import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.PhotoGridItemHolder> {
     private static final String TAG = "PhotoGridAdapter";
