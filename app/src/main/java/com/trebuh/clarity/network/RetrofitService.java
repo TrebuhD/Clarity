@@ -27,7 +27,7 @@ public class RetrofitService  {
 
                 // Add consumer key to every request
                 HttpUrl url = originalHttpUrl.newBuilder()
-                        .addQueryParameter(wtf.PARAM_CONSUMER_KEY, wtf.CONSUMER_KEY)
+                        .addQueryParameter(ApiConstants.PARAM_CONSUMER_KEY, ApiConstants.CONSUMER_KEY)
                         .build();
 
                 // Request customization: add request headers
@@ -43,7 +43,7 @@ public class RetrofitService  {
                 .addInterceptor(loggingInterceptor).addInterceptor(apiKeyInterceptor).build();
 
         retrofit = new Retrofit.Builder().
-                baseUrl(wtf.ENDPOINT)
+                baseUrl(ApiConstants.ENDPOINT)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
