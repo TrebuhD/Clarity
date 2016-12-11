@@ -15,3 +15,7 @@ Simple & fast material design image browser for 500px.
 
 <img src="https://trebuhd.github.io/assets/images/clarityPhotoDetails.png" width="480">
 <img src="https://trebuhd.github.io/assets/images/claritySort.png" width="360">
+
+
+40 vector (SVG) icons by Enes Dal   License: Creative Commons (Attribution 3.0 Unported)
+https://creativecommons.org/licenses/by/3.0/legalcode
