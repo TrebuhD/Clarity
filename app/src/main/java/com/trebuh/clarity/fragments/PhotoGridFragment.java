@@ -368,6 +368,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             if (swipeContainer != null) {
                 swipeContainer.setRefreshing(false);
             }
+            networkErrorRefreshButton.setText(R.string.error_button);
             networkErrorRefreshButton.setVisibility(View.VISIBLE);
             if (photos.size() != 0) {
                 photos.clear();
@@ -381,6 +382,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             if (swipeContainer != null) {
                 swipeContainer.setRefreshing(false);
             }
+            networkErrorRefreshButton.setText("Network error " + statusCode + ", refresh?");
             networkErrorRefreshButton.setVisibility(View.VISIBLE);
             if (photos != null && photos.size() != 0) {
                 photos.clear();
