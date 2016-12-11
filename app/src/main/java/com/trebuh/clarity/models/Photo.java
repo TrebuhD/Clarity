@@ -393,7 +393,7 @@ public class Photo implements Serializable, Parcelable
     /**
      *
      * @return
-     * The iso
+     * The isoHawkons
      */
     public Object getIso() {
         return iso;
@@ -402,7 +402,7 @@ public class Photo implements Serializable, Parcelable
     /**
      *
      * @param iso
-     * The iso
+     * The isoHawkons
      */
     public void setIso(Object iso) {
         this.iso = iso;
