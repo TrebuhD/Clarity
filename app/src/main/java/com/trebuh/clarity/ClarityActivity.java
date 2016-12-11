@@ -1,6 +1,5 @@
 package com.trebuh.clarity;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -11,7 +10,6 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -25,7 +23,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 
 import com.trebuh.clarity.adapters.ClarityPagerAdapter;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
@@ -35,8 +32,6 @@ import com.trebuh.clarity.models.Photo;
 import com.trebuh.clarity.network.ApiConstants;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class ClarityActivity extends AppCompatActivity
         implements SearchHistoryFragment.OnFragmentInteractionListener,
@@ -341,13 +336,15 @@ public class ClarityActivity extends AppCompatActivity
             }
         }
         // pass the imageView of clicked the grid item
-        transition(strippedPhotos, newPos, caller.itemView);
+        launchActivityWithSharedView(strippedPhotos, newPos, caller.itemView.findViewById(R.id.photo_grid_item_iv));
     }
 
-    private void transition(ArrayList<Photo> strippedPhotos, int newPos, View view) {
+    private void launchActivityWithSharedView(ArrayList<Photo> strippedPhotos, int newPos, View view) {
         if (!isDetailsActivityStarted) {
             isDetailsActivityStarted = true;
         }
+
+        Log.d(TAG, "launchActivityWithSharedView(), view: " + view.toString());
 
         if (Build.VERSION.SDK_INT < 21) {
             Intent intent = new Intent(this, DetailsActivity.class);
