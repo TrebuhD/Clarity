@@ -247,7 +247,9 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                 oos.writeObject(photos);
                 oos.close();
                 photosSaved = true;
-                Log.d(TAG, "SavePhotos runnable: photos saved" + photos.toString());
+                if (photos != null) {
+                    Log.d(TAG, "SavePhotos runnable: photos saved" + photos.toString());
+                }
             } catch (IOException e) {
                 Log.e(TAG, "SavePhotos runnable: I/O error");
                 e.printStackTrace();

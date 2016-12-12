@@ -7,11 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.trebuh.clarity.BuildConfig;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.models.Photo;
 
@@ -99,6 +99,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         private final TextView authorNameTextView;
         private final TextView photoTitleTextView;
         private final TextView hiddenUrlTextView;
+        private final ProgressBar progressBar;
 
         private PhotoGridItemOnClickListener listener;
 
@@ -108,6 +109,10 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
             this.authorNameTextView = (TextView) itemView.findViewById(R.id.photo_grid_item_author_name_tv);
             this.photoTitleTextView = (TextView) itemView.findViewById(R.id.photo_grid_item_title_tv);
             this.hiddenUrlTextView = (TextView) itemView.findViewById(R.id.photo_grid_hidden_url_tv);
+            this.progressBar = (ProgressBar) itemView.findViewById(R.id.photo_grid_item_progress_bar);
+
+            this.progressBar.setVisibility(View.VISIBLE);
+            progressBar.setIndeterminate(true);
 
             this.photoImageView = (ImageView) itemView.findViewById(R.id.photo_grid_item_iv);
             itemView.setOnClickListener(this);
@@ -128,7 +133,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
             Picasso
                     .with(itemView.getContext())
                     .load(thumbUrl)
-                    .placeholder(R.drawable.progress_animation)
+                    .placeholder(R.drawable.sayagata)
                     .into(photoImageView, new Callback() {
                         @Override
                         public void onError() {
@@ -142,6 +147,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
                                     .fit()
                                     .placeholder(photoImageView.getDrawable())
                                     .into(photoImageView);
+                            progressBar.setVisibility(View.GONE);
                         }
                     })
             ;
