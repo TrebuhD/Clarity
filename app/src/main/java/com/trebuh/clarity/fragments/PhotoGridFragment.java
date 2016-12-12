@@ -49,6 +49,8 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private static final String STATE_FEATURE = "state_feature";
     private static final String STATE_SORT_METHOD = "state_sort_method";
     private static final String STATE_IS_SEARCH_INSTANCE = "state_is_sort_instance";
+    private static final java.lang.String STATE_IS_SAVED = "state_is_saved";
+    private static final String STATE_CURRENT_PAGE = "state_current_page";
 
     private String paramFeature;
     private String paramSortBy;
@@ -63,6 +65,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     private ArrayList<Photo> photos;
     private AppCompatButton networkErrorRefreshButton;
     private boolean photosSaved;
+    private int currentPage;
 
     public PhotoGridFragment() {
         // Required empty public constructor
@@ -123,9 +126,9 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         if (savedInstanceState != null) {
             paramFeature = savedInstanceState.getString(STATE_FEATURE);
             paramSortBy = savedInstanceState.getString(STATE_SORT_METHOD);
+            currentPage = savedInstanceState.getInt(STATE_CURRENT_PAGE);
             isSearchFragmentInstance = savedInstanceState.getBoolean(STATE_IS_SEARCH_INSTANCE);
-//            photos = savedInstanceState.getParcelableArrayList(STATE_PHOTO_LIST);
-        }
+        } else currentPage = ApiConstants.FIRST_PAGE;
         return rootView;
     }
 
@@ -135,9 +138,11 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         initRefreshButton(view);
         if (photosSaved) {
             adapter.removeAllItems();
+            photos = new ArrayList<>();
             adapter.addItemRange(loadSavedPhotoList());
         } else {
-            loadPage(ApiConstants.FIRST_PAGE);
+            Log.e(TAG, "photosSaved is false!");
+            loadPage(currentPage);
         }
 
         super.onViewCreated(view, savedInstanceState);
@@ -147,6 +152,9 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     public void onDetach() {
         super.onDetach();
         // save photos to internal storage
+        Thread savePhotosThread = new Thread(new SavePhotos());
+        photosSaved = true;
+        savePhotosThread.run();
         listener = null;
     }
 
@@ -163,11 +171,9 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Thread savePhotosThread = new Thread(new SavePhotos());
-        savePhotosThread.run();
-
 //        outState.putParcelableArrayList(STATE_PHOTO_LIST, photos);
         outState.putBoolean(STATE_IS_SEARCH_INSTANCE, isSearchFragmentInstance);
+        outState.putInt(STATE_CURRENT_PAGE, currentPage);
         outState.putString(STATE_FEATURE, paramFeature);
         outState.putString(STATE_SORT_METHOD, paramSortBy);
     }
@@ -216,7 +222,9 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                 @Override
                 public void onLoadMore(int page, int totalItemsCount) {
                     if (totalItemsCount > MINIMUM_ITEM_COUNT) {
-                        loadPhotos(page + 1, new PhotosCallbackHandler());
+                        Log.d(TAG, "onLoadMore, currentPage: " + currentPage);
+                        currentPage++;
+                        loadPhotos(currentPage, new PhotosCallbackHandler());
                     }
                 }
             });
