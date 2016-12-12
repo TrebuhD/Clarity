@@ -13,8 +13,11 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.ChangeBounds;
 import android.transition.Fade;
 import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,6 +78,11 @@ public class DetailsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            getWindow().setSharedElementEnterTransition(TransitionInflater.from(this).
+//                    inflateTransition(R.transition.activity_slide));
+//        }
+
         // prevent statusBar blinking during enter transition
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             postponeEnterTransition();
@@ -91,6 +99,8 @@ public class DetailsActivity extends AppCompatActivity
             });
 
         }
+
+
 
         photoList = getIntent().getParcelableArrayListExtra(EXTRA_PHOTOS_ARRAY_LIST);
 

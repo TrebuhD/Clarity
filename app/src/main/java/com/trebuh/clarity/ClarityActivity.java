@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -85,6 +86,11 @@ public class ClarityActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clarity);
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            getWindow().setSharedElementExitTransition(TransitionInflater.from(this).
+//                    inflateTransition(R.transition.activity_slide));
+//        }
 
         initToolbar();
 
@@ -361,8 +367,13 @@ public class ClarityActivity extends AppCompatActivity
             View navigationBar = findViewById(android.R.id.navigationBarBackground);
             List<Pair<View, String>> pairs = new ArrayList<>();
             pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_iv), "grid_to_details_transition")));
-            pairs.add(Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME));
-            pairs.add(Pair.create(statusBar, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME));
+            // prevent null pointers on some devices
+            if (navigationBar != null) {
+                pairs.add(Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME));
+            }
+            if (statusBar != null) {
+                pairs.add(Pair.create(statusBar, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME));
+            }
             Bundle options = ActivityOptionsCompat.
                     makeSceneTransitionAnimation(ClarityActivity.this,
                             pairs.toArray(new Pair[pairs.size()])).toBundle();
