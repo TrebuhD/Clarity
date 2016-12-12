@@ -1,6 +1,7 @@
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/photoGridSwipeContainer"
     android:layout_width="match_parent"
+    android:background="@android:color/transparent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -10,6 +11,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
+        android:background="@android:color/transparent"
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true">
@@ -26,7 +28,7 @@
             android:id="@+id/rec_view_photos"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/mtrl_blue_100" />
+            android:background="@android:color/transparent" />
 
     </FrameLayout>
 

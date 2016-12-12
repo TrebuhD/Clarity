@@ -324,10 +324,8 @@ public class ClarityActivity extends AppCompatActivity
     public void onPhotoGridItemClick(PhotoGridAdapter.PhotoGridItemHolder caller, String url) {
         int clickedItemPos = caller.getLayoutPosition();
         ArrayList<Photo> photos = ((PhotoGridFragment) getCurrentFragment()).getPhotoList();
-        if (photos == null) {
-            throw new IllegalStateException();
-        }
         Photo clickedPhoto = photos.get(clickedItemPos);
+        Log.d(TAG, "clicked photo: " + clickedPhoto.getName());
 
         // strip the list to max 30 items to limit bundle size and avoid errors (pretty hacky)
         int startStrippedIndex = clickedItemPos < 15 ? 0 : clickedItemPos - 15;
@@ -343,6 +341,8 @@ public class ClarityActivity extends AppCompatActivity
                 newPos = i;
             }
         }
+        Log.d(TAG, "passed photo: " + strippedPhotos.get(newPos).getName());
+
         // pass the imageView of clicked the grid item
         launchActivity(strippedPhotos, newPos, caller.itemView);
     }
@@ -367,6 +367,7 @@ public class ClarityActivity extends AppCompatActivity
             View navigationBar = findViewById(android.R.id.navigationBarBackground);
             List<Pair<View, String>> pairs = new ArrayList<>();
             pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_iv), "grid_to_details_transition")));
+            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_title_tv), "grid_to_details_transition")));
             // prevent null pointers on some devices
             if (navigationBar != null) {
                 pairs.add(Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME));
@@ -536,6 +537,7 @@ public class ClarityActivity extends AppCompatActivity
 
     private Fragment getCurrentFragment() {
         int currItem = viewPager.getCurrentItem();
+        Log.d(TAG, "Current Item: " + currItem);
         return adapter.getItem(currItem);
     }
 
