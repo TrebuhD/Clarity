@@ -17,11 +17,11 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
-import com.trebuh.clarity.DetailsActivity;
 import com.trebuh.clarity.FullscreenPictureActivity;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.models.Photo;
@@ -37,18 +37,6 @@ public class DetailsFragment extends Fragment {
     private static final String ARG_STARTING_IMAGE_POSITION = "arg_starting_photo_image_position";
     private static final String ARG_PHOTOS_ARRAY_LIST = "arg_photos_array_list";
 
-    private final Callback photoCallback = new Callback() {
-        @Override
-        public void onSuccess() {
-            startPostponedEnterTransition();
-        }
-
-        @Override
-        public void onError() {
-            startPostponedEnterTransition();
-        }
-    };
-
     private ArrayList<Photo> photos;
 
     private ImageView mainPicture;
@@ -56,8 +44,6 @@ public class DetailsFragment extends Fragment {
     private int startingPosition;
 
     private int photoPosition;
-    private boolean isTransitioning;
-    private long backgroundImageFadeMillis;
     private OnFragmentInteractionListener mListener;
 
     public DetailsFragment() {
@@ -79,14 +65,8 @@ public class DetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             photos = getArguments().getParcelableArrayList(ARG_PHOTOS_ARRAY_LIST);
-
-            Log.d(TAG, "onCreate(): photos size" + photos.size());
-
             startingPosition = getArguments().getInt(ARG_STARTING_IMAGE_POSITION);
             photoPosition = getArguments().getInt(ARG_IMAGE_POSITION);
-
-            isTransitioning = (savedInstanceState == null && startingPosition == photoPosition);
-            backgroundImageFadeMillis = 1000;
         }
     }
 
@@ -96,7 +76,7 @@ public class DetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
 
-        mainPicture = (ImageView) rootView.findViewById(R.id.details_photo_iv);
+        mainPicture = (ImageView) rootView.findViewById(R.id.details_photo_view);
         ImageView profilePicture = (ImageView) rootView.findViewById(R.id.details_profile_pic_iv);
 
         View textContainer = rootView.findViewById(R.id.details_body_container);
@@ -104,7 +84,7 @@ public class DetailsFragment extends Fragment {
         TextView authorNameText = (TextView) textContainer.findViewById(R.id.details_author_name_tv);
         HtmlTextView photoDescriptionText = (HtmlTextView) textContainer.findViewById(R.id.details_photo_description_tv);
 
-        String photoUrl = photos.get(photoPosition).getImages().get(2).getUrl();
+        String photoUrl = photos.get(photoPosition).getImages().get(1).getUrl();
         String profilePicUrl = photos.get(photoPosition).getUser().getUserpicUrl();
         String photoName = photos.get(photoPosition).getName();
         String authorName = photos.get(photoPosition).getUser().getUsername();
@@ -115,31 +95,27 @@ public class DetailsFragment extends Fragment {
         photoTitleText.setText(photoName);
         authorNameText.setText(authorName);
         photoDescriptionText.setHtmlFromString(photoDescription, new HtmlTextView.RemoteImageGetter());
-        mainPicture.setTransitionName(photoName);
 
         Log.d(TAG, "photoUrl: " + photoUrl);
 
         RequestCreator photoRequest = Picasso.with(getActivity()).load(photoUrl).fit().centerCrop();
         RequestCreator profilePicRequest = Picasso.with(getActivity()).load(profilePicUrl).fit().centerInside();
 
-//        if (isTransitioning) {
-//            photoRequest.noFade();
-//            profilePicRequest.noFade();
-//            mainPicture.setAlpha(0f);
-//            getActivity().getWindow().getSharedElementEnterTransition().addListener(new TransitionListenerAdapter() {
-//                @Override
-//                public void onTransitionEnd(Transition transition) {
-//                    mainPicture.animate().setDuration(backgroundImageFadeMillis).alpha(1f);
-//                }
-//            });
-//        }
+        photoRequest.into(mainPicture, new Callback() {
+            @Override
+            public void onSuccess() {
+            }
 
-        photoRequest.into(mainPicture, photoCallback);
+            @Override
+            public void onError() {
+            }
+        });
         profilePicRequest.into(profilePicture);
 
         mainPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                (Toast.makeText(getContext(), "clicked", Toast.LENGTH_SHORT)).show();
                 Intent fullscreenPhotoIntent = new Intent(getActivity(), FullscreenPictureActivity.class);
                 startActivity(fullscreenPhotoIntent);
             }
@@ -166,7 +142,7 @@ public class DetailsFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mainPicture = (ImageView) view.findViewById(R.id.details_photo_iv);
+        mainPicture = (ImageView) view.findViewById(R.id.details_photo_view);
 
     }
 

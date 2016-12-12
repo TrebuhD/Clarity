@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.trebuh.clarity.BuildConfig;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.models.Photo;
 
@@ -31,6 +32,12 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         final View photoView = inflater.inflate(R.layout.photo_grid_item, parent, false);
+
+//        if (BuildConfig.DEBUG) {
+//            Picasso.with(context).setIndicatorsEnabled(true);
+//            Picasso.with(context).setLoggingEnabled(true);
+//        }
+
         return new PhotoGridItemHolder(photoView);
     }
 
@@ -132,10 +139,12 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
                         public void onSuccess() {
                             Picasso.with(itemView.getContext())
                                     .load(url)
+                                    .fit()
                                     .placeholder(photoImageView.getDrawable())
                                     .into(photoImageView);
                         }
-                    });
+                    })
+            ;
         }
 
         void setUsernameText(CharSequence text) {

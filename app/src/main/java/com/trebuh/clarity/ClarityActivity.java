@@ -10,6 +10,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -23,6 +24,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 
 import com.trebuh.clarity.adapters.ClarityPagerAdapter;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
@@ -32,6 +34,7 @@ import com.trebuh.clarity.models.Photo;
 import com.trebuh.clarity.network.ApiConstants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ClarityActivity extends AppCompatActivity
         implements SearchHistoryFragment.OnFragmentInteractionListener,
@@ -82,7 +85,6 @@ public class ClarityActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clarity);
-//        setExitSharedElementCallback(callback);
 
         initToolbar();
 
@@ -336,28 +338,35 @@ public class ClarityActivity extends AppCompatActivity
             }
         }
         // pass the imageView of clicked the grid item
-        launchActivityWithSharedView(strippedPhotos, newPos, caller.itemView.findViewById(R.id.photo_grid_item_iv));
+        launchActivity(strippedPhotos, newPos, caller.itemView);
     }
 
-    private void launchActivityWithSharedView(ArrayList<Photo> strippedPhotos, int newPos, View view) {
+    private void launchActivity(ArrayList<Photo> strippedPhotos, int newPos, View photoView) {
         if (!isDetailsActivityStarted) {
             isDetailsActivityStarted = true;
         }
 
-        Log.d(TAG, "launchActivityWithSharedView(), view: " + view.toString());
+        Log.d(TAG, "launchActivity(), view: " + photoView.toString());
+
+//        pairs[1] = (new Pair<>(photoView.findViewById(R.id.photo_grid_item_title_tv), "grid_to_details_transition_title"));
+        Intent intent = new Intent(ClarityActivity.this, DetailsActivity.class);
+        intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, newPos);
+        intent.putExtra(EXTRA_PHOTOS_ARRAY_LIST, strippedPhotos);
 
         if (Build.VERSION.SDK_INT < 21) {
-            Intent intent = new Intent(this, DetailsActivity.class);
-            intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, newPos);
-            intent.putExtra(EXTRA_PHOTOS_ARRAY_LIST, strippedPhotos);
             startActivity(intent);
         } else {
-            Intent intent = new Intent(ClarityActivity.this, DetailsActivity.class);
-            ActivityOptionsCompat options = ActivityOptionsCompat.
-                    makeSceneTransitionAnimation(ClarityActivity.this, view, "grid_to_details_transition");
-            intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, newPos);
-            intent.putExtra(EXTRA_PHOTOS_ARRAY_LIST, strippedPhotos);
-            startActivity(intent, options.toBundle());
+            // array of items for shared element transition
+            View statusBar = findViewById(android.R.id.statusBarBackground);
+            View navigationBar = findViewById(android.R.id.navigationBarBackground);
+            List<Pair<View, String>> pairs = new ArrayList<>();
+            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_iv), "grid_to_details_transition")));
+            pairs.add(Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME));
+            pairs.add(Pair.create(statusBar, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME));
+            Bundle options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(ClarityActivity.this,
+                            pairs.toArray(new Pair[pairs.size()])).toBundle();
+            startActivity(intent, options);
         }
     }
 
@@ -450,6 +459,7 @@ public class ClarityActivity extends AppCompatActivity
     private void performSearch(String searchTerm, boolean saveInHistory) {
         addOrReplaceExtraGridFragment(searchTerm);
         transitionToFragment(FRAGMENT_EXTRA_GRID);
+
 //        ((PhotoGridFragment) getCurrentFragment()).performSearch(searchTerm, PhotoFetcher.FIRST_PAGE);
         if (saveInHistory) {
             searchHistoryList.add(searchTerm);

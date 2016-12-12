@@ -14,11 +14,11 @@
             android:id="@+id/details_header_container"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:background="#000"
+            android:background="#00ffffff"
             >
 
             <ImageView
-                android:id="@+id/details_photo_iv"
+                android:id="@+id/details_photo_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:tint="@color/header_photo_tint"
@@ -53,7 +53,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="4dp"
                 android:textSize="16sp"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

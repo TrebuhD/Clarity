@@ -30,6 +30,7 @@
         <activity
             android:name=".DetailsActivity"
             android:label="@string/title_activity_details"
+            android:parentActivityName=".ClarityActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".FullscreenPictureActivity"
