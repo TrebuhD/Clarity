@@ -133,7 +133,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
             Picasso
                     .with(itemView.getContext())
                     .load(thumbUrl)
-                    .placeholder(R.drawable.sayagata)
+                    .placeholder(R.drawable.stardust)
                     .into(photoImageView, new Callback() {
                         @Override
                         public void onError() {
