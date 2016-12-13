@@ -2,6 +2,7 @@ package com.trebuh.clarity;
 
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
@@ -16,11 +17,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,8 +28,8 @@ import android.view.Window;
 
 import com.trebuh.clarity.adapters.ClarityPagerAdapter;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
-import com.trebuh.clarity.fragments.SearchHistoryFragment;
 import com.trebuh.clarity.fragments.PhotoGridFragment;
+import com.trebuh.clarity.fragments.SearchHistoryFragment;
 import com.trebuh.clarity.models.Photo;
 import com.trebuh.clarity.network.ApiConstants;
 
