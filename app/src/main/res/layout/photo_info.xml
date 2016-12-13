@@ -1,0 +1,24 @@
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="bottom|end"
+    android:layout_gravity="end"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/details_iso_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/iso_hawkons_black"
+        android:layout_gravity="start"
+        android:contentDescription="@string/ISO" />
+
+    <TextView
+        android:id="@+id/details_iso_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_toEndOf="@id/details_iso_label"
+        android:text="@string/app_name"
+        android:layout_toRightOf="@id/details_iso_label" />
+
+</RelativeLayout>

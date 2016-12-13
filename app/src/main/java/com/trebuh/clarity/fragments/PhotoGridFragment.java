@@ -93,18 +93,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof PhotoGridFragmentListener) {
-            listener = (PhotoGridFragmentListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement PhotoGridFragmentListener");
-        }
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         adapter = new PhotoGridAdapter(new ArrayList<Photo>());
         super.onCreate(savedInstanceState);
@@ -133,6 +121,18 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof PhotoGridFragmentListener) {
+            listener = (PhotoGridFragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement PhotoGridFragmentListener");
+        }
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initSwipeContainer(view);
         initRefreshButton(view);
@@ -144,7 +144,6 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             Log.e(TAG, "photosSaved is false!");
             loadPage(currentPage);
         }
-
         super.onViewCreated(view, savedInstanceState);
     }
 

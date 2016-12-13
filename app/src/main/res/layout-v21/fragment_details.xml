@@ -81,6 +81,7 @@
                 android:textAppearance="@android:style/TextAppearance.Material.Medium"
                 android:textSize="20sp" />
 
+            <include layout="@layout/photo_info" />
 
         </LinearLayout>
 

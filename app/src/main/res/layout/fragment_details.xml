@@ -78,7 +78,6 @@
                 android:lineSpacingMultiplier="1.2"
                 android:textSize="20sp" />
 
-
         </LinearLayout>
 
     </LinearLayout>

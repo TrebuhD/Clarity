@@ -3,6 +3,7 @@ package com.trebuh.clarity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
@@ -366,7 +367,7 @@ public class ClarityActivity extends AppCompatActivity
             View navigationBar = findViewById(android.R.id.navigationBarBackground);
             List<Pair<View, String>> pairs = new ArrayList<>();
             pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_iv), "grid_to_details_transition")));
-            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_title_tv), "grid_to_details_transition")));
+            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_title_tv), "grid_to_details_transition_title")));
             // prevent null pointers on some devices
             if (navigationBar != null) {
                 pairs.add(Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME));
@@ -380,34 +381,6 @@ public class ClarityActivity extends AppCompatActivity
             startActivity(intent, options);
         }
     }
-
-
-//        if (!isDetailsActivityStarted) {
-//            isDetailsActivityStarted = true;
-//            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-//                startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-//                        caller.photoImageView, caller.photoImageView.getTransitionName()).toBundle());
-//            } else {
-//            startActivity(intent);
-//            }
-
-//        DetailsFragment photoDetailsFragment = DetailsFragment.newInstance("1", url);
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            photoDetailsFragment.setSharedElementEnterTransition(new DetailsTransition());
-//            photoDetailsFragment.setEnterTransition(new Fade());
-//            photoDetailsFragment.setExitTransition(new Fade());
-//            photoDetailsFragment.setSharedElementReturnTransition(new DetailsTransition());
-//        }
-//
-//        addOrReplaceExtraGridFragment("1", url, "Photo details");
-//
-//        getSupportFragmentManager()
-//                .beginTransaction()
-//                .addSharedElement(caller.photoImageView, "photo")
-//                .replace(R.id.details_container, photoDetailsFragment)
-//                .addToBackStack(null)
-//                .commit();
 
     @Override
     public void onAppBarShow() {
@@ -470,8 +443,6 @@ public class ClarityActivity extends AppCompatActivity
     private void performSearch(String searchTerm, boolean saveInHistory) {
         addOrReplaceExtraGridFragment(searchTerm);
         transitionToFragment(FRAGMENT_EXTRA_GRID);
-
-//        ((PhotoGridFragment) getCurrentFragment()).performSearch(searchTerm, PhotoFetcher.FIRST_PAGE);
         if (saveInHistory) {
             searchHistoryList.add(searchTerm);
         }
@@ -568,44 +539,6 @@ public class ClarityActivity extends AppCompatActivity
         }
 
     }
-
-//    private final SharedElementCallback callback = new SharedElementCallback() {
-//        @Override
-//        public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-//            if (tmpReenterState != null) {
-//                int startingPosition = tmpReenterState.getInt(EXTRA_STARTING_ALBUM_POSITION);
-//                int currentPosition = tmpReenterState.getInt(EXTRA_CURRENT_ALBUM_POSITION);
-//                if (startingPosition != currentPosition) {
-//                    // If startingPosition != currentPosition the user must have swiped to a
-//                    // different page in the DetailsActivity. We must update the shared element
-//                    // so that the correct one falls into place.
-//                    String newTransitionName = photoList.get(currentPosition).getName();
-//                    View newSharedElement = recyclerView.findViewWithTag(newTransitionName);
-//                    if (newSharedElement != null) {
-//                        names.clear();
-//                        names.add(newTransitionName);
-//                        sharedElements.clear();
-//                        sharedElements.put(newTransitionName, newSharedElement);
-//                    }
-//                }
-//                tmpReenterState = null;
-//            } else {
-//                // If tmpReenterState is null, then the activity is exiting.
-//                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-//                    View navigationBar = findViewById(android.R.id.navigationBarBackground);
-//                    View statusBar = findViewById(android.R.id.statusBarBackground);
-//                    if (navigationBar != null) {
-//                        names.add(navigationBar.getTransitionName());
-//                        sharedElements.put(navigationBar.getTransitionName(), navigationBar);
-//                    }
-//                    if (statusBar != null) {
-//                        names.add(statusBar.getTransitionName());
-//                        sharedElements.put(statusBar.getTransitionName(), statusBar);
-//                    }
-//                }
-//            }
-//        }
-//    };
 
     @Override
     public void onPastSearchItemClick(String searchString) {
