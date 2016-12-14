@@ -1,24 +1,93 @@
-<RelativeLayout android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="bottom|end"
     android:layout_gravity="end"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_marginBottom="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginRight="16dp"
+    android:gravity="bottom|end">
 
-    <ImageView
-        android:id="@+id/details_iso_label"
+    <!--camera model-->
+    <RelativeLayout
+        android:id="@+id/details_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/details_camera_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:contentDescription="@string/camera_model"
+            android:cropToPadding="true"
+            android:src="@drawable/ph_camera" />
+
+        <TextView
+            android:id="@+id/details_camera_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_toEndOf="@id/details_camera_label"
+            android:layout_toRightOf="@id/details_camera_label"
+            android:text="@string/app_name" />
+    </RelativeLayout>
+
+    <!--iso-->
+    <RelativeLayout
+        android:id="@+id/details_iso"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/iso_hawkons_black"
-        android:layout_gravity="start"
-        android:contentDescription="@string/ISO" />
+        android:layout_below="@id/details_camera">
 
-    <TextView
-        android:id="@+id/details_iso_value"
+        <ImageView
+            android:id="@+id/details_iso_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:contentDescription="@string/ISO"
+            android:src="@drawable/ph_iso" />
+
+        <TextView
+            android:id="@+id/details_iso_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_toEndOf="@id/details_iso_label"
+            android:layout_toRightOf="@id/details_iso_label"
+            android:text="@string/app_name" />
+    </RelativeLayout>
+
+    <!--lens-->
+    <RelativeLayout
+        android:id="@+id/details_lens"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_toEndOf="@id/details_iso_label"
-        android:text="@string/app_name"
-        android:layout_toRightOf="@id/details_iso_label" />
+        android:layout_below="@id/details_iso">
+
+        <ImageView
+            android:id="@+id/details_lens_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:contentDescription="@string/ISO"
+            android:src="@drawable/ph_lens" />
+
+        <TextView
+            android:id="@+id/details_lens_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_toEndOf="@id/details_lens_label"
+            android:layout_toRightOf="@id/details_lens_label"
+            android:text="@string/app_name" />
+    </RelativeLayout>
+
+    <!--shutter speed-->
+    <!--aperture-->
+    <!--times viewed-->
+    <!--rating-->
+    <!--created at-->
+    <!--favorites count-->
+    <!--comments count-->
 
 </RelativeLayout>

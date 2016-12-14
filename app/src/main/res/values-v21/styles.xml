@@ -19,7 +19,7 @@
     <!--A bit hacky, a way to enable tiled bitmap as bg
     http://stackoverflow.com/questions/2706913/how-to-make-android-apps-background-image-repeat-->
     <style name="TiledBgTheme" parent="AppTheme">
-        <item name="android:windowBackground">@drawable/app_background</item>
+        <item name="android:windowBackground">@drawable/zz_app_background</item>
     </style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
