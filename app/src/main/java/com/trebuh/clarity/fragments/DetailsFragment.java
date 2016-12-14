@@ -124,7 +124,7 @@ public class DetailsFragment extends Fragment {
         return rootView;
     }
 
-    private void startPostponedEnterTransition() {
+    public void startPostponedEnterTransition() {
         if (photoPosition == startingPosition) {
             mainPicture.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @TargetApi(Build.VERSION_CODES.LOLLIPOP)

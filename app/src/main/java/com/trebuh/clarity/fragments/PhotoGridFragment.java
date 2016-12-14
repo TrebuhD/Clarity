@@ -397,7 +397,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             }
             networkErrorRefreshButton.setText(R.string.error_button);
             networkErrorRefreshButton.setVisibility(View.VISIBLE);
-            if (photos.size() != 0) {
+            if (photos != null && photos.size() != 0) {
                 photos.clear();
                 adapter.removeAllItems();
             }
