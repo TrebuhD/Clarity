@@ -2,48 +2,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="end"
-    android:layout_marginBottom="8dp"
-    android:layout_marginEnd="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginBottom="0dp"
+    android:layout_marginEnd="0dp"
+    android:layout_marginRight="0dp"
     android:gravity="bottom|start">
 
     <RelativeLayout
         android:id="@+id/info_col_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
-        <!--camera model-->
-        <RelativeLayout
-            android:id="@+id/details_camera"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/details_camera_label"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="start"
-                android:layout_margin="4dp"
-                android:contentDescription="@string/camera_model"
-                android:cropToPadding="true"
-                android:src="@drawable/ph_camera" />
-
-            <TextView
-                android:id="@+id/details_camera_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_gravity="end"
-                android:layout_toEndOf="@id/details_camera_label"
-                android:layout_toRightOf="@id/details_camera_label"
-                android:fontFamily="sans-serif"
-                android:paddingEnd="8dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingStart="8dp"
-                android:text="@string/app_name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-        </RelativeLayout>
 
         <!--iso-->
         <RelativeLayout
@@ -70,7 +37,7 @@
                 android:layout_gravity="end"
                 android:layout_toEndOf="@id/details_iso_label"
                 android:layout_toRightOf="@id/details_iso_label"
-                android:fontFamily="sans-serif"
+                android:fontFamily="sans-serif-smallcaps"
                 android:paddingEnd="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
@@ -88,40 +55,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/info_col_1">
-
-        <!--lens-->
-        <RelativeLayout
-            android:id="@+id/details_lens"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            >
-
-            <ImageView
-                android:id="@+id/details_lens_label"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="start"
-                android:layout_margin="4dp"
-                android:contentDescription="@string/lens"
-                android:src="@drawable/ph_adjust_black_24px" />
-
-            <TextView
-                android:id="@+id/details_lens_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_gravity="end"
-                android:layout_toEndOf="@id/details_lens_label"
-                android:layout_toRightOf="@id/details_lens_label"
-                android:fontFamily="sans-serif"
-
-                android:paddingEnd="8dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingStart="8dp"
-                android:text="@string/app_name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-        </RelativeLayout>
 
         <!--shutter speed-->
         <RelativeLayout
@@ -148,7 +81,7 @@
                 android:layout_toEndOf="@id/details_shutter_speed_label"
 
                 android:layout_toRightOf="@id/details_shutter_speed_value"
-                android:fontFamily="sans-serif"
+                android:fontFamily="sans-serif-smallcaps"
                 android:paddingEnd="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
@@ -192,7 +125,7 @@
 
                 android:layout_toEndOf="@id/details_aperture_label"
                 android:layout_toRightOf="@id/details_aperture_label"
-                android:fontFamily="sans-serif"
+                android:fontFamily="sans-serif-smallcaps"
                 android:paddingEnd="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
