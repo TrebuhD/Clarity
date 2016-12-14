@@ -5,6 +5,7 @@
     android:background="@android:color/transparent"
     tools:context="com.trebuh.clarity.fragments.DetailsFragment">
 
+    <!-- //Photo part-->
     <LinearLayout
         android:id="@+id/details_container"
         android:layout_width="match_parent"
@@ -37,48 +38,91 @@
                 android:cropToPadding="true"
                 android:adjustViewBounds="true" />
 
-            <!--favorites count-->
-            <RelativeLayout
-                android:id="@+id/details_favcount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:id="@+id/detail_photo_stats"
                 android:layout_gravity="bottom|end"
-                android:layout_marginEnd="150dp"
+                android:layout_marginEnd="120dp"
                 android:layout_marginBottom="16dp"
-                android:cropToPadding="true"
-                android:adjustViewBounds="true"
-                >
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/details_favcount_label"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_margin="4dp"
-                    android:layout_gravity="start"
-                    android:contentDescription="@string/favorites"
-                    android:src="@drawable/ph_favorite" />
-
-                <TextView
-                    android:id="@+id/details_favcount_value"
-                    android:layout_toEndOf="@id/details_favcount_label"
+                <!--favorites count-->
+                <RelativeLayout
+                    android:id="@+id/details_favcount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="8dp"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:paddingRight="8dp"
-                    android:textColor="@color/mtrl_white_100"
-                    android:layout_gravity="end"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                    android:fontFamily="sans-serif"
-                    android:textStyle="normal|bold"
-                    android:layout_centerVertical="true"
-                    android:text="@string/zero"
-                    />
-            </RelativeLayout>
+                    android:cropToPadding="true"
+                    android:adjustViewBounds="true"
+                    >
+
+                    <ImageView
+                        android:id="@+id/details_favcount_label"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_margin="4dp"
+                        android:layout_gravity="start"
+                        android:contentDescription="@string/favorites"
+                        android:src="@drawable/ph_heart_filled_white" />
+
+                    <TextView
+                        android:id="@+id/details_favcount_value"
+                        android:layout_toEndOf="@id/details_favcount_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="8dp"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingRight="8dp"
+                        android:textColor="@color/mtrl_white_100"
+                        android:layout_gravity="end"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                        android:fontFamily="sans-serif"
+                        android:textStyle="normal|bold"
+                        android:layout_centerVertical="true"
+                        android:text="@string/zero"
+                        />
+                </RelativeLayout>
+
+                <!--rating-->
+                <RelativeLayout
+                    android:id="@+id/details_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/details_rating_label"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="start"
+                        android:layout_margin="4dp"
+                        android:contentDescription="@string/rating"
+                        android:src="@drawable/ph_star_filled_white_24px" />
+
+                    <TextView
+                        android:id="@+id/details_rating_value"
+                        android:layout_toEndOf="@id/details_rating_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="8dp"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingRight="8dp"
+                        android:textColor="@color/mtrl_white_100"
+                        android:layout_gravity="end"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                        android:fontFamily="sans-serif"
+                        android:textStyle="normal|bold"
+                        android:layout_centerVertical="true"
+                        android:text="@string/zero" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
 
         </FrameLayout>
+        <!-- //Photo part-->
 
+        <!--Description part-->
         <LinearLayout
             android:id="@+id/details_body_container"
             android:layout_width="match_parent"
@@ -124,6 +168,7 @@
             <include layout="@layout/photo_info" />
 
         </LinearLayout>
+        <!--//Description part-->
 
     </LinearLayout>
 
