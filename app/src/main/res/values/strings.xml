@@ -39,4 +39,12 @@
     <string name="fullscreen_image">Fullscreen image</string>
     <string name="ISO">ISO</string>
     <string name="camera_model">Camera model</string>
+    <string name="lens">lens</string>
+    <string name="shutter_speed">Shutter speed</string>
+    <string name="comments">comments</string>
+    <string name="favorites">favorites</string>
+    <string name="created_at">created at</string>
+    <string name="rating">rating</string>
+    <string name="times_viewed">times viewed</string>
+    <string name="aperture">aperture</string>
 </resources>

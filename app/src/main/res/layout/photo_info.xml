@@ -15,8 +15,9 @@
 
         <ImageView
             android:id="@+id/details_camera_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="4dp"
             android:layout_gravity="start"
             android:contentDescription="@string/camera_model"
             android:cropToPadding="true"
@@ -41,11 +42,13 @@
 
         <ImageView
             android:id="@+id/details_iso_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="4dp"
             android:layout_gravity="start"
             android:contentDescription="@string/ISO"
-            android:src="@drawable/ph_iso" />
+            android:src="@drawable/ph_iso"
+            android:scaleType="fitXY" />
 
         <TextView
             android:id="@+id/details_iso_value"
@@ -66,11 +69,13 @@
 
         <ImageView
             android:id="@+id/details_lens_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="4dp"
             android:layout_gravity="start"
-            android:contentDescription="@string/ISO"
-            android:src="@drawable/ph_lens" />
+            android:contentDescription="@string/lens"
+            android:src="@drawable/ph_adjust_black_24px"
+             />
 
         <TextView
             android:id="@+id/details_lens_value"
@@ -83,11 +88,190 @@
     </RelativeLayout>
 
     <!--shutter speed-->
+    <RelativeLayout
+        android:id="@+id/details_shutter_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/details_lens">
+
+        <ImageView
+            android:id="@+id/details_shutter_speed_label"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="start"
+            android:contentDescription="@string/shutter_speed"
+            android:src="@drawable/ph_shutter_speed"
+            android:layout_margin="4dp" />
+
+        <TextView
+            android:id="@+id/details_shutter_speed_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_toEndOf="@id/details_shutter_speed_label"
+            android:layout_toRightOf="@id/details_shutter_speed_value"
+            android:text="@string/app_name" />
+    </RelativeLayout>
+
     <!--aperture-->
+    <RelativeLayout
+        android:id="@+id/details_aperture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/details_shutter_speed">
+
+        <ImageView
+            android:id="@+id/details_aperture_label"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="4dp"
+            android:layout_gravity="start"
+            android:contentDescription="@string/aperture"
+            android:src="@drawable/ph_aperture" />
+
+        <TextView
+            android:id="@+id/details_aperture_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_toEndOf="@id/details_aperture_label"
+            android:layout_toRightOf="@id/details_aperture_label"
+            android:text="@string/app_name" />
+    </RelativeLayout>
+
     <!--times viewed-->
+    <RelativeLayout
+        android:id="@+id/details_times_viewed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/details_aperture">
+
+        <ImageView
+            android:id="@+id/details_times_viewed_label"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="4dp"
+            android:layout_gravity="start"
+            android:contentDescription="@string/times_viewed"
+            android:src="@drawable/ph_eye" />
+
+        <TextView
+            android:id="@+id/details_times_viewed_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_toEndOf="@id/details_times_viewed_label"
+            android:layout_toRightOf="@id/details_times_viewed_label"
+            android:text="@string/app_name" />
+    </RelativeLayout>
+
     <!--rating-->
+    <RelativeLayout
+        android:id="@+id/details_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/details_times_viewed">
+
+        <ImageView
+            android:id="@+id/details_rating_label"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="4dp"
+            android:layout_gravity="start"
+            android:contentDescription="@string/rating"
+            android:src="@drawable/ph_star" />
+
+        <TextView
+            android:id="@+id/details_rating_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_toEndOf="@id/details_rating_label"
+            android:layout_toRightOf="@id/details_rating_label"
+            android:text="@string/app_name" />
+    </RelativeLayout>
+
     <!--created at-->
+    <RelativeLayout
+        android:id="@+id/details_created_at"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/details_rating"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:id="@+id/details_created_at_label"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="4dp"
+            android:layout_gravity="start"
+            android:contentDescription="@string/created_at"
+            android:src="@drawable/ph_clock" />
+
+        <TextView
+            android:id="@+id/details_created_at_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_toEndOf="@id/details_created_at_label"
+            android:layout_toRightOf="@id/details_created_at_label"
+            android:text="@string/app_name" />
+    </RelativeLayout>
+
     <!--favorites count-->
+    <RelativeLayout
+        android:id="@+id/details_favcount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/details_created_at">
+
+        <ImageView
+            android:id="@+id/details_favcount_label"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="4dp"
+            android:layout_gravity="start"
+            android:contentDescription="@string/favorites"
+            android:src="@drawable/ph_star" />
+
+        <TextView
+            android:id="@+id/details_favcount_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_toEndOf="@id/details_favcount_label"
+            android:layout_toRightOf="@id/details_favcount_label"
+            android:text="@string/app_name" />
+    </RelativeLayout>
+
     <!--comments count-->
+    <RelativeLayout
+        android:id="@+id/details_comments_count"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_margin="4dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+        <ImageView
+            android:id="@+id/details_comments_count_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:contentDescription="@string/comments"
+            android:src="@drawable/ph_speech_bubble" />
+
+        <TextView
+            android:id="@+id/details_comments_count_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_toEndOf="@id/details_comments_count_label"
+            android:layout_toRightOf="@id/details_comments_count_label"
+            android:text="@string/app_name" />
+    </RelativeLayout>
+
 
 </RelativeLayout>

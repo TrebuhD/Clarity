@@ -10,21 +10,21 @@
         android:strokeLineJoin="round"
         android:strokeLineCap="round"
         android:strokeMiterLimit="10"
-        android:strokeColor="#ffffff" />
+        android:strokeColor="#000000" />
     <path
         android:pathData="M653 155.999l-4 0 0 -14"
         android:strokeWidth="2"
         android:strokeLineJoin="round"
         android:strokeLineCap="round"
         android:strokeMiterLimit="10"
-        android:strokeColor="#ffffff" />
+        android:strokeColor="#000000" />
     <path
         android:pathData="M661 156l-8 6 0 -6"
         android:strokeWidth="2"
         android:strokeLineJoin="round"
         android:strokeLineCap="round"
         android:strokeMiterLimit="10"
-        android:strokeColor="#ffffff" />
+        android:strokeColor="#000000" />
     <path
         android:pathData="M21.947 16.332C23.219 14.915 24 13.049 24 11 24 6.589 20.411 3 16 3 11.589 3 8 6.589 8 11c0 4.411 3.589 8 8 8 1.555 0 3.003 -0.453 4.233 -1.224 4.35 1.639 7.345 5.62 7.726 10.224L4.042 28C4.301 24.901 5.755 22.011 8.12 19.949 8.537 19.586 8.58 18.955 8.217 18.538 7.855 18.122 7.223 18.078 6.806 18.441 3.751 21.103 2 24.951 2 29c0 0.553 0.448 1 1 1l26 0c0.553 0 1 -0.447 1 -1 0 -5.486 -3.18 -10.385 -8.053 -12.668zM10 11c0 -3.309 2.691 -6 6 -6 3.309 0 6 2.691 6 6 0 3.309 -2.691 6 -6 6 -3.309 0 -6 -2.691 -6 -6z"
         android:fillColor="#000000" />
