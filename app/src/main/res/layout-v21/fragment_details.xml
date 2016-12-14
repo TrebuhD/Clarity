@@ -131,34 +131,72 @@
             android:orientation="vertical"
             android:transitionGroup="true">
 
+            <!--author name-->
             <TextView
                 android:id="@+id/details_author_name_tv"
                 android:fontFamily="sans-serif-smallcaps"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="4dp"
+                android:text="@string/author_mcauthorson"
                 android:textSize="16sp"
                 android:layout_gravity="end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
+            <!--times viewed-->
+            <RelativeLayout
+                android:id="@+id/details_times_viewed"
+                android:layout_gravity="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <ImageView
+                    android:id="@+id/details_times_viewed_label"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="start"
+                    android:layout_margin="4dp"
+                    android:contentDescription="@string/times_viewed"
+                    android:src="@drawable/ph_eye" />
+
+                <TextView
+                    android:id="@+id/details_times_viewed_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="end"
+                    android:layout_toEndOf="@id/details_times_viewed_label"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/app_name"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            </RelativeLayout>
+
+            <!--title-->
             <TextView
                 android:id="@+id/details_photo_title_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="18dp"
+                android:text="@string/the_hamburglar"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="sans-serif-light"
                 android:textAppearance="@android:style/TextAppearance.Material.Title"
                 android:textSize="40sp" />
 
+            <!--description-->
             <org.sufficientlysecure.htmltextview.HtmlTextView
                 android:id="@+id/details_photo_description_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
                 android:layout_marginEnd="24dp"
+                android:text="@string/lorem_ipsum_short"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
                 android:lineSpacingMultiplier="1.2"

@@ -48,4 +48,7 @@
     <string name="times_viewed">times viewed</string>
     <string name="aperture">aperture</string>
     <string name="zero">0</string>
+    <string name="author_mcauthorson">Author McAuthorson</string>
+    <string name="lorem_ipsum_short">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+    <string name="the_hamburglar">The Hamburglar</string>
 </resources>
