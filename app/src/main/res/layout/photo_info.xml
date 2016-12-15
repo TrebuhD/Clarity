@@ -24,7 +24,6 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="start"
-                android:layout_margin="4dp"
                 android:contentDescription="@string/ISO"
                 android:scaleType="fitXY"
                 android:src="@drawable/ph_iso" />
@@ -42,17 +41,17 @@
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:paddingStart="8dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:text="300" />
+                android:text="@string/_300"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         </RelativeLayout>
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/info_col_2"
-        android:layout_toEndOf="@id/info_col_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/info_col_1"
         android:layout_toRightOf="@id/info_col_1">
 
         <!--shutter speed-->
@@ -67,7 +66,8 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="start"
-                android:layout_margin="4dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
                 android:contentDescription="@string/shutter_speed"
                 android:src="@drawable/ph_shutter_speed" />
 
@@ -78,14 +78,13 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="end"
                 android:layout_toEndOf="@id/details_shutter_speed_label"
-
                 android:layout_toRightOf="@id/details_shutter_speed_value"
                 android:fontFamily="sans-serif-smallcaps"
                 android:paddingEnd="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:paddingStart="8dp"
-                android:text="24"
+                android:text="@string/_24"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         </RelativeLayout>
 
@@ -96,8 +95,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/info_col_2"
-        android:layout_toEndOf="@+id/info_col_2">
+        android:layout_toEndOf="@+id/info_col_2"
+        android:layout_toRightOf="@+id/info_col_2">
         <!--aperture-->
         <RelativeLayout
             android:id="@+id/details_aperture"
@@ -106,15 +105,14 @@
 
             <ImageView
                 android:id="@+id/details_aperture_label"
-                android:layout_gravity="start"
-                android:layout_margin="4dp"
-                android:contentDescription="@string/aperture"
-                android:src="@drawable/ph_aperture"
-                android:layout_height="24dp"
                 android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="start"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:contentDescription="@string/aperture"
                 android:scaleType="centerCrop"
-                android:layout_marginStart="2dp"
-                android:layout_marginLeft="2dp" />
+                android:src="@drawable/ph_aperture" />
 
             <TextView
                 android:id="@+id/details_aperture_value"
@@ -130,7 +128,7 @@
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:paddingStart="8dp"
-                android:text="21"
+                android:text="@string/_21"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         </RelativeLayout>
 
@@ -138,38 +136,38 @@
 
     <!--created at-->
     <!--<RelativeLayout-->
-        <!--android:id="@+id/details_created_at"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentLeft="true"-->
-        <!--android:layout_alignParentStart="true"-->
-        <!--android:layout_below="@+id/details_aperture">-->
+    <!--android:id="@+id/details_created_at"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentLeft="true"-->
+    <!--android:layout_alignParentStart="true"-->
+    <!--android:layout_below="@+id/details_aperture">-->
 
-        <!--<ImageView-->
-            <!--android:id="@+id/details_created_at_label"-->
-            <!--android:layout_width="24dp"-->
-            <!--android:layout_height="24dp"-->
-            <!--android:layout_gravity="start"-->
-            <!--android:layout_margin="4dp"-->
-            <!--android:contentDescription="@string/created_at"-->
-            <!--android:src="@drawable/ph_clock" />-->
+    <!--<ImageView-->
+    <!--android:id="@+id/details_created_at_label"-->
+    <!--android:layout_width="24dp"-->
+    <!--android:layout_height="24dp"-->
+    <!--android:layout_gravity="start"-->
+    <!--android:layout_margin="4dp"-->
+    <!--android:contentDescription="@string/created_at"-->
+    <!--android:src="@drawable/ph_clock" />-->
 
-        <!--<TextView-->
-            <!--android:id="@+id/details_created_at_value"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_gravity="end"-->
-            <!--android:layout_toEndOf="@id/details_created_at_label"-->
-            <!--android:layout_toRightOf="@id/details_created_at_label"-->
-            <!--android:fontFamily="sans-serif"-->
+    <!--<TextView-->
+    <!--android:id="@+id/details_created_at_value"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_gravity="end"-->
+    <!--android:layout_toEndOf="@id/details_created_at_label"-->
+    <!--android:layout_toRightOf="@id/details_created_at_label"-->
+    <!--android:fontFamily="sans-serif"-->
 
-            <!--android:paddingEnd="8dp"-->
-            <!--android:paddingLeft="8dp"-->
-            <!--android:paddingRight="8dp"-->
-            <!--android:paddingStart="8dp"-->
-            <!--android:text="@string/app_name"-->
-            <!--android:textAppearance="@style/TextAppearance.AppCompat.Medium" />-->
+    <!--android:paddingEnd="8dp"-->
+    <!--android:paddingLeft="8dp"-->
+    <!--android:paddingRight="8dp"-->
+    <!--android:paddingStart="8dp"-->
+    <!--android:text="@string/app_name"-->
+    <!--android:textAppearance="@style/TextAppearance.AppCompat.Medium" />-->
     <!--</RelativeLayout>-->
 
     <!--&lt;!&ndash;comments count&ndash;&gt;-->

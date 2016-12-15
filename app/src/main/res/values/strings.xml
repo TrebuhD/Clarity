@@ -53,4 +53,8 @@
     <string name="the_hamburglar">The Hamburglar</string>
     <string name="generic_camera">Generic Camera</string>
     <string name="generic_lens">Generic Lens</string>
+    <string name="_300">300</string>
+    <string name="_24">24</string>
+    <string name="_21">21</string>
+    <string name="transition_fullscreen_pic">transition_fullscreen_pic</string>
 </resources>
