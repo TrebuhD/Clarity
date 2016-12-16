@@ -75,7 +75,6 @@ public class ClarityActivity extends AppCompatActivity
     private Bundle tmpReenterState;
     private boolean isDetailsActivityStarted;
 
-    private ArrayList<Photo> photoList;
     private ArrayList<String> searchHistoryList;
 
     // for saving fragment state
@@ -86,11 +85,6 @@ public class ClarityActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clarity);
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            getWindow().setSharedElementExitTransition(TransitionInflater.from(this).
-//                    inflateTransition(R.transition.activity_slide));
-//        }
 
         initToolbar();
 
@@ -303,21 +297,9 @@ public class ClarityActivity extends AppCompatActivity
 
         int startingPosition = tmpReenterState.getInt(EXTRA_STARTING_ALBUM_POSITION);
         int currentPosition = tmpReenterState.getInt(EXTRA_CURRENT_ALBUM_POSITION);
-        photoList = tmpReenterState.getParcelableArrayList(EXTRA_PHOTOS_ARRAY_LIST);
         if (startingPosition != currentPosition) {
             recyclerView.scrollToPosition(currentPosition);
         }
-//        postponeEnterTransition();
-//        recyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-//            @Override
-//            public boolean onPreDraw() {
-//                recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
-//                // necessary to get a smooth transition
-//                recyclerView.requestLayout();
-//                startPostponedEnterTransition();
-//                return true;
-//            }
-//        });
     }
 
     @Override

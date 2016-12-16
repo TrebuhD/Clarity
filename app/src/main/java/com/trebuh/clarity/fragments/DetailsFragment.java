@@ -11,11 +11,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,13 +43,13 @@ public class DetailsFragment extends Fragment {
 
     private ImageView mainPicture;
 
-    private int startingPosition;
-
     private int photoPosition;
-    private OnFragmentInteractionListener mListener;
+    private int startingPosition;
     private ImageView avatarPic;
-    private String photoUrl;
+    private String croppedPhotoUrl;
     private String profilePicUrl;
+    private String uncroppedPhotoUrl;
+    private OnFragmentInteractionListener mListener;
 
     public DetailsFragment() {
         // Required empty public constructor
@@ -82,20 +80,21 @@ public class DetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
-
+        startPostponedEnterTransition();
         initPhotoAndDescription(rootView);
         initDetails(rootView);
 
-        Log.d(TAG, "photoUrl: " + photoUrl);
-
-        RequestCreator photoRequest = Picasso.with(getActivity()).load(photoUrl).fit().noFade().centerCrop();
+        RequestCreator photoRequest = Picasso.with(getActivity()).load(croppedPhotoUrl).fit().noFade().centerCrop();
         RequestCreator profilePicRequest = Picasso.with(getActivity()).load(profilePicUrl).noFade().fit().centerInside();
 
         photoRequest.into(mainPicture, new Callback() {
             @Override
             public void onSuccess() {
 //                startPostponedEnterTransition();
-
+//                Picasso.with(getContext())
+//                        .load(uncroppedPhotoUrl)
+//                        .placeholder(mainPicture.getDrawable())
+//                        .fit().noFade().centerCrop().into(mainPicture);
             }
 
             @Override
@@ -108,11 +107,9 @@ public class DetailsFragment extends Fragment {
         mainPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getView().findViewById(R.id.details_body_container).setBackgroundColor(
-                        getResources().getColor(android.R.color.transparent));
                 if (Build.VERSION.SDK_INT < 21) {
                     Intent fullscreenPhotoIntent = new Intent(getActivity(), FullscreenPictureActivity.class);
-                    fullscreenPhotoIntent.putExtra(FullscreenPictureActivity.MIDRES_IMG_URL, photoUrl);
+                    fullscreenPhotoIntent.putExtra(FullscreenPictureActivity.MIDRES_IMG_URL, croppedPhotoUrl);
                     fullscreenPhotoIntent.putExtra(FullscreenPictureActivity.HIRES_IMG_URL,
                             getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_UNCROPPED_MEDIUM).getUrl());
                     startActivity(fullscreenPhotoIntent);
@@ -120,7 +117,7 @@ public class DetailsFragment extends Fragment {
                     Intent intent = new Intent(getActivity(), FullscreenPictureActivity.class);
                     ActivityOptionsCompat options = ActivityOptionsCompat
                             .makeSceneTransitionAnimation(getActivity(), view, getString(R.string.transition_fullscreen_pic));
-                    intent.putExtra(FullscreenPictureActivity.MIDRES_IMG_URL, photoUrl);
+                    intent.putExtra(FullscreenPictureActivity.MIDRES_IMG_URL, uncroppedPhotoUrl);
                     intent.putExtra(FullscreenPictureActivity.HIRES_IMG_URL,
                             getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_UNCROPPED_MEDIUM).getUrl());
                     startActivity(intent, options.toBundle());
@@ -132,7 +129,7 @@ public class DetailsFragment extends Fragment {
     }
 
     private void initDetails(View rootView) {
-        // todo: use butterknife ;D
+        // todo: use butterknife or databinding ;D
         TextView isoTV = (TextView) rootView.findViewById(R.id.details_iso_value);
         TextView apertureTV = (TextView) rootView.findViewById(R.id.details_aperture_value);
         TextView favoritesTV = (TextView) rootView.findViewById(R.id.details_favcount_value);
@@ -185,7 +182,8 @@ public class DetailsFragment extends Fragment {
         TextView photoTitleText = (TextView) bodyContainer.findViewById(R.id.details_photo_title_tv);
         TextView authorNameText = (TextView) bodyContainer.findViewById(R.id.details_author_name_tv);
         HtmlTextView photoDescriptionText = (HtmlTextView) bodyContainer.findViewById(R.id.details_photo_description_tv);
-        photoUrl = getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_UNCROPPED_SMALL).getUrl();
+        croppedPhotoUrl = getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_CROPPED_LARGE).getUrl();
+        uncroppedPhotoUrl = getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_UNCROPPED_MEDIUM).getUrl();
         profilePicUrl = getCurrentPhoto().getUser().getUserpicUrl();
         String photoName = getCurrentPhoto().getName();
         String authorName = getCurrentPhoto().getUser().getUsername();
@@ -201,25 +199,10 @@ public class DetailsFragment extends Fragment {
         return photos.get(photoPosition);
     }
 
-    public void startPostponedEnterTransition() {
-        if (photoPosition == startingPosition) {
-            mainPicture.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-                @Override
-                public boolean onPreDraw() {
-                    mainPicture.getViewTreeObserver().removeOnPreDrawListener(this);
-                    getActivity().startPostponedEnterTransition();
-                    return true;
-                }
-            });
-        }
-    }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mainPicture = (ImageView) view.findViewById(R.id.details_photo_view);
-
     }
 
     @Override

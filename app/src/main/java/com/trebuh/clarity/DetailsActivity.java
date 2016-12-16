@@ -1,40 +1,26 @@
 package com.trebuh.clarity;
 
-import android.annotation.TargetApi;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.ChangeBounds;
-import android.transition.Fade;
-import android.transition.Slide;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 
 import com.trebuh.clarity.fragments.DetailsFragment;
 import com.trebuh.clarity.models.Photo;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import static com.trebuh.clarity.ClarityActivity.EXTRA_PHOTOS_ARRAY_LIST;
 import static com.trebuh.clarity.ClarityActivity.EXTRA_STARTING_ALBUM_POSITION;
-import static com.trebuh.clarity.ClarityActivity.EXTRA_CURRENT_ALBUM_POSITION;
 
 public class DetailsActivity extends AppCompatActivity
         implements DetailsFragment.OnFragmentInteractionListener {
@@ -42,7 +28,6 @@ public class DetailsActivity extends AppCompatActivity
 
     private static final String STATE_CURRENT_ITEM_POSITION = "state_current_item_position";
 
-    private DetailsFragment currentDetailsFragment;
     private int currentPosition;
     private int startingPosition;
 
@@ -54,26 +39,8 @@ public class DetailsActivity extends AppCompatActivity
 //        ActivityCompat.postponeEnterTransition(this);
         setContentView(R.layout.activity_details);
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            getWindow().setSharedElementEnterTransition(TransitionInflater.from(this).
-//                    inflateTransition(R.transition.activity_slide));
-//        }
-
         // prevent statusBar blinking during enter transition
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            postponeEnterTransition();
-//            final View decor = getWindow().getDecorView();
-//            decor.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-//                @Override
-//                public boolean onPreDraw() {
-//                    decor.getViewTreeObserver().removeOnPreDrawListener(this);
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                        startPostponedEnterTransition();
-//                    }
-//                    return true;
-//                }
-//            });
-//        }
+        postponeUntilDrawn();
 
         photoList = getIntent().getParcelableArrayListExtra(EXTRA_PHOTOS_ARRAY_LIST);
         Log.d(TAG, "onCreate(): photoList size: " + photoList.size());
@@ -103,6 +70,23 @@ public class DetailsActivity extends AppCompatActivity
         });
     }
 
+    private void postponeUntilDrawn() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            postponeEnterTransition();
+            final View decor = getWindow().getDecorView();
+            decor.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    decor.getViewTreeObserver().removeOnPreDrawListener(this);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        startPostponedEnterTransition();
+                    }
+                    return true;
+                }
+            });
+        }
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
@@ -127,7 +111,6 @@ public class DetailsActivity extends AppCompatActivity
         @Override
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
             super.setPrimaryItem(container, position, object);
-            currentDetailsFragment = (DetailsFragment) object;
         }
 
         @Override
