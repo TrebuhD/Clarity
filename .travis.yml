@@ -30,6 +30,12 @@ android:
    - 'android-sdk-license-.+'
    - '.+'
 
+dependencies:
+  override:
+    # we are cheating because there is a problem with constraint layout ATM
+    # see: https://code.google.com/p/android/issues/detail?id=212128
+    - ./gradlew dependencies || true
+
 env:
   global:
    # install timeout in minutes (2 minutes by default)
