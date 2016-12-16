@@ -99,6 +99,11 @@ public final class ApiConstants {
     static final String PARAM_EXCLUDE = "exclude";
     public static final String NUDE = "Nude";
 
-    // Cropped XS, M and uncropped S
-    public static final String IMAGE_SIZE_XS_M_US = "1,3,4";
+    // Documentation on photo sizes
+    // https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#image-urls-and-image-sizes
+    public static final String IMAGE_SIZES = "1,3,20,4";
+    public static final int IMAGE_SIZE_CROPPED_TINY = 0;
+    public static final int IMAGE_SIZE_CROPPED_LARGE = 1;
+    public static final int IMAGE_SIZE_UNCROPPED_SMALL = 2;
+    public static final int IMAGE_SIZE_UNCROPPED_MEDIUM = 3;
 }

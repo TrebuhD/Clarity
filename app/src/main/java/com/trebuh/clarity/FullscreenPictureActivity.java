@@ -29,23 +29,25 @@ public class FullscreenPictureActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityCompat.postponeEnterTransition(this);
         setContentView(R.layout.activity_fullscreen_picture);
-        PhotoView photoView = (PhotoView) findViewById(R.id.fullscreen_photo_view);
+        final PhotoView photoView = (PhotoView) findViewById(R.id.fullscreen_photo_view);
         activity = this;
         midres_img_url = (String) getIntent().getExtras().get(MIDRES_IMG_URL);
         hires_img_url = (String) getIntent().getExtras().get(HIRES_IMG_URL);
         Log.d("FullscreenImageActivity", "URL: " + midres_img_url);
-        ActivityCompat.postponeEnterTransition(this);
 
         final PhotoViewAttacher attacher = new PhotoViewAttacher(photoView);
-        Picasso.with(this)
+        Picasso.with(photoView.getContext())
                 .load(midres_img_url)
-                .noFade()
-                .fit()
-                .centerInside()
+                .placeholder(R.drawable.zz_stardust)
                 .into(photoView, new Callback() {
                     @Override
                     public void onSuccess() {
+//                        Picasso.with(photoView.getContext())
+//                                .load(hires_img_url)
+//                                .placeholder(photoView.getDrawable())
+//                                .into(photoView);
                         attacher.update();
                         ActivityCompat.startPostponedEnterTransition(activity);
                     }

@@ -25,6 +25,7 @@ import com.squareup.picasso.RequestCreator;
 import com.trebuh.clarity.FullscreenPictureActivity;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.models.Photo;
+import com.trebuh.clarity.network.ApiConstants;
 
 import org.sufficientlysecure.htmltextview.HtmlTextView;
 
@@ -87,16 +88,18 @@ public class DetailsFragment extends Fragment {
 
         Log.d(TAG, "photoUrl: " + photoUrl);
 
-        RequestCreator photoRequest = Picasso.with(getActivity()).load(photoUrl).fit().centerCrop();
-        RequestCreator profilePicRequest = Picasso.with(getActivity()).load(profilePicUrl).fit().centerInside();
+        RequestCreator photoRequest = Picasso.with(getActivity()).load(photoUrl).fit().noFade().centerCrop();
+        RequestCreator profilePicRequest = Picasso.with(getActivity()).load(profilePicUrl).noFade().fit().centerInside();
 
         photoRequest.into(mainPicture, new Callback() {
             @Override
             public void onSuccess() {
+                startPostponedEnterTransition();
             }
 
             @Override
             public void onError() {
+                startPostponedEnterTransition();
             }
         });
         profilePicRequest.into(avatarPic);
@@ -104,11 +107,13 @@ public class DetailsFragment extends Fragment {
         mainPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                getView().findViewById(R.id.details_body_container).setBackgroundColor(
+                        getResources().getColor(android.R.color.transparent));
                 if (Build.VERSION.SDK_INT < 21) {
                     Intent fullscreenPhotoIntent = new Intent(getActivity(), FullscreenPictureActivity.class);
                     fullscreenPhotoIntent.putExtra(FullscreenPictureActivity.MIDRES_IMG_URL, photoUrl);
                     fullscreenPhotoIntent.putExtra(FullscreenPictureActivity.HIRES_IMG_URL,
-                            getCurrentPhoto().getImages().get(2).getUrl());
+                            getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_UNCROPPED_MEDIUM).getUrl());
                     startActivity(fullscreenPhotoIntent);
                 } else {
                     Intent intent = new Intent(getActivity(), FullscreenPictureActivity.class);
@@ -116,7 +121,7 @@ public class DetailsFragment extends Fragment {
                             .makeSceneTransitionAnimation(getActivity(), view, getString(R.string.transition_fullscreen_pic));
                     intent.putExtra(FullscreenPictureActivity.MIDRES_IMG_URL, photoUrl);
                     intent.putExtra(FullscreenPictureActivity.HIRES_IMG_URL,
-                            getCurrentPhoto().getImages().get(2).getUrl());
+                            getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_UNCROPPED_MEDIUM).getUrl());
                     startActivity(intent, options.toBundle());
                 }
             }
@@ -179,7 +184,7 @@ public class DetailsFragment extends Fragment {
         TextView photoTitleText = (TextView) bodyContainer.findViewById(R.id.details_photo_title_tv);
         TextView authorNameText = (TextView) bodyContainer.findViewById(R.id.details_author_name_tv);
         HtmlTextView photoDescriptionText = (HtmlTextView) bodyContainer.findViewById(R.id.details_photo_description_tv);
-        photoUrl = getCurrentPhoto().getImages().get(1).getUrl();
+        photoUrl = getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_UNCROPPED_SMALL).getUrl();
         profilePicUrl = getCurrentPhoto().getUser().getUserpicUrl();
         String photoName = getCurrentPhoto().getName();
         String authorName = getCurrentPhoto().getUser().getUsername();

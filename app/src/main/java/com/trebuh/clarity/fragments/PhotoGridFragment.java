@@ -323,7 +323,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         if (isSearchFragmentInstance) {
             call = service.searchPhotos(
                     ApiConstants.NO_SORT_METHOD,
-                    ApiConstants.IMAGE_SIZE_XS_M_US,
+                    ApiConstants.IMAGE_SIZES,
                     ApiConstants.NUDE,
                     paramSearchTerm,
                     page,
@@ -333,7 +333,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
             call = service.listPhotos(
                     paramFeature,
                     paramSortBy,
-                    ApiConstants.IMAGE_SIZE_XS_M_US,
+                    ApiConstants.IMAGE_SIZES,
                     page,
                     ApiConstants.DEFAULT_RESULTS_PER_PAGE,
                     ApiConstants.NUDE

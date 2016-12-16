@@ -1,6 +1,7 @@
 package com.trebuh.clarity.adapters;
 
 import android.content.Context;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.models.Photo;
+import com.trebuh.clarity.network.ApiConstants;
 
 import java.util.List;
 
@@ -48,8 +50,8 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         int photoId = photo.getId();
         String photoTitle = photo.getName();
         String authorName = photo.getUser().getUsername();
-        String photoUrl = photo.getImages().get(1).getUrl();
-        String thumbUrl = photo.getImages().get(0).getUrl();
+        String thumbUrl = photo.getImages().get(ApiConstants.IMAGE_SIZE_CROPPED_TINY).getUrl();
+        String photoUrl = photo.getImages().get(ApiConstants.IMAGE_SIZE_CROPPED_LARGE).getUrl();
 
         viewHolder.setUsernameText(authorName);
         viewHolder.setPhotoImage(photoUrl, thumbUrl);
@@ -137,7 +139,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
                     .into(photoImageView, new Callback() {
                         @Override
                         public void onError() {
-
+                            progressBar.setVisibility(View.GONE);
                         }
                         // load bigger version
                         @Override
