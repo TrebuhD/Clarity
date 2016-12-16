@@ -349,7 +349,7 @@ public class ClarityActivity extends AppCompatActivity
             View navigationBar = findViewById(android.R.id.navigationBarBackground);
             List<Pair<View, String>> pairs = new ArrayList<>();
             pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_iv), "grid_to_details_transition")));
-            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_title_tv), "grid_to_details_transition_title")));
+//            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_title_tv), "grid_to_details_transition_title")));
             // prevent null pointers on some devices
             if (navigationBar != null) {
                 pairs.add(Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME));

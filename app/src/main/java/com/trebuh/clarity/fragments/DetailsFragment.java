@@ -90,7 +90,8 @@ public class DetailsFragment extends Fragment {
         photoRequest.into(mainPicture, new Callback() {
             @Override
             public void onSuccess() {
-//                startPostponedEnterTransition();
+//                getActivity().startPostponedEnterTransition();
+
 //                Picasso.with(getContext())
 //                        .load(uncroppedPhotoUrl)
 //                        .placeholder(mainPicture.getDrawable())
@@ -99,7 +100,7 @@ public class DetailsFragment extends Fragment {
 
             @Override
             public void onError() {
-//                startPostponedEnterTransition();
+//                getActivity().startPostponedEnterTransition();
             }
         });
         profilePicRequest.into(avatarPic);
