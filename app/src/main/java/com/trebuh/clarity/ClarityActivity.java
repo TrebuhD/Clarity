@@ -75,7 +75,6 @@ public class ClarityActivity extends AppCompatActivity
     private Bundle tmpReenterState;
     private boolean isDetailsActivityStarted;
 
-    private ArrayList<Photo> photoList;
     private ArrayList<String> searchHistoryList;
 
     // for saving fragment state
@@ -86,11 +85,6 @@ public class ClarityActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clarity);
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            getWindow().setSharedElementExitTransition(TransitionInflater.from(this).
-//                    inflateTransition(R.transition.activity_slide));
-//        }
 
         initToolbar();
 
@@ -148,10 +142,10 @@ public class ClarityActivity extends AppCompatActivity
         adapter.addItem(SearchHistoryFragment.newInstance(searchHistoryList), "Search history");
 
         PhotoGridFragment photoFragment = (retainedPhotoGridFragment == null) ?
-                PhotoGridFragment.newInstance(ApiConstants.FEATURE_POPULAR,
-                        ApiConstants.SORT_METHOD_COMMENTS_COUNT) : (PhotoGridFragment) retainedPhotoGridFragment;
+                PhotoGridFragment.newInstance(ApiConstants.FEATURE_HIGHEST_RATED,
+                        ApiConstants.SORT_METHOD_RATING) : (PhotoGridFragment) retainedPhotoGridFragment;
 
-        adapter.addItem(photoFragment, "Popular Photos");
+        adapter.addItem(photoFragment, "Highest Rated");
 
         if (extraGridFragment != null) {
             adapter.addItem(extraGridFragment, "");
@@ -303,21 +297,9 @@ public class ClarityActivity extends AppCompatActivity
 
         int startingPosition = tmpReenterState.getInt(EXTRA_STARTING_ALBUM_POSITION);
         int currentPosition = tmpReenterState.getInt(EXTRA_CURRENT_ALBUM_POSITION);
-        photoList = tmpReenterState.getParcelableArrayList(EXTRA_PHOTOS_ARRAY_LIST);
         if (startingPosition != currentPosition) {
             recyclerView.scrollToPosition(currentPosition);
         }
-//        postponeEnterTransition();
-//        recyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-//            @Override
-//            public boolean onPreDraw() {
-//                recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
-//                // necessary to get a smooth transition
-//                recyclerView.requestLayout();
-//                startPostponedEnterTransition();
-//                return true;
-//            }
-//        });
     }
 
     @Override
@@ -367,7 +349,7 @@ public class ClarityActivity extends AppCompatActivity
             View navigationBar = findViewById(android.R.id.navigationBarBackground);
             List<Pair<View, String>> pairs = new ArrayList<>();
             pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_iv), "grid_to_details_transition")));
-            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_title_tv), "grid_to_details_transition_title")));
+//            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_title_tv), "grid_to_details_transition_title")));
             // prevent null pointers on some devices
             if (navigationBar != null) {
                 pairs.add(Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME));

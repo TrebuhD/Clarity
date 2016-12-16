@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
-    tools:context="com.trebuh.clarity.fragments.DetailsFragment"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    tools:context="com.trebuh.clarity.fragments.DetailsFragment">
 
     <!-- //Photo part-->
     <android.support.constraint.ConstraintLayout
@@ -17,20 +17,20 @@
         <FrameLayout
             android:id="@+id/details_header_container"
             android:layout_width="0dp"
+            android:layout_height="300dp"
             android:transitionGroup="true"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            android:layout_height="300dp">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/details_photo_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@android:color/transparent"
                 android:tint="@color/details_photo_tint"
-                tools:ignore="ContentDescription"
-                android:background="@android:color/black" />
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/details_profile_pic_iv"
@@ -39,53 +39,53 @@
                 android:layout_gravity="end|bottom"
                 android:layout_marginBottom="16dp"
                 android:layout_marginEnd="16dp"
-                android:elevation="10dp"
+                android:adjustViewBounds="true"
                 android:contentDescription="@string/profile_pic_description"
-                android:tint="@color/details_avatar_tint"
                 android:cropToPadding="true"
-                android:adjustViewBounds="true" />
+                android:elevation="10dp"
+                android:tint="@color/details_avatar_tint" />
 
             <LinearLayout
                 android:id="@+id/detail_photo_stats"
-                android:layout_gravity="bottom|end"
-                android:layout_marginEnd="120dp"
-                android:layout_marginBottom="16dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="120dp">
 
                 <!--favorites count-->
                 <RelativeLayout
                     android:id="@+id/details_favcount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:cropToPadding="true"
-                    android:adjustViewBounds="true">
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="true">
 
                     <ImageView
                         android:id="@+id/details_favorites_label"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_margin="4dp"
                         android:layout_gravity="start"
+                        android:layout_margin="4dp"
                         android:contentDescription="@string/favorites"
                         android:src="@drawable/ph_heart_filled_white" />
 
                     <TextView
                         android:id="@+id/details_favcount_value"
-                        android:layout_toEndOf="@id/details_favorites_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="8dp"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingRight="8dp"
-                        android:textColor="@color/mtrl_white_100"
-                        android:layout_gravity="end"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                        android:fontFamily="sans-serif"
-                        android:textStyle="normal|bold"
                         android:layout_centerVertical="true"
-                        android:text="@string/zero" />
+                        android:layout_gravity="end"
+                        android:layout_toEndOf="@id/details_favorites_label"
+                        android:fontFamily="sans-serif"
+                        android:paddingEnd="8dp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:paddingStart="8dp"
+                        android:text="@string/zero"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                        android:textColor="@color/mtrl_white_100"
+                        android:textStyle="normal|bold" />
                 </RelativeLayout>
 
                 <!--rating-->
@@ -105,20 +105,20 @@
 
                     <TextView
                         android:id="@+id/details_rating_value"
-                        android:layout_toEndOf="@id/details_rating_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="8dp"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:paddingRight="8dp"
-                        android:textColor="@color/mtrl_white_100"
-                        android:layout_gravity="end"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                        android:fontFamily="sans-serif"
-                        android:textStyle="normal|bold"
                         android:layout_centerVertical="true"
-                        android:text="@string/zero" />
+                        android:layout_gravity="end"
+                        android:layout_toEndOf="@id/details_rating_label"
+                        android:fontFamily="sans-serif"
+                        android:paddingEnd="8dp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:paddingStart="8dp"
+                        android:text="@string/zero"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                        android:textColor="@color/mtrl_white_100"
+                        android:textStyle="normal|bold" />
 
                 </RelativeLayout>
 
@@ -132,37 +132,41 @@
             android:id="@+id/details_body_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:elevation="12dp"
             android:orientation="vertical"
             android:transitionGroup="true"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/details_header_container"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginLeft="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/details_header_container"
             app:layout_constraintVertical_bias="0.0">
 
             <!--author name-->
             <TextView
                 android:id="@+id/details_author_name_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
                 android:fontFamily="sans-serif-smallcaps"
                 android:text="@string/author_mcauthorson"
-                android:textSize="16sp"
-                android:layout_height="wrap_content"
                 android:textAlignment="textEnd"
-                android:layout_width="0dp"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@+id/details_times_viewed"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginEnd="8dp"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintLeft_toRightOf="@+id/include"
-                android:layout_marginLeft="8dp" />
+                app:layout_constraintLeft_toRightOf="@+id/camera_info"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp" />
 
             <!--times viewed-->
 
@@ -170,65 +174,343 @@
             <TextView
                 android:id="@+id/details_photo_title_tv"
                 android:layout_width="0dp"
-                android:text="@string/the_hamburglar"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="sans-serif-light"
+                android:text="@string/the_hamburglar"
                 android:textAppearance="@android:style/TextAppearance.Material.Title"
                 android:textSize="40sp"
-                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintHorizontal_bias="0.89"
-                android:layout_marginStart="8dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/include"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/details_times_viewed"
-                />
+                app:layout_constraintTop_toBottomOf="@+id/camera_info" />
 
             <!--description-->
             <org.sufficientlysecure.htmltextview.HtmlTextView
                 android:id="@+id/details_photo_description_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/lorem_ipsum_short"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:lineSpacingMultiplier="1.2"
+                android:text="@string/lorem_ipsum_short"
                 android:textAppearance="@android:style/TextAppearance.Material.Medium"
                 android:textSize="18sp"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintHorizontal_bias="0.93"
-                android:layout_marginStart="16dp"
-                app:layout_constraintTop_toBottomOf="@+id/details_photo_title_tv"
-                android:layout_marginTop="16dp" />
-
-            <include layout="@layout/photo_info"
-                android:layout_height="55dp"
-                app:layout_constraintVertical_bias="0.56"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_width="352dp"
-                app:layout_constraintTop_toBottomOf="@+id/details_photo_description_tv"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="8dp"/>
+                app:layout_constraintTop_toBottomOf="@+id/details_photo_title_tv" />
 
-            <include
-                layout="@layout/camera_info"
-                android:id="@+id/include"
+
+            <!--PhotoInfo-->
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/photo_info"
                 android:layout_width="0dp"
-                app:layout_constraintVertical_bias="1.0"
-                android:layout_height="48dp"
-                app:layout_constraintHorizontal_bias="0.12"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:gravity="bottom"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/details_photo_description_tv"
+                app:layout_constraintVertical_bias="0.0">
+
+                <RelativeLayout
+                    android:id="@+id/info_col_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <!--iso-->
+                    <RelativeLayout
+                        android:id="@+id/details_iso"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/details_iso_label"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="start"
+                            android:contentDescription="@string/ISO"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ph_iso" />
+
+                        <TextView
+                            android:id="@+id/details_iso_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="end"
+                            android:layout_toEndOf="@id/details_iso_label"
+                            android:fontFamily="sans-serif-smallcaps"
+                            android:paddingEnd="8dp"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:paddingStart="8dp"
+                            android:text="@string/_300"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/info_col_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/info_col_1">
+
+                    <!--shutter speed-->
+                    <RelativeLayout
+                        android:id="@+id/details_shutter_speed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/details_shutter_speed_label"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="start"
+                            android:layout_marginStart="16dp"
+                            android:contentDescription="@string/shutter_speed"
+                            android:src="@drawable/ph_shutter_speed" />
+
+                        <TextView
+                            android:id="@+id/details_shutter_speed_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="end"
+                            android:layout_toEndOf="@id/details_shutter_speed_label"
+                            android:fontFamily="sans-serif-smallcaps"
+                            android:paddingEnd="8dp"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:paddingStart="8dp"
+                            android:text="@string/_24"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/info_col_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/info_col_2">
+                    <!--aperture-->
+                    <RelativeLayout
+                        android:id="@+id/details_aperture"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/details_aperture_label"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="start"
+                            android:layout_marginStart="16dp"
+                            android:contentDescription="@string/aperture"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ph_aperture" />
+
+                        <TextView
+                            android:id="@+id/details_aperture_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_gravity="end"
+                            android:layout_toEndOf="@id/details_aperture_label"
+                            android:fontFamily="sans-serif-smallcaps"
+                            android:paddingEnd="8dp"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:paddingStart="8dp"
+                            android:text="@string/_21"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <!--created at-->
+                <!--<RelativeLayout-->
+                <!--android:id="@+id/details_created_at"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentLeft="true"-->
+                <!--android:layout_alignParentStart="true"-->
+                <!--android:layout_below="@+id/details_aperture">-->
+
+                <!--<ImageView-->
+                <!--android:id="@+id/details_created_at_label"-->
+                <!--android:layout_width="24dp"-->
+                <!--android:layout_height="24dp"-->
+                <!--android:layout_gravity="start"-->
+                <!--android:layout_margin="4dp"-->
+                <!--android:contentDescription="@string/created_at"-->
+                <!--android:src="@drawable/ph_clock" />-->
+
+                <!--<TextView-->
+                <!--android:id="@+id/details_created_at_value"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_gravity="end"-->
+                <!--android:layout_toEndOf="@id/details_created_at_label"-->
+                <!--android:layout_toRightOf="@id/details_created_at_label"-->
+                <!--android:fontFamily="sans-serif"-->
+
+                <!--android:paddingEnd="8dp"-->
+                <!--android:paddingLeft="8dp"-->
+                <!--android:paddingRight="8dp"-->
+                <!--android:paddingStart="8dp"-->
+                <!--android:text="@string/app_name"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Medium" />-->
+                <!--</RelativeLayout>-->
+
+                <!--&lt;!&ndash;comments count&ndash;&gt;-->
+                <!--<RelativeLayout-->
+                <!--android:id="@+id/details_comments_count"-->
+                <!--android:layout_width="24dp"-->
+                <!--android:layout_height="24dp"-->
+                <!--android:layout_margin="4dp"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_alignParentEnd="true">-->
+
+                <!--<ImageView-->
+                <!--android:id="@+id/details_comments_count_label"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="start"-->
+                <!--android:contentDescription="@string/comments"-->
+                <!--android:src="@drawable/ph_speech_bubble" />-->
+
+                <!--<TextView-->
+                <!--android:id="@+id/details_comments_count_value"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="end"-->
+                <!--android:paddingLeft="8dp"-->
+                <!--android:paddingStart="8dp"-->
+                <!--android:paddingEnd="8dp"-->
+                <!--android:paddingRight="8dp"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
+                <!--android:fontFamily="sans-serif"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_toEndOf="@id/details_comments_count_label"-->
+                <!--android:layout_toRightOf="@id/details_comments_count_label"-->
+                <!--android:text="@string/app_name" />-->
+                <!--</RelativeLayout>-->
+
+
+            </RelativeLayout>
+
+
+            <!--<include layout="@layout/photo_info"-->
+            <!--android:layout_height="55dp"-->
+            <!--android:layout_width="352dp"-->
+            <!--tools:layout_editor_absoluteY="274dp"-->
+            <!--app:layout_constraintLeft_toLeftOf="parent"-->
+            <!--app:layout_constraintRight_toRightOf="parent" />-->
+
+
+            // Camera info
+
+            <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/camera_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/details_author_name_tv"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <!--camera-->
+                <TextView
+                    android:id="@+id/details_camera_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:gravity="start"
+                    android:paddingEnd="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingStart="8dp"
+                    android:text="@string/generic_camera"
+                    android:textAlignment="textStart"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/details_lens_value"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <!--<ImageView-->
+                <!--android:id="@+id/details_camera_label"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:contentDescription="@string/lens"-->
+                <!--android:src="@drawable/ph_camera"-->
+                <!--tools:layout_editor_absoluteY="0dp"-->
+                <!--app:layout_constraintLeft_toRightOf="@+id/details_camera_value"-->
+                <!--android:layout_height="23dp"-->
+                <!--android:cropToPadding="true"-->
+                <!--android:adjustViewBounds="true" />-->
+
+                //lens
+
+                <TextView
+                    android:id="@+id/details_lens_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:gravity="start"
+                    android:paddingEnd="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingStart="8dp"
+                    android:text="@string/generic_lens"
+                    android:textAlignment="viewStart"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!--<ImageView-->
+                <!--android:id="@+id/details_lens_label"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="23dp"-->
+                <!--android:contentDescription="@string/lens"-->
+                <!--android:src="@drawable/ph_adjust_black_24px"-->
+                <!--tools:layout_editor_absoluteY="0dp"-->
+                <!--app:layout_constraintLeft_toRightOf="@+id/details_lens_value"-->
+                <!--android:adjustViewBounds="true" />-->
+
+            </android.support.constraint.ConstraintLayout>
 
             <RelativeLayout
                 android:id="@+id/details_times_viewed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="end"
-                app:layout_constraintTop_toBottomOf="@+id/details_author_name_tv"
-                app:layout_constraintRight_toRightOf="parent"
                 android:layout_marginEnd="8dp"
-                android:layout_marginTop="8dp">
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:gravity="end"
+                app:layout_constraintLeft_toRightOf="@+id/details_photo_title_tv"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/details_author_name_tv">
 
                 <TextView
                     android:id="@+id/details_times_viewed_value"
@@ -236,21 +518,21 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="start"
-                    android:fontFamily="sans-serif-smallcaps"
-                    android:layout_marginStart="0dp"
                     android:layout_marginEnd="8dp"
+                    android:layout_marginStart="0dp"
                     android:layout_marginTop="0dp"
+                    android:fontFamily="sans-serif-smallcaps"
                     android:text="@string/zero"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textAlignment="textStart" />
+                    android:textAlignment="textStart"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <ImageView
                     android:id="@+id/details_times_viewed_label"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_gravity="end"
-                    android:layout_toEndOf="@id/details_times_viewed_value"
                     android:layout_margin="0dp"
+                    android:layout_toEndOf="@id/details_times_viewed_value"
                     android:contentDescription="@string/times_viewed"
                     android:src="@drawable/ph_eye" />
 

@@ -39,16 +39,17 @@ public class FullscreenPictureActivity extends AppCompatActivity {
 
         final PhotoViewAttacher attacher = new PhotoViewAttacher(photoView);
         Picasso.with(photoView.getContext())
-                .load(midres_img_url)
-                .placeholder(R.drawable.zz_stardust)
+                .load(hires_img_url)
+                .placeholder(photoView.getDrawable())
                 .into(photoView, new Callback() {
                     @Override
                     public void onSuccess() {
+                        attacher.update();
 //                        Picasso.with(photoView.getContext())
 //                                .load(hires_img_url)
 //                                .placeholder(photoView.getDrawable())
 //                                .into(photoView);
-                        attacher.update();
+//                        attacher.update();
                         ActivityCompat.startPostponedEnterTransition(activity);
                     }
 
