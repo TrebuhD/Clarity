@@ -148,10 +148,10 @@ public class ClarityActivity extends AppCompatActivity
         adapter.addItem(SearchHistoryFragment.newInstance(searchHistoryList), "Search history");
 
         PhotoGridFragment photoFragment = (retainedPhotoGridFragment == null) ?
-                PhotoGridFragment.newInstance(ApiConstants.FEATURE_POPULAR,
-                        ApiConstants.SORT_METHOD_COMMENTS_COUNT) : (PhotoGridFragment) retainedPhotoGridFragment;
+                PhotoGridFragment.newInstance(ApiConstants.FEATURE_HIGHEST_RATED,
+                        ApiConstants.SORT_METHOD_RATING) : (PhotoGridFragment) retainedPhotoGridFragment;
 
-        adapter.addItem(photoFragment, "Popular Photos");
+        adapter.addItem(photoFragment, "Highest Rated");
 
         if (extraGridFragment != null) {
             adapter.addItem(extraGridFragment, "");

@@ -94,12 +94,13 @@ public class DetailsFragment extends Fragment {
         photoRequest.into(mainPicture, new Callback() {
             @Override
             public void onSuccess() {
-                startPostponedEnterTransition();
+//                startPostponedEnterTransition();
+
             }
 
             @Override
             public void onError() {
-                startPostponedEnterTransition();
+//                startPostponedEnterTransition();
             }
         });
         profilePicRequest.into(avatarPic);

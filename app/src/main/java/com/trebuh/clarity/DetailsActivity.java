@@ -51,7 +51,7 @@ public class DetailsActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityCompat.postponeEnterTransition(this);
+//        ActivityCompat.postponeEnterTransition(this);
         setContentView(R.layout.activity_details);
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -60,20 +60,20 @@ public class DetailsActivity extends AppCompatActivity
 //        }
 
         // prevent statusBar blinking during enter transition
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            postponeEnterTransition();
-            final View decor = getWindow().getDecorView();
-            decor.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    decor.getViewTreeObserver().removeOnPreDrawListener(this);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        startPostponedEnterTransition();
-                    }
-                    return true;
-                }
-            });
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            postponeEnterTransition();
+//            final View decor = getWindow().getDecorView();
+//            decor.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//                @Override
+//                public boolean onPreDraw() {
+//                    decor.getViewTreeObserver().removeOnPreDrawListener(this);
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                        startPostponedEnterTransition();
+//                    }
+//                    return true;
+//                }
+//            });
+//        }
 
         photoList = getIntent().getParcelableArrayListExtra(EXTRA_PHOTOS_ARRAY_LIST);
         Log.d(TAG, "onCreate(): photoList size: " + photoList.size());
