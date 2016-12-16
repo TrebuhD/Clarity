@@ -6,15 +6,23 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.ChangeBounds;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.trebuh.clarity.fragments.DetailsFragment;
@@ -34,49 +42,41 @@ public class DetailsActivity extends AppCompatActivity
 
     private static final String STATE_CURRENT_ITEM_POSITION = "state_current_item_position";
 
-    private final SharedElementCallback callback = new SharedElementCallback() {
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        @Override
-        public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-            if (isReturning) {
-                ImageView sharedElement = currentDetailsFragment.getMainPhoto();
-                if (sharedElement == null) {
-                    // If shared element is null, then it has been scrolled off screen and
-                    // no longer visible. In this case we cancel the shared element transition by
-                    // removing the shared element from the shared elements map.
-                    names.clear();
-                    sharedElements.clear();
-                } else if (startingPosition != currentPosition) {
-                    // If the user has swiped to a different ViewPager page, then we need to
-                    // remove the old shared element and replace it with the new shared element
-                    // that should be transitioned instead.
-                    names.clear();
-                    names.add(sharedElement.getTransitionName());
-                    sharedElements.clear();
-                    sharedElements.put(sharedElement.getTransitionName(), sharedElement);
-                }
-            }
-        }
-    };
-
     private DetailsFragment currentDetailsFragment;
     private int currentPosition;
     private int startingPosition;
-    private boolean isReturning;
 
     private ArrayList<Photo> photoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityCompat.postponeEnterTransition(this);
         setContentView(R.layout.activity_details);
-//        postponeEnterTransition();
-        setEnterSharedElementCallback(callback);
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            getWindow().setSharedElementEnterTransition(TransitionInflater.from(this).
+//                    inflateTransition(R.transition.activity_slide));
+//        }
+
+        // prevent statusBar blinking during enter transition
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            postponeEnterTransition();
+            final View decor = getWindow().getDecorView();
+            decor.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    decor.getViewTreeObserver().removeOnPreDrawListener(this);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        startPostponedEnterTransition();
+                    }
+                    return true;
+                }
+            });
+        }
 
         photoList = getIntent().getParcelableArrayListExtra(EXTRA_PHOTOS_ARRAY_LIST);
-
         Log.d(TAG, "onCreate(): photoList size: " + photoList.size());
-
         startingPosition = getIntent().getIntExtra(EXTRA_STARTING_ALBUM_POSITION, 0);
         if (savedInstanceState == null) {
             currentPosition = startingPosition;
@@ -110,18 +110,7 @@ public class DetailsActivity extends AppCompatActivity
     }
 
     @Override
-    public void finishAfterTransition() {
-        isReturning = true;
-        Intent data = new Intent();
-        data.putExtra(EXTRA_STARTING_ALBUM_POSITION, startingPosition);
-        data.putExtra(EXTRA_CURRENT_ALBUM_POSITION, currentPosition);
-        setResult(RESULT_OK, data);
-        super.finishAfterTransition();
-    }
-
-    @Override
     public void onFragmentInteraction(Uri uri) {
-
     }
 
     private class DetailsFragmentPagerAdapter extends FragmentStatePagerAdapter {

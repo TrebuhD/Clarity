@@ -1,0 +1,91 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/info_col_1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical">
+
+    <!--camera-->
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/details_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.0">
+
+        <TextView
+            android:id="@+id/details_camera_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-smallcaps"
+            android:paddingEnd="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingStart="8dp"
+            android:text="@string/generic_camera"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="8dp"
+            android:textAlignment="textStart"
+            android:gravity="start"/>
+
+        <!--<ImageView-->
+        <!--android:id="@+id/details_camera_label"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:contentDescription="@string/lens"-->
+        <!--android:src="@drawable/ph_camera"-->
+        <!--tools:layout_editor_absoluteY="0dp"-->
+        <!--app:layout_constraintLeft_toRightOf="@+id/details_camera_value"-->
+        <!--android:layout_height="23dp"-->
+        <!--android:cropToPadding="true"-->
+        <!--android:adjustViewBounds="true" />-->
+
+    </android.support.constraint.ConstraintLayout>
+
+    <!--lens-->
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/details_lens"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.0">
+
+        <TextView
+            android:id="@+id/details_lens_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-smallcaps"
+            android:paddingEnd="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingStart="8dp"
+            android:text="@string/generic_lens"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textAlignment="viewStart"
+            android:gravity="start"
+            />
+
+        <!--<ImageView-->
+        <!--android:id="@+id/details_lens_label"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="23dp"-->
+        <!--android:contentDescription="@string/lens"-->
+        <!--android:src="@drawable/ph_adjust_black_24px"-->
+        <!--tools:layout_editor_absoluteY="0dp"-->
+        <!--app:layout_constraintLeft_toRightOf="@+id/details_lens_value"-->
+        <!--android:adjustViewBounds="true" />-->
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

@@ -1,21 +1,23 @@
 package com.trebuh.clarity;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Debug;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.SharedElementCallback;
+import android.support.v4.util.Pair;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -23,18 +25,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
+import android.view.Window;
 
 import com.trebuh.clarity.adapters.ClarityPagerAdapter;
 import com.trebuh.clarity.adapters.PhotoGridAdapter;
-import com.trebuh.clarity.fragments.SearchHistoryFragment;
 import com.trebuh.clarity.fragments.PhotoGridFragment;
+import com.trebuh.clarity.fragments.SearchHistoryFragment;
 import com.trebuh.clarity.models.Photo;
 import com.trebuh.clarity.network.ApiConstants;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ClarityActivity extends AppCompatActivity
         implements SearchHistoryFragment.OnFragmentInteractionListener,
@@ -85,7 +86,11 @@ public class ClarityActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clarity);
-        setExitSharedElementCallback(callback);
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            getWindow().setSharedElementExitTransition(TransitionInflater.from(this).
+//                    inflateTransition(R.transition.activity_slide));
+//        }
 
         initToolbar();
 
@@ -289,7 +294,8 @@ public class ClarityActivity extends AppCompatActivity
         viewPager.setCurrentItem(fragmentType);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    // todo make work in <Lollipop
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onActivityReenter(int resultCode, Intent data) {
         super.onActivityReenter(resultCode, data);
@@ -301,35 +307,29 @@ public class ClarityActivity extends AppCompatActivity
         if (startingPosition != currentPosition) {
             recyclerView.scrollToPosition(currentPosition);
         }
-        postponeEnterTransition();
-        recyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
-                // necessary to get a smooth transition
-                recyclerView.requestLayout();
-                startPostponedEnterTransition();
-                return true;
-            }
-        });
+//        postponeEnterTransition();
+//        recyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//            @Override
+//            public boolean onPreDraw() {
+//                recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+//                // necessary to get a smooth transition
+//                recyclerView.requestLayout();
+//                startPostponedEnterTransition();
+//                return true;
+//            }
+//        });
     }
 
     @Override
     public void onPhotoGridItemClick(PhotoGridAdapter.PhotoGridItemHolder caller, String url) {
-        Intent intent = new Intent(this, DetailsActivity.class);
         int clickedItemPos = caller.getLayoutPosition();
-
         ArrayList<Photo> photos = ((PhotoGridFragment) getCurrentFragment()).getPhotoList();
-        if (photos == null) {
-            throw new IllegalStateException();
-        }
-
         Photo clickedPhoto = photos.get(clickedItemPos);
+        Log.d(TAG, "clicked photo: " + clickedPhoto.getName());
+
+        // strip the list to max 30 items to limit bundle size and avoid errors (pretty hacky)
         int startStrippedIndex = clickedItemPos < 15 ? 0 : clickedItemPos - 15;
-
         int endStrippedIndex = photos.size() > (clickedItemPos + 15) ? (clickedItemPos + 15) : photos.size();
-
-        // strip the list to max 30 items
         ArrayList<Photo> strippedPhotos = new ArrayList<>(photos.subList(
                 startStrippedIndex,
                 endStrippedIndex
@@ -341,37 +341,45 @@ public class ClarityActivity extends AppCompatActivity
                 newPos = i;
             }
         }
+        Log.d(TAG, "passed photo: " + strippedPhotos.get(newPos).getName());
 
+        // pass the imageView of clicked the grid item
+        launchActivity(strippedPhotos, newPos, caller.itemView);
+    }
+
+    private void launchActivity(ArrayList<Photo> strippedPhotos, int newPos, View photoView) {
+        if (!isDetailsActivityStarted) {
+            isDetailsActivityStarted = true;
+        }
+
+        Log.d(TAG, "launchActivity(), view: " + photoView.toString());
+
+//        pairs[1] = (new Pair<>(photoView.findViewById(R.id.photo_grid_item_title_tv), "grid_to_details_transition_title"));
+        Intent intent = new Intent(ClarityActivity.this, DetailsActivity.class);
         intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, newPos);
         intent.putExtra(EXTRA_PHOTOS_ARRAY_LIST, strippedPhotos);
 
-        if (!isDetailsActivityStarted) {
-            isDetailsActivityStarted = true;
-//            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-//                startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-//                        caller.photoImageView, caller.photoImageView.getTransitionName()).toBundle());
-//            } else {
+        if (Build.VERSION.SDK_INT < 21) {
             startActivity(intent);
-//            }
+        } else {
+            // array of items for shared element transition
+            View statusBar = findViewById(android.R.id.statusBarBackground);
+            View navigationBar = findViewById(android.R.id.navigationBarBackground);
+            List<Pair<View, String>> pairs = new ArrayList<>();
+            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_iv), "grid_to_details_transition")));
+            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_title_tv), "grid_to_details_transition_title")));
+            // prevent null pointers on some devices
+            if (navigationBar != null) {
+                pairs.add(Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME));
+            }
+            if (statusBar != null) {
+                pairs.add(Pair.create(statusBar, Window.STATUS_BAR_BACKGROUND_TRANSITION_NAME));
+            }
+            Bundle options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(ClarityActivity.this,
+                            pairs.toArray(new Pair[pairs.size()])).toBundle();
+            startActivity(intent, options);
         }
-
-//        DetailsFragment photoDetailsFragment = DetailsFragment.newInstance("1", url);
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            photoDetailsFragment.setSharedElementEnterTransition(new DetailsTransition());
-//            photoDetailsFragment.setEnterTransition(new Fade());
-//            photoDetailsFragment.setExitTransition(new Fade());
-//            photoDetailsFragment.setSharedElementReturnTransition(new DetailsTransition());
-//        }
-//
-//        addOrReplaceExtraGridFragment("1", url, "Photo details");
-//
-//        getSupportFragmentManager()
-//                .beginTransaction()
-//                .addSharedElement(caller.photoImageView, "photo")
-//                .replace(R.id.details_container, photoDetailsFragment)
-//                .addToBackStack(null)
-//                .commit();
     }
 
     @Override
@@ -435,7 +443,6 @@ public class ClarityActivity extends AppCompatActivity
     private void performSearch(String searchTerm, boolean saveInHistory) {
         addOrReplaceExtraGridFragment(searchTerm);
         transitionToFragment(FRAGMENT_EXTRA_GRID);
-//        ((PhotoGridFragment) getCurrentFragment()).performSearch(searchTerm, PhotoFetcher.FIRST_PAGE);
         if (saveInHistory) {
             searchHistoryList.add(searchTerm);
         }
@@ -500,6 +507,7 @@ public class ClarityActivity extends AppCompatActivity
 
     private Fragment getCurrentFragment() {
         int currItem = viewPager.getCurrentItem();
+        Log.d(TAG, "Current Item: " + currItem);
         return adapter.getItem(currItem);
     }
 
@@ -531,44 +539,6 @@ public class ClarityActivity extends AppCompatActivity
         }
 
     }
-
-    private final SharedElementCallback callback = new SharedElementCallback() {
-        @Override
-        public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-            if (tmpReenterState != null) {
-                int startingPosition = tmpReenterState.getInt(EXTRA_STARTING_ALBUM_POSITION);
-                int currentPosition = tmpReenterState.getInt(EXTRA_CURRENT_ALBUM_POSITION);
-                if (startingPosition != currentPosition) {
-                    // If startingPosition != currentPosition the user must have swiped to a
-                    // different page in the DetailsActivity. We must update the shared element
-                    // so that the correct one falls into place.
-                    String newTransitionName = photoList.get(currentPosition).getName();
-                    View newSharedElement = recyclerView.findViewWithTag(newTransitionName);
-                    if (newSharedElement != null) {
-                        names.clear();
-                        names.add(newTransitionName);
-                        sharedElements.clear();
-                        sharedElements.put(newTransitionName, newSharedElement);
-                    }
-                }
-                tmpReenterState = null;
-            } else {
-                // If tmpReenterState is null, then the activity is exiting.
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    View navigationBar = findViewById(android.R.id.navigationBarBackground);
-                    View statusBar = findViewById(android.R.id.statusBarBackground);
-                    if (navigationBar != null) {
-                        names.add(navigationBar.getTransitionName());
-                        sharedElements.put(navigationBar.getTransitionName(), navigationBar);
-                    }
-                    if (statusBar != null) {
-                        names.add(statusBar.getTransitionName());
-                        sharedElements.put(statusBar.getTransitionName(), statusBar);
-                    }
-                }
-            }
-        }
-    };
 
     @Override
     public void onPastSearchItemClick(String searchString) {

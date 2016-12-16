@@ -37,4 +37,24 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="fullscreen_image">Fullscreen image</string>
+    <string name="ISO">ISO</string>
+    <string name="camera_model">Camera model</string>
+    <string name="lens">lens</string>
+    <string name="shutter_speed">Shutter speed</string>
+    <string name="comments">comments</string>
+    <string name="favorites">favorites</string>
+    <string name="created_at">created at</string>
+    <string name="rating">rating</string>
+    <string name="times_viewed">times viewed</string>
+    <string name="aperture">aperture</string>
+    <string name="zero">0</string>
+    <string name="author_mcauthorson">Author McAuthorson</string>
+    <string name="lorem_ipsum_short">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+    <string name="the_hamburglar">The Hamburglar</string>
+    <string name="generic_camera">Generic Camera</string>
+    <string name="generic_lens">Generic Lens</string>
+    <string name="_300">300</string>
+    <string name="_24">24</string>
+    <string name="_21">21</string>
+    <string name="transition_fullscreen_pic">transition_fullscreen_pic</string>
 </resources>

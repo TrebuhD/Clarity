@@ -1,18 +1,21 @@
 package com.trebuh.clarity.adapters;
 
 import android.content.Context;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.models.Photo;
+import com.trebuh.clarity.network.ApiConstants;
 
 import java.util.List;
 
@@ -31,6 +34,12 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         final View photoView = inflater.inflate(R.layout.photo_grid_item, parent, false);
+
+//        if (BuildConfig.DEBUG) {
+//            Picasso.with(context).setIndicatorsEnabled(true);
+//            Picasso.with(context).setLoggingEnabled(true);
+//        }
+
         return new PhotoGridItemHolder(photoView);
     }
 
@@ -41,8 +50,8 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         int photoId = photo.getId();
         String photoTitle = photo.getName();
         String authorName = photo.getUser().getUsername();
-        String photoUrl = photo.getImages().get(1).getUrl();
-        String thumbUrl = photo.getImages().get(0).getUrl();
+        String thumbUrl = photo.getImages().get(ApiConstants.IMAGE_SIZE_CROPPED_TINY).getUrl();
+        String photoUrl = photo.getImages().get(ApiConstants.IMAGE_SIZE_CROPPED_LARGE).getUrl();
 
         viewHolder.setUsernameText(authorName);
         viewHolder.setPhotoImage(photoUrl, thumbUrl);
@@ -92,6 +101,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
         private final TextView authorNameTextView;
         private final TextView photoTitleTextView;
         private final TextView hiddenUrlTextView;
+        private final ProgressBar progressBar;
 
         private PhotoGridItemOnClickListener listener;
 
@@ -101,6 +111,10 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
             this.authorNameTextView = (TextView) itemView.findViewById(R.id.photo_grid_item_author_name_tv);
             this.photoTitleTextView = (TextView) itemView.findViewById(R.id.photo_grid_item_title_tv);
             this.hiddenUrlTextView = (TextView) itemView.findViewById(R.id.photo_grid_hidden_url_tv);
+            this.progressBar = (ProgressBar) itemView.findViewById(R.id.photo_grid_item_progress_bar);
+
+            this.progressBar.setVisibility(View.VISIBLE);
+            progressBar.setIndeterminate(true);
 
             this.photoImageView = (ImageView) itemView.findViewById(R.id.photo_grid_item_iv);
             itemView.setOnClickListener(this);
@@ -121,21 +135,24 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
             Picasso
                     .with(itemView.getContext())
                     .load(thumbUrl)
-                    .placeholder(R.drawable.progress_animation)
+                    .placeholder(R.drawable.zz_stardust)
                     .into(photoImageView, new Callback() {
                         @Override
                         public void onError() {
-
+                            progressBar.setVisibility(View.GONE);
                         }
                         // load bigger version
                         @Override
                         public void onSuccess() {
                             Picasso.with(itemView.getContext())
                                     .load(url)
+                                    .fit()
                                     .placeholder(photoImageView.getDrawable())
                                     .into(photoImageView);
+                            progressBar.setVisibility(View.GONE);
                         }
-                    });
+                    })
+            ;
         }
 
         void setUsernameText(CharSequence text) {
