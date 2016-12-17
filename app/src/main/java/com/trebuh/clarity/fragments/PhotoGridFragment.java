@@ -1,6 +1,7 @@
 package com.trebuh.clarity.fragments;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -196,9 +197,10 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     public void savePhotos() {
-        Thread savePhotosThread = new Thread(new SavePhotosThread());
+        AsyncTask.execute(new SavePhotosThread());
+//        Thread savePhotosThread = new Thread(new SavePhotosThread());
         photosSaved = true;
-        savePhotosThread.run();
+//        savePhotosThread.run();
     }
 
     @Override
@@ -401,6 +403,8 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
             if (photos == null) photos = photoList;
             else photos.addAll(photoList);
+
+            savePhotos();
 
             initRecView(getView());
             adapter.addItemRange(photoList);

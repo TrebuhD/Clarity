@@ -1,6 +1,7 @@
 package com.trebuh.clarity;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -32,21 +33,20 @@ public class FullscreenPictureActivity extends AppCompatActivity {
         activity = this;
         midres_img_url = (String) getIntent().getExtras().get(MIDRES_IMG_URL);
         hires_img_url = (String) getIntent().getExtras().get(HIRES_IMG_URL);
-        Log.d("FullscreenImageActivity", "URL: " + midres_img_url);
+        Log.d("FullscreenImageActivity", "URL: " + hires_img_url);
 
         final PhotoViewAttacher attacher = new PhotoViewAttacher(photoView);
         Picasso.with(photoView.getContext())
-                .load(midres_img_url)
-                .placeholder(R.drawable.zz_stardust)
+                .load(hires_img_url)
                 .into(photoView, new Callback() {
                     @Override
                     public void onSuccess() {
-                        ActivityCompat.startPostponedEnterTransition(activity);
                         attacher.update();
-                        Picasso.with(photoView.getContext())
-                                .load(hires_img_url)
-                                .placeholder(photoView.getDrawable())
-                                .into(photoView);
+                        ActivityCompat.startPostponedEnterTransition(activity);
+//                        Picasso.with(photoView.getContext())
+//                                .load(hires_img_url)
+//                                .placeholder(photoView.getDrawable())
+//                                .into(photoView);
                     }
 
                     @Override

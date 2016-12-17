@@ -43,7 +43,7 @@ public class DetailsActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityCompat.postponeEnterTransition(this);
+//        ActivityCompat.postponeEnterTransition(this);
         setContentView(R.layout.activity_details);
         initSharedTransitions();
 

@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
     android:fillViewport="true"
-    android:transitionName="@string/grid_to_details_transition"
     tools:context="com.trebuh.clarity.fragments.DetailsFragment">
 
     <!-- //Photo part-->
@@ -19,6 +18,7 @@
             android:id="@+id/details_header_container"
             android:layout_width="0dp"
             android:layout_height="300dp"
+            android:transitionGroup="true"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -30,8 +30,6 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
                 android:tint="@color/details_photo_tint"
-                android:transitionGroup="true"
-                android:transitionName="@string/grid_to_details_transition"
                 tools:ignore="ContentDescription" />
 
             <ImageView
@@ -155,16 +153,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="7dp"
-                android:layout_marginRight="7dp"
+                android:layout_marginStart="8dp"
                 android:fontFamily="sans-serif-smallcaps"
                 android:text="@string/author_mcauthorson"
                 android:textAlignment="textEnd"
                 android:textSize="16sp"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/details_camera_value"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp" />
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <!--times viewed-->
 
@@ -177,6 +173,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:fontFamily="sans-serif-light"
                 android:text="@string/the_hamburglar"
                 android:textAppearance="@android:style/TextAppearance.Material.Title"
@@ -185,7 +182,6 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/details_times_viewed"
-                android:layout_marginTop="8dp"
                 app:layout_constraintTop_toBottomOf="@+id/details_lens_value" />
 
             <!--description-->
@@ -193,7 +189,6 @@
                 android:id="@+id/details_photo_description_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:lineSpacingMultiplier="1.2"
@@ -210,7 +205,6 @@
                 android:layout_width="352dp"
                 android:layout_height="55dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -225,6 +219,8 @@
                 android:id="@+id/details_camera_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif-smallcaps"
                 android:gravity="start"
                 android:paddingEnd="8dp"
@@ -234,14 +230,11 @@
                 android:text="@string/generic_camera"
                 android:textAlignment="textStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toLeftOf="@+id/details_author_name_tv"
-                android:layout_marginRight="8dp"
-                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/details_lens_value"
                 app:layout_constraintHorizontal_bias="0.0"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/details_lens_value" />
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/details_author_name_tv"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <!--<ImageView-->
             <!--android:id="@+id/details_camera_label"-->

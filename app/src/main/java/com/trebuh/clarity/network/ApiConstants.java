@@ -101,9 +101,9 @@ public final class ApiConstants {
 
     // Documentation on photo sizes
     // https://github.com/500px/api-documentation/blob/master/basics/formats_and_terms.md#image-urls-and-image-sizes
-    public static final String IMAGE_SIZES = "1,3,20,4";
+    public static final String IMAGE_SIZES = "1,3,6,20";
     public static final int IMAGE_SIZE_CROPPED_TINY = 0;
     public static final int IMAGE_SIZE_CROPPED_LARGE = 1;
-    public static final int IMAGE_SIZE_UNCROPPED_SMALL = 2;
-    public static final int IMAGE_SIZE_UNCROPPED_MEDIUM = 3;
+    public static final int IMAGE_SIZE_UNCROPPED_LARGE = 2;
+    public static final int IMAGE_SIZE_UNCROPPED_SMALL = 3;
 }

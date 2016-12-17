@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -83,10 +84,10 @@ public class ClarityActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clarity);
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            getWindow().setSharedElementExitTransition(TransitionInflater.from(this).
-//                    inflateTransition(R.transition.activity_slide));
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setSharedElementExitTransition(TransitionInflater.from(this).
+                    inflateTransition(R.transition.activity_slide));
+        }
 
         initToolbar();
 
@@ -322,7 +323,6 @@ public class ClarityActivity extends AppCompatActivity
 
         PhotoGridFragment currentFragment = (PhotoGridFragment) getCurrentFragment();
         String photoPath = currentFragment.getFilename();
-        currentFragment.savePhotos();
 
         Log.d(TAG, "Clicked item pos: " + clickedItemPos);
 
@@ -333,13 +333,14 @@ public class ClarityActivity extends AppCompatActivity
         if (Build.VERSION.SDK_INT < 21) {
             startActivity(intent);
         } else {
-            // array of items for shared element transition
+//             array of items for shared element transition
             View statusBar = findViewById(android.R.id.statusBarBackground);
             View navigationBar = findViewById(android.R.id.navigationBarBackground);
+            photoView.setTransitionName(photoView.toString());
             List<Pair<View, String>> pairs = new ArrayList<>();
-            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_iv), getString(R.string.grid_to_details_transition))));
+            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_iv), photoView.getTransitionName())));
             pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_title_tv), getString(R.string.grid_to_details_transition_title))));
-            // prevent null pointers on some devices
+//             prevent null pointers on some devices
             if (navigationBar != null) {
                 pairs.add(Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME));
             }
