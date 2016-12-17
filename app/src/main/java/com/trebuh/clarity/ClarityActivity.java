@@ -3,13 +3,11 @@ package com.trebuh.clarity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
@@ -51,7 +49,7 @@ public class ClarityActivity extends AppCompatActivity
 
     static final String EXTRA_STARTING_ALBUM_POSITION = "extra_starting_album_position";
     static final String EXTRA_CURRENT_ALBUM_POSITION = "extra_current_album_position";
-    static final String EXTRA_PHOTOS_ARRAY_LIST = "extra_photos_array_list";
+    static final String EXTRA_PHOTO_ARRAY_PATH = "extra_photo_array_path";
 
     private static final String STATE_FRAGMENT_PHOTOS = "state_fragment_photos";
     private static final String STATE_FRAGMENT_EXTRA_GRID = "state_fragment_extra_grid";
@@ -72,10 +70,8 @@ public class ClarityActivity extends AppCompatActivity
 
     // Shared element transition stuff
     private RecyclerView recyclerView;
-    private Bundle tmpReenterState;
     private boolean isDetailsActivityStarted;
 
-    private ArrayList<Photo> photoList;
     private ArrayList<String> searchHistoryList;
 
     // for saving fragment state
@@ -102,7 +98,7 @@ public class ClarityActivity extends AppCompatActivity
             searchHistoryList = new ArrayList<>();
             searchHistoryList.add("Cats");
             searchHistoryList.add("Guitars");
-            searchHistoryList.add("Family");
+            searchHistoryList.add("Fandom");
         }
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
@@ -227,11 +223,11 @@ public class ClarityActivity extends AppCompatActivity
                         case R.id.navigation_item_past_searches:
                             transitionToFragment(FRAGMENT_SEARCH_HISTORY);
                             break;
-                        case R.id.navigation_item_settings:
-                            Snackbar.make(drawerLayout, "Settings button clicked",
-                                    Snackbar.LENGTH_LONG)
-                                    .show();
-                            break;
+//                        case R.id.navigation_item_settings:
+//                            Snackbar.make(drawerLayout, "Settings button clicked",
+//                                    Snackbar.LENGTH_LONG)
+//                                    .show();
+//                            break;
                         case R.id.drawer_bookmark_editors:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_editors);
@@ -299,25 +295,13 @@ public class ClarityActivity extends AppCompatActivity
     @Override
     public void onActivityReenter(int resultCode, Intent data) {
         super.onActivityReenter(resultCode, data);
-        tmpReenterState = new Bundle(data.getExtras());
+        Bundle tmpReenterState = new Bundle(data.getExtras());
 
         int startingPosition = tmpReenterState.getInt(EXTRA_STARTING_ALBUM_POSITION);
         int currentPosition = tmpReenterState.getInt(EXTRA_CURRENT_ALBUM_POSITION);
-        photoList = tmpReenterState.getParcelableArrayList(EXTRA_PHOTOS_ARRAY_LIST);
         if (startingPosition != currentPosition) {
             recyclerView.scrollToPosition(currentPosition);
         }
-//        postponeEnterTransition();
-//        recyclerView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-//            @Override
-//            public boolean onPreDraw() {
-//                recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
-//                // necessary to get a smooth transition
-//                recyclerView.requestLayout();
-//                startPostponedEnterTransition();
-//                return true;
-//            }
-//        });
     }
 
     @Override
@@ -327,37 +311,24 @@ public class ClarityActivity extends AppCompatActivity
         Photo clickedPhoto = photos.get(clickedItemPos);
         Log.d(TAG, "clicked photo: " + clickedPhoto.getName());
 
-        // strip the list to max 30 items to limit bundle size and avoid errors (pretty hacky)
-        int startStrippedIndex = clickedItemPos < 15 ? 0 : clickedItemPos - 15;
-        int endStrippedIndex = photos.size() > (clickedItemPos + 15) ? (clickedItemPos + 15) : photos.size();
-        ArrayList<Photo> strippedPhotos = new ArrayList<>(photos.subList(
-                startStrippedIndex,
-                endStrippedIndex
-        ));
-
-        int newPos = -1;
-        for (int i = 0; i < strippedPhotos.size(); i++) {
-            if ((strippedPhotos.get(i)).getId().equals(clickedPhoto.getId())) {
-                newPos = i;
-            }
-        }
-        Log.d(TAG, "passed photo: " + strippedPhotos.get(newPos).getName());
-
         // pass the imageView of clicked the grid item
-        launchActivity(strippedPhotos, newPos, caller.itemView);
+        launchDetailActivity(clickedItemPos, caller.itemView);
     }
 
-    private void launchActivity(ArrayList<Photo> strippedPhotos, int newPos, View photoView) {
+    private void launchDetailActivity(int clickedItemPos, View photoView) {
         if (!isDetailsActivityStarted) {
             isDetailsActivityStarted = true;
         }
 
-        Log.d(TAG, "launchActivity(), view: " + photoView.toString());
+        PhotoGridFragment currentFragment = (PhotoGridFragment) getCurrentFragment();
+        String photoPath = currentFragment.getFilename();
+        currentFragment.savePhotos();
 
-//        pairs[1] = (new Pair<>(photoView.findViewById(R.id.photo_grid_item_title_tv), "grid_to_details_transition_title"));
+        Log.d(TAG, "Clicked item pos: " + clickedItemPos);
+
         Intent intent = new Intent(ClarityActivity.this, DetailsActivity.class);
-        intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, newPos);
-        intent.putExtra(EXTRA_PHOTOS_ARRAY_LIST, strippedPhotos);
+        intent.putExtra(EXTRA_STARTING_ALBUM_POSITION, clickedItemPos);
+        intent.putExtra(EXTRA_PHOTO_ARRAY_PATH, photoPath);
 
         if (Build.VERSION.SDK_INT < 21) {
             startActivity(intent);
@@ -366,8 +337,8 @@ public class ClarityActivity extends AppCompatActivity
             View statusBar = findViewById(android.R.id.statusBarBackground);
             View navigationBar = findViewById(android.R.id.navigationBarBackground);
             List<Pair<View, String>> pairs = new ArrayList<>();
-            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_iv), "grid_to_details_transition")));
-            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_title_tv), "grid_to_details_transition_title")));
+            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_iv), getString(R.string.grid_to_details_transition))));
+            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_title_tv), getString(R.string.grid_to_details_transition_title))));
             // prevent null pointers on some devices
             if (navigationBar != null) {
                 pairs.add(Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME));
@@ -378,6 +349,10 @@ public class ClarityActivity extends AppCompatActivity
             Bundle options = ActivityOptionsCompat.
                     makeSceneTransitionAnimation(ClarityActivity.this,
                             pairs.toArray(new Pair[pairs.size()])).toBundle();
+//            Bundle options = ActivityOptionsCompat
+//                    .makeSceneTransitionAnimation(ClarityActivity.this,
+//                            photoView,
+//                            String.valueOf(R.string.grid_to_details_transition)).toBundle();
             startActivity(intent, options);
         }
     }
@@ -507,7 +482,6 @@ public class ClarityActivity extends AppCompatActivity
 
     private Fragment getCurrentFragment() {
         int currItem = viewPager.getCurrentItem();
-        Log.d(TAG, "Current Item: " + currItem);
         return adapter.getItem(currItem);
     }
 

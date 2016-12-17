@@ -1,40 +1,27 @@
 package com.trebuh.clarity;
 
-import android.annotation.TargetApi;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.ChangeBounds;
-import android.transition.Fade;
-import android.transition.Slide;
-import android.transition.Transition;
-import android.transition.TransitionInflater;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 
 import com.trebuh.clarity.fragments.DetailsFragment;
+import com.trebuh.clarity.fragments.PhotoLoader;
 import com.trebuh.clarity.models.Photo;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-import static com.trebuh.clarity.ClarityActivity.EXTRA_PHOTOS_ARRAY_LIST;
+import static com.trebuh.clarity.ClarityActivity.EXTRA_PHOTO_ARRAY_PATH;
 import static com.trebuh.clarity.ClarityActivity.EXTRA_STARTING_ALBUM_POSITION;
-import static com.trebuh.clarity.ClarityActivity.EXTRA_CURRENT_ALBUM_POSITION;
 
 public class DetailsActivity extends AppCompatActivity
         implements DetailsFragment.OnFragmentInteractionListener {
@@ -42,9 +29,14 @@ public class DetailsActivity extends AppCompatActivity
 
     private static final String STATE_CURRENT_ITEM_POSITION = "state_current_item_position";
 
-    private DetailsFragment currentDetailsFragment;
     private int currentPosition;
     private int startingPosition;
+
+    private String photoListUrl;
+
+    public ArrayList<Photo> getPhotoList() {
+        return photoList;
+    }
 
     private ArrayList<Photo> photoList;
 
@@ -53,8 +45,23 @@ public class DetailsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         ActivityCompat.postponeEnterTransition(this);
         setContentView(R.layout.activity_details);
+        initSharedTransitions();
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        photoList = PhotoLoader.loadSavedPhotos(getApplicationContext(),
+                getIntent().getStringExtra(EXTRA_PHOTO_ARRAY_PATH));
+        startingPosition = getIntent().getIntExtra(EXTRA_STARTING_ALBUM_POSITION, 0);
+        photoListUrl = getIntent().getStringExtra(EXTRA_PHOTO_ARRAY_PATH);
+        if (savedInstanceState == null) {
+            currentPosition = startingPosition;
+        } else {
+            currentPosition = savedInstanceState.getInt(STATE_CURRENT_ITEM_POSITION);
+        }
+
+        initViewPager();
+    }
+
+    private void initSharedTransitions() {
+        //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            getWindow().setSharedElementEnterTransition(TransitionInflater.from(this).
 //                    inflateTransition(R.transition.activity_slide));
 //        }
@@ -74,16 +81,9 @@ public class DetailsActivity extends AppCompatActivity
                 }
             });
         }
+    }
 
-        photoList = getIntent().getParcelableArrayListExtra(EXTRA_PHOTOS_ARRAY_LIST);
-        Log.d(TAG, "onCreate(): photoList size: " + photoList.size());
-        startingPosition = getIntent().getIntExtra(EXTRA_STARTING_ALBUM_POSITION, 0);
-        if (savedInstanceState == null) {
-            currentPosition = startingPosition;
-        } else {
-            currentPosition = savedInstanceState.getInt(STATE_CURRENT_ITEM_POSITION);
-        }
-
+    private void initViewPager() {
         ViewPager pager = (ViewPager) findViewById(R.id.details_view_pager);
         pager.setAdapter(new DetailsFragmentPagerAdapter(getSupportFragmentManager()));
         pager.setCurrentItem(currentPosition);
@@ -121,13 +121,12 @@ public class DetailsActivity extends AppCompatActivity
 
         @Override
         public Fragment getItem(int position) {
-            return DetailsFragment.newInstance(position, startingPosition, photoList);
+            return DetailsFragment.newInstance(position, startingPosition, photoListUrl);
         }
 
         @Override
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
             super.setPrimaryItem(container, position, object);
-            currentDetailsFragment = (DetailsFragment) object;
         }
 
         @Override
