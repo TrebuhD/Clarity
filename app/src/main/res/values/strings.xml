@@ -57,4 +57,6 @@
     <string name="_24">24</string>
     <string name="_21">21</string>
     <string name="transition_fullscreen_pic">transition_fullscreen_pic</string>
+    <string name="grid_to_details_transition">grid_to_details_transition</string>
+    <string name="grid_to_details_transition_title">grid_to_details_transition_title</string>
 </resources>

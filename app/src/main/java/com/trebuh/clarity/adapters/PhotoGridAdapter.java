@@ -1,7 +1,6 @@
 package com.trebuh.clarity.adapters;
 
 import android.content.Context;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,7 +22,6 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.Phot
     private static final String TAG = "PhotoGridAdapter";
     private List<Photo> photoList;
     private PhotoGridItemOnClickListener itemOnClickListener;
-    private PhotoGridItemHolder photoViewHolder;
 
     public PhotoGridAdapter(List<Photo> photoList) {
         this.photoList = photoList;

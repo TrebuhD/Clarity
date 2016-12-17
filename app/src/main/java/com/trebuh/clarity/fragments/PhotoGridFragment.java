@@ -2,6 +2,7 @@ package com.trebuh.clarity.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -24,10 +25,8 @@ import com.trebuh.clarity.network.FiveHundredPxService;
 import com.trebuh.clarity.network.PhotosCallback;
 import com.trebuh.clarity.network.RetrofitService;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
@@ -93,6 +92,18 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof PhotoGridFragmentListener) {
+            listener = (PhotoGridFragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement PhotoGridFragmentListener");
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         adapter = new PhotoGridAdapter(new ArrayList<Photo>());
         super.onCreate(savedInstanceState);
@@ -121,45 +132,27 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof PhotoGridFragmentListener) {
-            listener = (PhotoGridFragmentListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement PhotoGridFragmentListener");
-        }
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initSwipeContainer(view);
         initRefreshButton(view);
         if (photosSaved) {
             adapter.removeAllItems();
             photos = new ArrayList<>();
-            adapter.addItemRange(loadSavedPhotoList());
+            adapter.addItemRange(loadAndPresentPhotos());
         } else {
-            Log.e(TAG, "photosSaved is false!");
             loadPage(currentPage);
         }
         super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        // save photos to internal storage
-        Thread savePhotosThread = new Thread(new SavePhotos());
-        photosSaved = true;
-        savePhotosThread.run();
-        listener = null;
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -168,9 +161,13 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-//        outState.putParcelableArrayList(STATE_PHOTO_LIST, photos);
         outState.putBoolean(STATE_IS_SEARCH_INSTANCE, isSearchFragmentInstance);
         outState.putInt(STATE_CURRENT_PAGE, currentPage);
         outState.putString(STATE_FEATURE, paramFeature);
@@ -178,10 +175,38 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
+    public void savePhotos() {
+        Thread savePhotosThread = new Thread(new SavePhotosThread());
+        photosSaved = true;
+        savePhotosThread.run();
+    }
+
+    @Override
     public void onRefresh() {
         if (adapter != null) {
             adapter.removeAllItems();
-            loadPhotos(ApiConstants.FIRST_PAGE, new PhotosCallbackHandler());
+            photos = new ArrayList<>();
+            loadPhotosFromWeb(ApiConstants.FIRST_PAGE, new PhotosCallbackHandler());
         }
     }
 
@@ -196,7 +221,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
     private void loadPage(int number) {
         final PhotosCallbackHandler callbackHandler = new PhotosCallbackHandler();
-        loadPhotos(number, callbackHandler);
+        loadPhotosFromWeb(number, callbackHandler);
     }
 
     private void initRecView(View view) {
@@ -223,7 +248,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
                     if (totalItemsCount > MINIMUM_ITEM_COUNT) {
                         Log.d(TAG, "onLoadMore, currentPage: " + currentPage);
                         currentPage++;
-                        loadPhotos(currentPage, new PhotosCallbackHandler());
+                        loadPhotosFromWeb(currentPage, new PhotosCallbackHandler());
                     }
                 }
             });
@@ -234,47 +259,42 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         }
     }
 
-    private class SavePhotos implements Runnable {
+    private class SavePhotosThread implements Runnable {
 
         @Override
         public void run() {
             FileOutputStream fos;
             try {
-                fos = getContext().openFileOutput(isSearchFragmentInstance ? "searchFragmentPhotos" : "gridFragmentPhotos",
-                        Context.MODE_PRIVATE);
+                fos = getActivity().getApplicationContext().openFileOutput(getFilename(), Context.MODE_PRIVATE);
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
                 oos.writeObject(photos);
+                oos.flush();
                 oos.close();
                 photosSaved = true;
                 if (photos != null) {
-                    Log.d(TAG, "SavePhotos runnable: photos saved" + photos.toString());
+                    Log.d(TAG, "SavePhotosThread runnable: " + photos.size() + " photos saved");
                 }
             } catch (IOException e) {
-                Log.e(TAG, "SavePhotos runnable: I/O error");
+                Log.e(TAG, "SavePhotosThread runnable: I/O error");
                 e.printStackTrace();
             }
         }
     }
 
-    private ArrayList<Photo> loadSavedPhotoList() {
-        FileInputStream fis;
-        ArrayList<Photo> returnedList = new ArrayList<>();
-        Log.d(TAG, "loadSavedPhotos() " + "loading saved photos");
-        try {
-            fis = getContext().openFileInput(isSearchFragmentInstance ? "searchFragmentPhotos" : "gridFragmentPhotos");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            returnedList = (ArrayList<Photo>) ois.readObject();
-            ois.close();
-            Log.d(TAG, "loadSavedPhotos(): images loaded" + returnedList.toString());
-        } catch (Exception e) {
-            Log.d(TAG, "loadSavedPhotos() I/O error");
-            e.printStackTrace();
-        }
+    @NonNull
+    public String getFilename() {
+        return isSearchFragmentInstance ? "searchFragmentPhotos" : "gridFragmentPhotos";
+    }
 
-        photos = returnedList;
+    private ArrayList<Photo> loadAndPresentPhotos() {
+        photos = PhotoLoader.loadSavedPhotos(getContext(), getFilename());
         photosSaved = false;
-        initRecView(getView());
-        return  returnedList;
+        try {
+            initRecView(getView());
+        } catch (Exception e) {
+            Log.w(TAG, "Trying to initialize a fragment that was already destroyed");
+        }
+        return photos;
     }
 
     private void initRefreshButton(View view) {
@@ -282,7 +302,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         networkErrorRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadPhotos(ApiConstants.FIRST_PAGE, new PhotosCallbackHandler());
+                loadPhotosFromWeb(ApiConstants.FIRST_PAGE, new PhotosCallbackHandler());
             }
         });
     }
@@ -314,7 +334,7 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
         onRefresh();
     }
 
-    private void loadPhotos(int page, final PhotosCallbackHandler callbackHandler) {
+    private void loadPhotosFromWeb(int page, final PhotosCallbackHandler callbackHandler) {
         FiveHundredPxService service = RetrofitService.getInstance().getService();
 
         Log.d(TAG, "paramSortBy: " + paramSortBy);
@@ -374,10 +394,10 @@ public class PhotoGridFragment extends Fragment implements SwipeRefreshLayout.On
 
         @Override
         public void onSuccess(int statusCode, PhotosResponse body) {
-            Log.d("loadPhotos ", "::OnSuccess(), Response code: " + statusCode);
+            Log.d("loadPhotosFromWeb ", "::OnSuccess(), Response code: " + statusCode);
             networkErrorRefreshButton.setVisibility(View.GONE);
             ArrayList<Photo> photoList = (ArrayList<Photo>) body.getPhotos();
-            Log.d("loadPhotos ", "::OnSuccess(), Photos list size: " + photoList.size());
+            Log.d("loadPhotosFromWeb ", "::OnSuccess(), Photos list size: " + photoList.size());
 
             if (photos == null) photos = photoList;
             else photos.addAll(photoList);
