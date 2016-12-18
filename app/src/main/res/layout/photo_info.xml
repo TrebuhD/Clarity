@@ -1,4 +1,6 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
@@ -8,9 +10,18 @@
     android:gravity="bottom|start">
 
     <RelativeLayout
-        android:id="@+id/info_col_1"
+        android:id="@+id/info_iso"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/info_shutter_speed"
+        android:layout_marginRight="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintHorizontal_bias="1.0">
 
         <!--iso-->
         <RelativeLayout
@@ -47,11 +58,19 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/info_col_2"
+        android:id="@+id/info_shutter_speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/info_col_1"
-        android:layout_toRightOf="@id/info_col_1">
+        app:layout_constraintRight_toLeftOf="@+id/info_aperture"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/info_iso"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
 
         <!--shutter speed-->
         <RelativeLayout
@@ -89,12 +108,18 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/info_col_3"
+        android:id="@+id/info_aperture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/info_col_2"
-        android:layout_toRightOf="@+id/info_col_2">
+        app:layout_constraintLeft_toRightOf="@+id/info_shutter_speed"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp">
+
         <!--aperture-->
         <RelativeLayout
             android:id="@+id/details_aperture"
@@ -204,4 +229,4 @@
     <!--</RelativeLayout>-->
 
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

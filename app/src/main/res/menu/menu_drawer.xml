@@ -35,10 +35,11 @@
                     android:id="@+id/drawer_bookmark_fresh_week"
                     android:checked="false"
                     android:title="@string/drawer_bookmark_fresh_week"/>
-                <item
-                    android:id="@+id/drawer_bookmark_editors"
-                    android:checked="false"
-                    android:title="@string/drawer_bookmark_editors"/>
+                <!--endpoint is broken atm-->
+                <!--<item-->
+                    <!--android:id="@+id/drawer_bookmark_editors"-->
+                    <!--android:checked="false"-->
+                    <!--android:title="@string/drawer_bookmark_editors"/>-->
                 <item
                     android:id="@+id/drawer_bookmark_highest_rated"
                     android:checked="false"

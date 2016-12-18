@@ -12,7 +12,7 @@ Simple & fast material design image browser for 500px.
 - The [500px API](https://github.com/500px/api-documentation) consumed with Retrofit
 - Picasso for image loading
 - Endless scrolling RecycleView-powered grid layout.
-- ConstraintLayout for the detail view.
+- Views made with ConstraintLayout
 - The photos get cached into InternalStorage asynchronously.
 
 ## The what else:
@@ -25,6 +25,8 @@ Simple & fast material design image browser for 500px.
 ## The thanks to:
 40 vector (SVG) icons by Enes Dal   License: Creative Commons (Attribution 3.0 Unported)
 https://creativecommons.org/licenses/by/3.0/legalcode
+
+Mockups created with mockuphone.com`
 
 Hawcons
 2,084 vector (SVG) icons by Yannick Lung   License: Free for commercial use (Do not redistribute)
