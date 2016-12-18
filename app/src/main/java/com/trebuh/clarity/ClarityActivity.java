@@ -249,12 +249,12 @@ public class ClarityActivity extends AppCompatActivity
 //                                    Snackbar.LENGTH_LONG)
 //                                    .show();
 //                            break;
-                        case R.id.drawer_bookmark_editors:
-                            transitionToFragment(FRAGMENT_PHOTOS);
-                            getSupportActionBar().setTitle(R.string.drawer_bookmark_editors);
-                            ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
-                                    ApiConstants.FEATURE_EDITORS);
-                            break;
+//                        case R.id.drawer_bookmark_editors:
+//                            transitionToFragment(FRAGMENT_PHOTOS);
+//                            getSupportActionBar().setTitle(R.string.drawer_bookmark_editors);
+//                            ((PhotoGridFragment) getCurrentFragment()).transitionToNewFeature(
+//                                    ApiConstants.FEATURE_EDITORS);
+//                            break;
                         case R.id.drawer_bookmark_upcoming:
                             transitionToFragment(FRAGMENT_PHOTOS);
                             getSupportActionBar().setTitle(R.string.drawer_bookmark_upcoming);
