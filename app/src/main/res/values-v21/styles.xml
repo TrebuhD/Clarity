@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!--<item name="android:windowContentTransitions">true</item>-->
-        <!--<item name="android:windowEnterTransition">@transition/activity_explode</item>-->
-        <!--<item name="android:windowExitTransition">@transition/activity_explode</item>-->
+        <!-- transition support -->
+        <item name="android:windowContentTransitions" tools:targetApi="21">true</item>
+        <item name="android:windowActivityTransitions" tools:targetApi="21">true</item>
+        <item name="android:windowEnterTransition" tools:targetApi="21">@transition/activity_explode</item>
+        <item name="android:windowExitTransition" tools:targetApi="21">@transition/activity_slide</item>
+        <item name="android:windowSharedElementEnterTransition" tools:targetApi="21">@transition/move_image</item>
+        <item name="android:windowSharedElementExitTransition" tools:targetApi="21">@transition/move_image</item>
+        <item name="android:windowAllowReturnTransitionOverlap" tools:targetApi="21">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap" tools:targetApi="21">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
@@ -51,4 +57,6 @@
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
     </style>
+
+    <style name="spbStyle" parent="AppTheme" />
 </resources>

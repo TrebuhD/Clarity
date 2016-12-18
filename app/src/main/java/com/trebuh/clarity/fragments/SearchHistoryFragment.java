@@ -90,10 +90,6 @@ public class SearchHistoryFragment extends Fragment {
         mListener = null;
     }
 
-    public void addToList(String searchTerm) {
-        pastSearchTerms.add(searchTerm);
-    }
-
     public interface OnFragmentInteractionListener {
         void onPastSearchItemClick(String searchString);
     }

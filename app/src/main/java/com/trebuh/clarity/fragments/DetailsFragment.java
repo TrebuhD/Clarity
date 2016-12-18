@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
+import com.trebuh.clarity.DetailsActivity;
 import com.trebuh.clarity.FullscreenPictureActivity;
 import com.trebuh.clarity.R;
 import com.trebuh.clarity.models.Photo;
@@ -32,44 +34,51 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+
 public class DetailsFragment extends Fragment {
     public static final String TAG = DetailsFragment.class.getSimpleName();
 
     private static final String ARG_IMAGE_POSITION = "arg_photo_image_position";
     private static final String ARG_STARTING_IMAGE_POSITION = "arg_starting_photo_image_position";
-    private static final String ARG_PHOTOS_ARRAY_LIST = "arg_photos_array_list";
+    private static final String ARG_PHOTOS_URL = "arg_photos_array_url";
 
     private ArrayList<Photo> photos;
 
-    private ImageView mainPicture;
+    private ImageView mainPic;
+    private ImageView avatarPic;
+    private int startingPosition;
 
     private int photoPosition;
-    private int startingPosition;
-    private ImageView avatarPic;
-    private String croppedPhotoUrl;
-    private String profilePicUrl;
-    private String uncroppedPhotoUrl;
     private OnFragmentInteractionListener mListener;
+    private String photoUrl;
+    private String avatarUrl;
+    private String uncroppedPhotoUrl;
+    private String transitionName;
 
     public DetailsFragment() {
         // Required empty public constructor
     }
 
-    public static DetailsFragment newInstance(int position, int startingPosition, ArrayList<Photo> photos) {
+    public static DetailsFragment newInstance(int position, int startingPosition, String photosFilename) {
         Bundle args = new Bundle();
         args.putInt(ARG_IMAGE_POSITION, position);
         args.putInt(ARG_STARTING_IMAGE_POSITION, startingPosition);
-        args.putParcelableArrayList(ARG_PHOTOS_ARRAY_LIST, photos);
+        args.putString(ARG_PHOTOS_URL, photosFilename);
         DetailsFragment fragment = new DetailsFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            getActivity().postponeEnterTransition();
+//        }
         if (getArguments() != null) {
-            photos = getArguments().getParcelableArrayList(ARG_PHOTOS_ARRAY_LIST);
+            photos = ((DetailsActivity) getActivity()).getPhotoList();
             startingPosition = getArguments().getInt(ARG_STARTING_IMAGE_POSITION);
             photoPosition = getArguments().getInt(ARG_IMAGE_POSITION);
         }
@@ -80,57 +89,106 @@ public class DetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
-        startPostponedEnterTransition();
+
+        if (photos == null) {
+            photos = ((DetailsActivity) getActivity()).getPhotoList();
+        }
+
         initPhotoAndDescription(rootView);
         initDetails(rootView);
-
-        RequestCreator photoRequest = Picasso.with(getActivity()).load(croppedPhotoUrl).fit().noFade().centerCrop();
-        RequestCreator profilePicRequest = Picasso.with(getActivity()).load(profilePicUrl).noFade().fit().centerInside();
-
-        photoRequest.into(mainPicture, new Callback() {
-            @Override
-            public void onSuccess() {
-//                getActivity().startPostponedEnterTransition();
-
-//                Picasso.with(getContext())
-//                        .load(uncroppedPhotoUrl)
-//                        .placeholder(mainPicture.getDrawable())
-//                        .fit().noFade().centerCrop().into(mainPicture);
-            }
-
-            @Override
-            public void onError() {
-//                getActivity().startPostponedEnterTransition();
-            }
-        });
-        profilePicRequest.into(avatarPic);
-
-        mainPicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (Build.VERSION.SDK_INT < 21) {
-                    Intent fullscreenPhotoIntent = new Intent(getActivity(), FullscreenPictureActivity.class);
-                    fullscreenPhotoIntent.putExtra(FullscreenPictureActivity.MIDRES_IMG_URL, croppedPhotoUrl);
-                    fullscreenPhotoIntent.putExtra(FullscreenPictureActivity.HIRES_IMG_URL,
-                            getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_UNCROPPED_MEDIUM).getUrl());
-                    startActivity(fullscreenPhotoIntent);
-                } else {
-                    Intent intent = new Intent(getActivity(), FullscreenPictureActivity.class);
-                    ActivityOptionsCompat options = ActivityOptionsCompat
-                            .makeSceneTransitionAnimation(getActivity(), view, getString(R.string.transition_fullscreen_pic));
-                    intent.putExtra(FullscreenPictureActivity.MIDRES_IMG_URL, uncroppedPhotoUrl);
-                    intent.putExtra(FullscreenPictureActivity.HIRES_IMG_URL,
-                            getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_UNCROPPED_MEDIUM).getUrl());
-                    startActivity(intent, options.toBundle());
-                }
-            }
-        });
+        initPictures();
 
         return rootView;
     }
 
+    private void initPhotoAndDescription(View rootView) {
+        View bodyContainer = rootView.findViewById(R.id.details_body_container);
+        mainPic = (ImageView) rootView.findViewById(R.id.details_photo_view);
+        avatarPic = (ImageView) rootView.findViewById(R.id.details_profile_pic_iv);
+        TextView photoTitleText = (TextView) bodyContainer.findViewById(R.id.details_photo_title_tv);
+        TextView authorNameText = (TextView) bodyContainer.findViewById(R.id.details_author_name_tv);
+        HtmlTextView photoDescriptionText = (HtmlTextView) bodyContainer.findViewById(R.id.details_photo_description_tv);
+        photoUrl = getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_CROPPED_LARGE).getUrl();
+        uncroppedPhotoUrl = getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_UNCROPPED_SMALL).getUrl();
+        avatarUrl = getCurrentPhoto().getUser().getUserpicUrl();
+        String photoName = getCurrentPhoto().getName();
+        String authorName = getCurrentPhoto().getUser().getUsername();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mainPic.setTransitionName(String.valueOf(getCurrentPhoto().getId()));
+        }
+        photoTitleText.setText(photoName);
+        authorNameText.setText(authorName);
+        String tempDescription = getCurrentPhoto().getDescription();
+        String photoDescription = tempDescription == null ? "No description" : tempDescription;
+        photoDescriptionText.setHtmlFromString(photoDescription, new HtmlTextView.RemoteImageGetter());
+    }
+
+    private void initPictures() {
+        final RequestCreator photoRequest = Picasso.with(getActivity()).load(photoUrl).fit().noFade().centerCrop();
+        RequestCreator avatarRequest = Picasso.with(getActivity()).load(avatarUrl).noFade().fit().centerCrop();
+
+        photoRequest.into(mainPic, new Callback() {
+            @Override
+            public void onSuccess() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ActivityCompat.startPostponedEnterTransition(getActivity());
+                }
+                Picasso.with(mainPic.getContext())
+                        .load(uncroppedPhotoUrl)
+                        .fit()
+                        .centerCrop()
+                        .placeholder(mainPic.getDrawable())
+                        .into(mainPic);
+            }
+
+            @Override
+            public void onError() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ActivityCompat.startPostponedEnterTransition(getActivity());
+                }
+            }
+        });
+        avatarRequest.into(avatarPic, new Callback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+
+        mainPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Build.VERSION.SDK_INT < 21) {
+                    Intent fullscreenPhotoIntent = new Intent(getActivity(), FullscreenPictureActivity.class);
+                    fullscreenPhotoIntent.putExtra(FullscreenPictureActivity.MIDRES_IMG_URL, photoUrl);
+                    fullscreenPhotoIntent.putExtra(FullscreenPictureActivity.HIRES_IMG_URL,
+                            getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_UNCROPPED_LARGE).getUrl());
+                    startActivity(fullscreenPhotoIntent);
+                } else {
+                    Intent intent = new Intent(getActivity(), FullscreenPictureActivity.class);
+                    ActivityOptionsCompat options = ActivityOptionsCompat
+                            .makeSceneTransitionAnimation(getActivity(), view, String.valueOf(R.string.transition_fullscreen_pic));
+                    intent.putExtra(FullscreenPictureActivity.MIDRES_IMG_URL, uncroppedPhotoUrl);
+                    intent.putExtra(FullscreenPictureActivity.HIRES_IMG_URL,
+                            getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_UNCROPPED_LARGE).getUrl());
+                    startActivity(intent, options.toBundle());
+                }
+            }
+        });
+    }
+
+    public void setTransitionName(String transitionName) {
+        this.transitionName = transitionName;
+    }
+
     private void initDetails(View rootView) {
-        // todo: use butterknife or databinding ;D
+        // todo: use butterknife ;D
         TextView isoTV = (TextView) rootView.findViewById(R.id.details_iso_value);
         TextView apertureTV = (TextView) rootView.findViewById(R.id.details_aperture_value);
         TextView favoritesTV = (TextView) rootView.findViewById(R.id.details_favcount_value);
@@ -157,6 +215,7 @@ public class DetailsFragment extends Fragment {
         infoAtoms.put(ratingTV, (ImageView) rootView.findViewById(R.id.details_rating_label));
         infoAtoms.put(viewsTV, (ImageView) rootView.findViewById(R.id.details_times_viewed_label));
 
+        // Hide elements if there's no available info
         Iterator i = (Iterator) infoAtoms.entrySet().iterator();
         while (i.hasNext()) {
             Map.Entry me = (Map.Entry) i.next();
@@ -167,33 +226,11 @@ public class DetailsFragment extends Fragment {
                 iv.setVisibility(View.GONE);
             }
         }
-
         for (TextView tv : new TextView[]{lensTV, cameraTV}) {
             if (tv.getText().equals("null") || tv.getText().toString().equals("")) {
                 tv.setVisibility(View.GONE);
             }
         }
-
-    }
-
-    private void initPhotoAndDescription(View rootView) {
-        View bodyContainer = rootView.findViewById(R.id.details_body_container);
-        mainPicture = (ImageView) rootView.findViewById(R.id.details_photo_view);
-        avatarPic = (ImageView) rootView.findViewById(R.id.details_profile_pic_iv);
-        TextView photoTitleText = (TextView) bodyContainer.findViewById(R.id.details_photo_title_tv);
-        TextView authorNameText = (TextView) bodyContainer.findViewById(R.id.details_author_name_tv);
-        HtmlTextView photoDescriptionText = (HtmlTextView) bodyContainer.findViewById(R.id.details_photo_description_tv);
-        croppedPhotoUrl = getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_CROPPED_LARGE).getUrl();
-        uncroppedPhotoUrl = getCurrentPhoto().getImages().get(ApiConstants.IMAGE_SIZE_UNCROPPED_MEDIUM).getUrl();
-        profilePicUrl = getCurrentPhoto().getUser().getUserpicUrl();
-        String photoName = getCurrentPhoto().getName();
-        String authorName = getCurrentPhoto().getUser().getUsername();
-
-        photoTitleText.setText(photoName);
-        authorNameText.setText(authorName);
-        String tempDescription = getCurrentPhoto().getDescription();
-        String photoDescription = tempDescription == null ? "No description" : tempDescription;
-        photoDescriptionText.setHtmlFromString(photoDescription, new HtmlTextView.RemoteImageGetter());
     }
 
     private Photo getCurrentPhoto() {
@@ -203,7 +240,15 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mainPicture = (ImageView) view.findViewById(R.id.details_photo_view);
+        if (transitionName != null && Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            setTransitionNameLollipop();
+        }
+        mainPic = (ImageView) view.findViewById(R.id.details_photo_view);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setTransitionNameLollipop() {
+        mainPic.setTransitionName(transitionName);
     }
 
     @Override

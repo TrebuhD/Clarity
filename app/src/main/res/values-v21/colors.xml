@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="colorDrawer">#ECEFF1</color>
-    <color name="colorPrimaryDarker">#1d265f</color>
-    <color name="details_avatar_tint">#2f505050</color>
+    <color name="colorPrimary">#009688</color>
+    <color name="colorPrimaryDark">#00796B</color>
+    <color name="colorAccent">#7C4DFF</color>
+    <color name="colorDrawer">#FFFFFF</color>
+    <color name="colorPrimaryDarker">#212121</color>
+    <color name="details_avatar_tint">#2f757575</color>
     <color name="details_photo_tint">#4f808080</color>
 
     <color name="black_overlay">#66000000</color>
