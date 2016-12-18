@@ -1,7 +1,6 @@
 package com.trebuh.clarity;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -37,7 +36,7 @@ public class FullscreenPictureActivity extends AppCompatActivity {
 
         final PhotoViewAttacher attacher = new PhotoViewAttacher(photoView);
         Picasso.with(photoView.getContext())
-                .load(hires_img_url)
+                .load(midres_img_url)
                 .into(photoView, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -51,8 +50,8 @@ public class FullscreenPictureActivity extends AppCompatActivity {
 
                     @Override
                     public void onError() {
-                        attacher.update();
                         ActivityCompat.startPostponedEnterTransition(activity);
+                        attacher.update();
                     }
                 });
 
