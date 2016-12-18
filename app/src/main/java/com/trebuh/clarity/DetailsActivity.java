@@ -1,5 +1,6 @@
 package com.trebuh.clarity;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,8 +18,12 @@ import android.view.ViewTreeObserver;
 import com.trebuh.clarity.fragments.DetailsFragment;
 import com.trebuh.clarity.fragments.PhotoLoader;
 import com.trebuh.clarity.models.Photo;
+import com.trebuh.clarity.network.ApiConstants;
 
 import java.util.ArrayList;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import static com.trebuh.clarity.ClarityActivity.EXTRA_PHOTO_ARRAY_PATH;
 import static com.trebuh.clarity.ClarityActivity.EXTRA_STARTING_ALBUM_POSITION;
@@ -33,6 +38,7 @@ public class DetailsActivity extends AppCompatActivity
     private int startingPosition;
 
     private String photoListUrl;
+    private ViewPager pager;
 
     public ArrayList<Photo> getPhotoList() {
         return photoList;
@@ -43,29 +49,22 @@ public class DetailsActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        ActivityCompat.postponeEnterTransition(this);
+        // set up custom fonts
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                .setDefaultFontPath(ApiConstants.MAIN_FONT)
+                .setFontAttrId(R.attr.fontPath)
+                .build());
+
+        ActivityCompat.postponeEnterTransition(this);
         setContentView(R.layout.activity_details);
+
         initSharedTransitions();
-
-        photoList = PhotoLoader.loadSavedPhotos(getApplicationContext(),
-                getIntent().getStringExtra(EXTRA_PHOTO_ARRAY_PATH));
-        startingPosition = getIntent().getIntExtra(EXTRA_STARTING_ALBUM_POSITION, 0);
-        photoListUrl = getIntent().getStringExtra(EXTRA_PHOTO_ARRAY_PATH);
-        if (savedInstanceState == null) {
-            currentPosition = startingPosition;
-        } else {
-            currentPosition = savedInstanceState.getInt(STATE_CURRENT_ITEM_POSITION);
-        }
-
+        initPhotoList(savedInstanceState);
         initViewPager();
     }
 
+    //
     private void initSharedTransitions() {
-        //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            getWindow().setSharedElementEnterTransition(TransitionInflater.from(this).
-//                    inflateTransition(R.transition.activity_slide));
-//        }
-
         // prevent statusBar blinking during enter transition
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             postponeEnterTransition();
@@ -83,9 +82,21 @@ public class DetailsActivity extends AppCompatActivity
         }
     }
 
+    private void initPhotoList(Bundle savedInstanceState) {
+        photoList = PhotoLoader.loadSavedPhotos(getApplicationContext(),
+                getIntent().getStringExtra(EXTRA_PHOTO_ARRAY_PATH));
+        startingPosition = getIntent().getIntExtra(EXTRA_STARTING_ALBUM_POSITION, 0);
+        photoListUrl = getIntent().getStringExtra(EXTRA_PHOTO_ARRAY_PATH);
+        if (savedInstanceState == null) {
+            currentPosition = startingPosition;
+        } else {
+            currentPosition = savedInstanceState.getInt(STATE_CURRENT_ITEM_POSITION);
+        }
+    }
     private void initViewPager() {
-        ViewPager pager = (ViewPager) findViewById(R.id.details_view_pager);
-        pager.setAdapter(new DetailsFragmentPagerAdapter(getSupportFragmentManager()));
+        pager = (ViewPager) findViewById(R.id.details_view_pager);
+        DetailsFragmentPagerAdapter adapter = new DetailsFragmentPagerAdapter(getSupportFragmentManager());
+        pager.setAdapter(adapter);
         pager.setCurrentItem(currentPosition);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -101,6 +112,13 @@ public class DetailsActivity extends AppCompatActivity
 
             }
         });
+        ((DetailsFragment)adapter.getItem(currentPosition)).setTransitionName(
+                getResources().getString(R.string.grid_to_details_transition));
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override

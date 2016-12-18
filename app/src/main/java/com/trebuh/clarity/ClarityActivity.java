@@ -1,5 +1,6 @@
 package com.trebuh.clarity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.TypefaceSpan;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Menu;
@@ -35,6 +39,9 @@ import com.trebuh.clarity.network.ApiConstants;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ClarityActivity extends AppCompatActivity
         implements SearchHistoryFragment.OnFragmentInteractionListener,
@@ -78,11 +85,18 @@ public class ClarityActivity extends AppCompatActivity
     // for saving fragment state
     private Fragment retainedPhotoGridFragment;
     private Fragment extraGridFragment;
+    private String transitionName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                .setDefaultFontPath(ApiConstants.MAIN_FONT)
+                .setFontAttrId(R.attr.fontPath)
+                .build());
+
         setContentView(R.layout.activity_clarity);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setSharedElementExitTransition(TransitionInflater.from(this).
@@ -138,6 +152,11 @@ public class ClarityActivity extends AppCompatActivity
         drawerToggle.syncState();
     }
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
     private void initViewPager() {
         adapter = new ClarityPagerAdapter(getSupportFragmentManager());
 
@@ -168,7 +187,8 @@ public class ClarityActivity extends AppCompatActivity
                 // show toolbar and change its title
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(
-                            String.valueOf(adapter.getPageTitle(position)));
+                            customFontStringWrapper(
+                                    String.valueOf(adapter.getPageTitle(position))));
                 }
                 onAppBarShow();
 
@@ -272,6 +292,13 @@ public class ClarityActivity extends AppCompatActivity
         }
     }
 
+    private SpannableString customFontStringWrapper(String string) {
+        SpannableString s = new SpannableString(string);
+        s.setSpan(new TypefaceSpan(ApiConstants.ACCENT_FONT), 0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return s;
+    }
+
     private void initFab() {
         fab = (FloatingActionButton) findViewById(R.id.add_fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -336,10 +363,11 @@ public class ClarityActivity extends AppCompatActivity
 //             array of items for shared element transition
             View statusBar = findViewById(android.R.id.statusBarBackground);
             View navigationBar = findViewById(android.R.id.navigationBarBackground);
-            photoView.setTransitionName(photoView.toString());
             List<Pair<View, String>> pairs = new ArrayList<>();
-            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_iv), photoView.getTransitionName())));
-            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_title_tv), getString(R.string.grid_to_details_transition_title))));
+//            String transitionName = getString(R.string.grid_to_details_transition);
+            String transitionName = String.valueOf(currentFragment.getPhotoList().get(clickedItemPos));
+            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_iv), transitionName)));
+//            pairs.add((Pair.create(photoView.findViewById(R.id.photo_grid_item_title_tv), getString(R.string.grid_to_details_transition_title))));
 //             prevent null pointers on some devices
             if (navigationBar != null) {
                 pairs.add(Pair.create(navigationBar, Window.NAVIGATION_BAR_BACKGROUND_TRANSITION_NAME));
@@ -422,7 +450,7 @@ public class ClarityActivity extends AppCompatActivity
         if (saveInHistory) {
             searchHistoryList.add(searchTerm);
         }
-        toolbar.setTitle(searchTerm);
+        toolbar.setTitle(customFontStringWrapper(searchTerm));
     }
 
     private void clearToolbarSubtitle() {

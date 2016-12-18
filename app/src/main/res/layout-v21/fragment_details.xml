@@ -28,8 +28,9 @@
                 android:id="@+id/details_photo_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@android:color/black"
+                android:background="@color/md_white_1000"
                 android:tint="@color/details_photo_tint"
+                android:transitionName="@string/grid_to_details_transition"
                 tools:ignore="ContentDescription" />
 
             <ImageView
@@ -51,7 +52,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
                 android:layout_marginBottom="16dp"
-                android:layout_marginEnd="120dp">
+                android:layout_marginEnd="120dp"
+                >
 
                 <!--favorites count-->
                 <RelativeLayout
@@ -65,6 +67,7 @@
                         android:id="@+id/details_favorites_label"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
+
                         android:layout_gravity="start"
                         android:layout_margin="4dp"
                         android:contentDescription="@string/favorites"
@@ -173,7 +176,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="7dp"
                 android:fontFamily="sans-serif-light"
                 android:text="@string/the_hamburglar"
                 android:textAppearance="@android:style/TextAppearance.Material.Title"
@@ -182,7 +185,8 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/details_times_viewed"
-                app:layout_constraintTop_toBottomOf="@+id/details_lens_value" />
+                app:layout_constraintTop_toBottomOf="@+id/details_lens_value"
+                tools:ignore="MissingPrefix" />
 
             <!--description-->
             <org.sufficientlysecure.htmltextview.HtmlTextView
@@ -230,6 +234,7 @@
                 android:text="@string/generic_camera"
                 android:textAlignment="textStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorAccent"
                 app:layout_constraintBottom_toTopOf="@+id/details_lens_value"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -253,6 +258,7 @@
                 android:id="@+id/details_lens_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif-smallcaps"
                 android:gravity="start"
                 android:paddingEnd="8dp"
@@ -262,7 +268,10 @@
                 android:text="@string/generic_lens"
                 android:textAlignment="viewStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorAccent"
+                app:layout_constraintHorizontal_bias="0.01"
                 app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/details_times_viewed"
                 app:layout_constraintTop_toBottomOf="@+id/details_camera_value" />
 
             <!--<ImageView-->

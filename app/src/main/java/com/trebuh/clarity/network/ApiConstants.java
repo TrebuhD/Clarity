@@ -7,6 +7,9 @@ public final class ApiConstants {
         throw new AssertionError();
     }
 
+    public static final String MAIN_FONT = "fonts/Cabin-Regular.ttf";
+    public static final String ACCENT_FONT = "fonts/LobsterTwo.otf";
+
     static final String ENDPOINT = "https://api.500px.com/v1/";
     public static final String ENDPOINT_PHOTOS = "photos";
     public static final String ENDPOINT_SEARCH = "search";
